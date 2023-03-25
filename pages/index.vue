@@ -16,7 +16,7 @@
         
         <hr>
         <!-- waypoint list -->
-        <WaypointCard v-for="(wp) in waypoints" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP"/>
+        <WaypointCard v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP"/>
       </aside>
 
       <div id="map-wrap" class="col-9" >
@@ -24,7 +24,7 @@
           <l-map :zoom="zoom" :center="center" @click="setmarker">
             <l-tile-layer :url="url"></l-tile-layer>
             <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" :key="wp.id"></l-marker>
-            <l-polyline :lat-lngs="lineCoordinates" ></l-polyline>
+            <l-polyline :lat-lngs="getLinesCoordinates" ></l-polyline>
           </l-map>
         </client-only>
       </div>
@@ -44,30 +44,35 @@ export default {
       marker: [47.3686498, 8.5391825],
       waypoints: [],
       sortedDescending: true,
-      lineCoordinates : []
-
+      
+      
     }
+  },
+  computed: {
+    showSorted(){
+      if(this.sortedDescending){
+        return [...this.waypoints].reverse();
+      }else{
+        return this.waypoints;
+      }
+    },
+    getLinesCoordinates(){
+      return [this.waypoints.map(wp=>[wp.lat,wp.lng])];
+    }
+
   },
   
   methods: {
     updateNames(){
       let indexes = this.waypoints.map((_e,i)=>i)
-      if(this.sortedDescending){
-        indexes.reverse();
-        let updatedArray = indexes.map(index=>{return {...this.waypoints[index],name:index}})
-        this.waypoints = updatedArray;
-      }else {
-        let updatedArray = indexes.map(index=>{return {...this.waypoints[index],name:index}})
-        this.waypoints = updatedArray;
-      }
+      let updatedArray = indexes.map(index=>{return {...this.waypoints[index],name:index}});
+      this.waypoints = updatedArray;
 
     },
     sortWPs(){
-      this.waypoints = this.waypoints.reverse();
       this.sortedDescending = !this.sortedDescending;
     },
     setmarker(e){
-      // console.dir(e);
       let latitude = e.latlng.lat;
       let longitude = e.latlng.lng;
       let datum = new Date;
@@ -80,41 +85,17 @@ export default {
           lng: longitude,
           timeCreated: `${datum.getHours()}:${datum.getMinutes()}:${datum.getSeconds()}`
         };
-        // update array
-        // ako je lista sortirana padajuce, dodaj na pocetak, u suprotnom na kraj liste
-        if(this.sortedDescending){
-          this.waypoints = [newWaypoint,...this.waypoints];
-          // fix HERE - promjeni logiku sorta
-          // this.lineCoordinates = [[new]]
-        }else {
-          this.waypoints = [...this.waypoints,newWaypoint];
-        }
+        // ubaci novi waypoint u waypoints array
+        this.waypoints = [...this.waypoints,newWaypoint];
         // podesi imena (ako imamo wp1,wp2,wp3 i obrisemo wp2, potrebno je svima podesiti imena tako da se wp3 sada zove wp2)
-        this.updateNames();
-        // this.addLine(latitude,longitude);
-        
+        this.updateNames();        
       }
     },
-    
-    // updateLines(){
-    //   if(this.sortedDescending){
-    //     let reversed = [...this.waypoints];
-    //     reversed.reverse();
-
-    //     this.lineCoordinates = reversed.map(point => [point.lat, point.lng])
-        
-
-    //   }else{
-    //     console.log(this.waypoints)
-    //     this.lineCoordinates = this.waypoints.map(point => [point.lat, point.lng])
-
-    //   }
-    // },
     
     removeWP(id){
       this.waypoints = this.waypoints.filter(wp=>wp.id !== id)
       this.updateNames();
-      this.updateLines();
+      // this.updateLines();
     }
 
   }
