@@ -1,13 +1,20 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <aside id="side-panel" class="col-3">
+  <div class="container-fluidss">
+    <div class="d-flex">
+
+      <aside id="side-panel" class="p-4">
         <h2>Podaci</h2>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+          <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
+        </div>
+        <hr>
         <div v-for="(wp,i) in waypoints" :key="i">
           ID: {{wp.id}} Lat:{{ wp.lat }} Long: {{ wp.lng }}
         </div>
       </aside>
-      <div class="col-9" id="map-wrap" >
+
+      <div id="map-wrap" >
         <client-only>
           <l-map :zoom="zoom" :center="center" @click="setmarker">
             <l-tile-layer :url="url"></l-tile-layer>
@@ -50,8 +57,20 @@ export default {
 }
 </script>
 <style scoped>
-  #map-wrap {
+  body {
+    overflow: hidden;
     height: 100vh;
-    width: 100%;
+  }
+  #map-wrap {
+    /* position: fixed;
+    right:0px; */
+    height: 100vh;
+    width: 70%;
+    overflow: hidden;
+  }
+  #side-panel{
+    width: 30%;
+    min-height: 100vh;
+    overflow-y: scroll;
   }
 </style>
