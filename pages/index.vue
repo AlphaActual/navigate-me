@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="row wrapper">
 
-      <aside id="side-panel" class="p-4 col-3">
+      <aside id="side-panel" class="ps-4 pt-4 pb-4 col-3">
         <h2>Podaci</h2>
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
@@ -13,10 +13,13 @@
           <button class="btn btn-primary" @click="sortWPs">Sort</button>
           <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span>
         </div>
-        
         <hr>
-        <!-- waypoint list -->
-        <WaypointCard v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP"/>
+          <span>Active waypoint : {{activeWP.name}}</span>
+        <hr>
+        <div class="waypoint-container">
+          <!-- waypoint list -->
+          <WaypointCard  v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP" @card-clicked="setActiveWP"/>
+        </div>
       </aside>
 
       <div id="map-wrap" class="col-9" >
@@ -44,7 +47,8 @@ export default {
       marker: [47.3686498, 8.5391825],
       waypoints: [],
       sortedDescending: true,
-      
+      activeWP: 0
+
       
     }
   },
@@ -63,6 +67,9 @@ export default {
   },
   
   methods: {
+    setActiveWP(wp){
+      this.activeWP = wp;
+    },
     updateNames(){
       let indexes = this.waypoints.map((_e,i)=>i)
       let updatedArray = indexes.map(index=>{return {...this.waypoints[index],name:index}});
@@ -85,10 +92,26 @@ export default {
           lng: longitude,
           timeCreated: `${datum.getHours()}:${datum.getMinutes()}:${datum.getSeconds()}`
         };
-        // ubaci novi waypoint u waypoints array
-        this.waypoints = [...this.waypoints,newWaypoint];
+        // ubaci novi waypoint u waypoints array na nacin:
+
+        // ako je waypoints array prazan ubaci na zadnje mjesto
+        // ako je zadnji waypoint === aktivni ubaci na zadnje mjesto
+        // ako je neki drugi waypoint aktivan zamjeni ga u arrayu sa ovim novim
+        if(!this.waypoints.length || this.waypoints[this.waypoints.length-1].id === this.activeWP.id){
+          this.waypoints = [...this.waypoints,newWaypoint];
+        }else {
+          this.waypoints = this.waypoints.map(wp=>{
+            if(wp.id === this.activeWP.id) return newWaypoint
+            else return wp;
+          })
+        }
+
         // podesi imena (ako imamo wp1,wp2,wp3 i obrisemo wp2, potrebno je svima podesiti imena tako da se wp3 sada zove wp2)
-        this.updateNames();        
+        this.updateNames();
+        // pronadi index to waypointa (nakon sto su sva imena updejtana)
+        const updatedNewWPindex = this.waypoints.findIndex(wp=>wp.id === newWaypoint.id);
+        // postavi ga kao aktivnog
+        this.setActiveWP(this.waypoints[updatedNewWPindex])       
       }
     },
     
@@ -118,9 +141,17 @@ export default {
   }
   #side-panel{
     height: calc(100vh);
-    overflow-y: auto;
+    /* overflow-y: auto; */
+  }
+  .waypoint-container {
+    overflow: auto;
+    height:60%;
+    margin-bottom:200px ;
   }
   .reverse-arrow {
     transform: rotate(180deg);
+  }
+  .active {
+    border: 1px solid blue;
   }
 </style>

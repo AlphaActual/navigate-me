@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card mb-2 p-2">
+        <div class="card mb-2 p-2" @click="$emit('card-clicked',waypoint)">
           Name: WP{{ waypoint.name }} <br>
           ID: {{waypoint.id}} <br>
           Lat: {{ formatLatitude(waypoint.lat) }} <br>

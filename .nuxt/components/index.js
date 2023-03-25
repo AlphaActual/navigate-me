@@ -1,6 +1,4 @@
 export { default as Header } from '../..\\components\\Header.vue'
-export { default as NuxtLogo } from '../..\\components\\NuxtLogo.vue'
-export { default as Tutorial } from '../..\\components\\Tutorial.vue'
 export { default as WaypointCard } from '../..\\components\\WaypointCard.vue'
 
 // nuxt/nuxt.js#8607
