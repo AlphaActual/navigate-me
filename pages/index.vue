@@ -1,6 +1,6 @@
 <template>
-  <div class="container-fluidss">
-    <div class="d-flex">
+  <div class="main-container">
+    <div class="d-flex wrapper">
 
       <aside id="side-panel" class="p-4">
         <h2>Podaci</h2>
@@ -12,6 +12,10 @@
         <div v-for="(wp,i) in waypoints" :key="i">
           ID: {{wp.id}} Lat:{{ wp.lat }} Long: {{ wp.lng }}
         </div>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reiciendis quos doloribus deleniti neque facere tenetur fuga nostrum expedita repellendus. Iusto illum iste exercitationem voluptatibus eligendi ipsa omnis similique asperiores eius deleniti, officia sit minima sunt ex doloremque vero natus culpa beatae temporibus cupiditate unde mollitia dolores tenetur. Autem dolorum sapiente, sit obcaecati numquam iusto laboriosam nisi. Quae mollitia commodi nam placeat excepturi tempore porro quis, eaque, itaque fugiat aperiam officia beatae sunt, dignissimos corrupti quisquam incidunt vel. Perspiciatis, nesciunt reprehenderit sequi dicta, praesentium provident architecto quod excepturi autem sunt eos asperiores vero facere! Dolorem perspiciatis ea eligendi ex nisi cupiditate!</p>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reiciendis quos doloribus deleniti neque facere tenetur fuga nostrum expedita repellendus. Iusto illum iste exercitationem voluptatibus eligendi ipsa omnis similique asperiores eius deleniti, officia sit minima sunt ex doloremque vero natus culpa beatae temporibus cupiditate unde mollitia dolores tenetur. Autem dolorum sapiente, sit obcaecati numquam iusto laboriosam nisi. Quae mollitia commodi nam placeat excepturi tempore porro quis, eaque, itaque fugiat aperiam officia beatae sunt, dignissimos corrupti quisquam incidunt vel. Perspiciatis, nesciunt reprehenderit sequi dicta, praesentium provident architecto quod excepturi autem sunt eos asperiores vero facere! Dolorem perspiciatis ea eligendi ex nisi cupiditate!</p>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reiciendis quos doloribus deleniti neque facere tenetur fuga nostrum expedita repellendus. Iusto illum iste exercitationem voluptatibus eligendi ipsa omnis similique asperiores eius deleniti, officia sit minima sunt ex doloremque vero natus culpa beatae temporibus cupiditate unde mollitia dolores tenetur. Autem dolorum sapiente, sit obcaecati numquam iusto laboriosam nisi. Quae mollitia commodi nam placeat excepturi tempore porro quis, eaque, itaque fugiat aperiam officia beatae sunt, dignissimos corrupti quisquam incidunt vel. Perspiciatis, nesciunt reprehenderit sequi dicta, praesentium provident architecto quod excepturi autem sunt eos asperiores vero facere! Dolorem perspiciatis ea eligendi ex nisi cupiditate!</p>
+        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reiciendis quos doloribus deleniti neque facere tenetur fuga nostrum expedita repellendus. Iusto illum iste exercitationem voluptatibus eligendi ipsa omnis similique asperiores eius deleniti, officia sit minima sunt ex doloremque vero natus culpa beatae temporibus cupiditate unde mollitia dolores tenetur. Autem dolorum sapiente, sit obcaecati numquam iusto laboriosam nisi. Quae mollitia commodi nam placeat excepturi tempore porro quis, eaque, itaque fugiat aperiam officia beatae sunt, dignissimos corrupti quisquam incidunt vel. Perspiciatis, nesciunt reprehenderit sequi dicta, praesentium provident architecto quod excepturi autem sunt eos asperiores vero facere! Dolorem perspiciatis ea eligendi ex nisi cupiditate!</p>
       </aside>
 
       <div id="map-wrap" >
@@ -46,9 +50,8 @@ export default {
       console.dir(e);
       let latitude = e.latlng.lat;
       let longitude = e.latlng.lng;
-      console.dir(latitude,longitude);
+      // ako nije kliknuto na marker spremi novi waypoint u listu waypoints
       if(e.originalEvent.target.alt != "Marker"){
-
         this.waypoints = [...this.waypoints,{id:this.waypoints.length,lat:latitude,lng:longitude}]
       }
     }
@@ -61,6 +64,9 @@ export default {
     overflow: hidden;
     height: 100vh;
   }
+  .wrapper {
+    overflow-y: hidden;
+  }
   #map-wrap {
     /* position: fixed;
     right:0px; */
@@ -70,7 +76,7 @@ export default {
   }
   #side-panel{
     width: 30%;
-    min-height: 100vh;
+    height: calc(100vh);
     overflow-y: scroll;
   }
 </style>
