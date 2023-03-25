@@ -47,7 +47,13 @@ export default {
 </script>
 
 <style scoped>
-   .delete-button {
+  .card {
+    cursor: pointer;
+  }
+  .card:hover{
+    transform: scale(0.95);
+  }
+  .delete-button {
     width: 100px;
-   }
+  }
 </style>

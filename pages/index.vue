@@ -3,7 +3,7 @@
     <div class="row wrapper">
 
       <aside id="side-panel" class="ps-4 pt-4 pb-4 col-3">
-        <h2>Podaci</h2>
+        <h2>Create/edit route</h2>
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
           <label class="form-check-label" for="flexSwitchCheckDefault">Testni prekidač</label>
@@ -14,7 +14,10 @@
           <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span>
         </div>
         <hr>
+        <!-- dodaj neki transition -->
+        <transition >
           <span>Active waypoint : {{activeWP.name}}</span>
+        </transition>
         <hr>
         <div class="waypoint-container">
           <!-- waypoint list -->
