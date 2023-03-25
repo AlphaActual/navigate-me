@@ -6,7 +6,7 @@
         <h2>Podaci</h2>
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-          <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
+          <label class="form-check-label" for="flexSwitchCheckDefault">Testni prekidač</label>
         </div>
 
         <div class="d-flex align-items-center">
@@ -24,7 +24,7 @@
           <l-map :zoom="zoom" :center="center" @click="setmarker">
             <l-tile-layer :url="url"></l-tile-layer>
             <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" :key="wp.id"></l-marker>
-            <l-polyline ></l-polyline>
+            <l-polyline :lat-lngs="lineCoordinates" ></l-polyline>
           </l-map>
         </client-only>
       </div>
@@ -43,10 +43,12 @@ export default {
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       marker: [47.3686498, 8.5391825],
       waypoints: [],
-      sortedDescending: true
+      sortedDescending: true,
+      lineCoordinates : []
 
     }
   },
+  
   methods: {
     updateNames(){
       let indexes = this.waypoints.map((_e,i)=>i)
@@ -65,7 +67,7 @@ export default {
       this.sortedDescending = !this.sortedDescending;
     },
     setmarker(e){
-      console.dir(e);
+      // console.dir(e);
       let latitude = e.latlng.lat;
       let longitude = e.latlng.lng;
       let datum = new Date;
@@ -82,16 +84,37 @@ export default {
         // ako je lista sortirana padajuce, dodaj na pocetak, u suprotnom na kraj liste
         if(this.sortedDescending){
           this.waypoints = [newWaypoint,...this.waypoints];
+          // fix HERE - promjeni logiku sorta
+          // this.lineCoordinates = [[new]]
         }else {
           this.waypoints = [...this.waypoints,newWaypoint];
         }
         // podesi imena (ako imamo wp1,wp2,wp3 i obrisemo wp2, potrebno je svima podesiti imena tako da se wp3 sada zove wp2)
         this.updateNames();
+        // this.addLine(latitude,longitude);
+        
       }
     },
+    
+    // updateLines(){
+    //   if(this.sortedDescending){
+    //     let reversed = [...this.waypoints];
+    //     reversed.reverse();
+
+    //     this.lineCoordinates = reversed.map(point => [point.lat, point.lng])
+        
+
+    //   }else{
+    //     console.log(this.waypoints)
+    //     this.lineCoordinates = this.waypoints.map(point => [point.lat, point.lng])
+
+    //   }
+    // },
+    
     removeWP(id){
       this.waypoints = this.waypoints.filter(wp=>wp.id !== id)
       this.updateNames();
+      this.updateLines();
     }
 
   }
