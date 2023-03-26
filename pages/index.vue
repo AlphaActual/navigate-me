@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="row wrapper">
 
-      <aside id="side-panel" class="ps-4 pt-4 pb-4 col-3">
+      <aside id="side-panel" class="ps-4 pt-4 pb-4 col-md-3 col-sm-12">
         <h2>Create/edit route</h2>
         <div class="form-check form-switch">
           <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
@@ -25,7 +25,7 @@
         </div>
       </aside>
 
-      <div id="map-wrap" class="col-9" >
+      <div id="map-wrap" class="col-md-9 col-sm-12" >
         <client-only>
           <l-map :zoom="zoom" :center="center" @click="handleMapClick">
             <l-tile-layer :url="url"></l-tile-layer>
@@ -44,10 +44,10 @@ export default {
   name: 'IndexPage',
   data() {
     return {
-      zoom: 13,
-      center: [47.3686498, 8.5391825],
+      zoom: 15,
+      center: [45.08397548484512, 13.633303642272951],
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-      marker: [47.3686498, 8.5391825],
+      marker: [45.08397548484512, 13.633303642272951],
       waypoints: [],
       sortedDescending: true,
       activeWP: 0
@@ -84,9 +84,11 @@ export default {
 
     },
     updateNames(){
-      let indexes = this.waypoints.map((_e,i)=>i)
-      let updatedArray = indexes.map(index=>{return {...this.waypoints[index],name:index}});
-      this.waypoints = updatedArray;
+      if(this.waypoints.length > 0){
+        let indexes = this.waypoints.map((_e,i)=>i)
+        let updatedArray = indexes.map(index=>{return {...this.waypoints[index],name:index}});
+        this.waypoints = updatedArray;
+      }
 
     },
     handleMapClick(e){
@@ -116,6 +118,7 @@ export default {
           lng: longitude,
           timeCreated: `${datum.getHours()}:${datum.getMinutes()}:${datum.getSeconds()}`
         };
+        console.log(newWaypoint);
         // ubaci novi waypoint u waypoints array na nacin:
 
         // ako je waypoints array prazan ubaci na zadnje mjesto
@@ -184,5 +187,14 @@ export default {
   }
   .active {
     border: 1px solid blue;
+  }
+
+  @media(max-width: 768px){
+    #side-panel,#map-wrap {
+      height: 50vh;
+    }
+    body,.wrapper {
+      overflow: auto;
+    }
   }
 </style>
