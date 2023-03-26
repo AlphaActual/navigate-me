@@ -21,15 +21,15 @@
         <hr>
         <div class="waypoint-container">
           <!-- waypoint list -->
-          <WaypointCard  v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP" @card-clicked="setActiveWP"/>
+          <WaypointCard  v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP" @card-clicked="handleCardClick(wp)"/>
         </div>
       </aside>
 
       <div id="map-wrap" class="col-9" >
         <client-only>
-          <l-map :zoom="zoom" :center="center" @click="setmarker">
+          <l-map :zoom="zoom" :center="center" @click="handleMapClick">
             <l-tile-layer :url="url"></l-tile-layer>
-            <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" :key="wp.id"></l-marker>
+            <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id"></l-marker>
             <l-polyline :lat-lngs="getLinesCoordinates" ></l-polyline>
           </l-map>
         </client-only>
@@ -73,11 +73,32 @@ export default {
     setActiveWP(wp){
       this.activeWP = wp;
     },
+    markerClick(id){
+      const updatedNewWPindex = this.waypoints.findIndex(wp=>wp.id === id);
+        // postavi ga kao aktivnog
+      const selectedWP = this.waypoints[updatedNewWPindex];
+      this.setActiveWP(selectedWP)
+      // centriraj aktivan wp
+      this.center = [selectedWP.lat,selectedWP.lng];
+
+
+    },
     updateNames(){
       let indexes = this.waypoints.map((_e,i)=>i)
       let updatedArray = indexes.map(index=>{return {...this.waypoints[index],name:index}});
       this.waypoints = updatedArray;
 
+    },
+    handleMapClick(e){
+      if(e.originalEvent.target.alt != "Marker"){
+        this.setmarker(e);
+      }else{
+        // console.log(e);
+      }
+    },
+    handleCardClick(wp){
+      this.setActiveWP(wp)
+      this.center = [wp.lat,wp.lng];
     },
     sortWPs(){
       this.sortedDescending = !this.sortedDescending;
@@ -119,9 +140,16 @@ export default {
     },
     
     removeWP(id){
+      // ako je obrisani wp bio ujedno i aktivan stavi da novi aktivni bude zadnji
+      
       this.waypoints = this.waypoints.filter(wp=>wp.id !== id)
       this.updateNames();
-      // this.updateLines();
+      if(this.activeWP.id === id){
+        const lastWP = this.waypoints[this.waypoints.length -1];
+        this.setActiveWP(lastWP)
+        // this.center = [lastWP.lat,lastWP.lng];
+      }
+      
     }
 
   }
