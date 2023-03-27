@@ -4,13 +4,11 @@
 
       <aside id="side-panel" class="ps-4 pt-4 pb-4 col-3">
         <h2>Create/edit route</h2>
-        <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-          <label class="form-check-label" for="flexSwitchCheckDefault">Testni prekidač</label>
-        </div>
+        
 
         <div class="d-flex align-items-center">
           <button class="btn btn-primary" @click="sortWPs">Sort</button>
+          <button class="btn btn-warning" @click="undoRemove">Undo</button>
           <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span>
         </div>
         <hr>
@@ -29,7 +27,12 @@
         <client-only>
           <l-map :zoom="zoom" :center="center" @click="handleMapClick">
             <l-tile-layer :url="url"></l-tile-layer>
-            <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id"></l-marker>
+            <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id">
+              <l-popup> 
+                <p>WP{{wp.name}}</p> 
+                <p></p>
+                </l-popup>
+            </l-marker>
             <l-polyline :lat-lngs="getLinesCoordinates" ></l-polyline>
           </l-map>
         </client-only>
@@ -39,7 +42,7 @@
 </template>
 
 <script>
-
+// import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet';
 export default {
   name: 'IndexPage',
   data() {
@@ -49,6 +52,7 @@ export default {
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       marker: [47.3686498, 8.5391825],
       waypoints: [],
+      deletedWaypoints: [],
       sortedDescending: true,
       activeWP: 0
 
@@ -140,16 +144,33 @@ export default {
     },
     
     removeWP(id){
-      // ako je obrisani wp bio ujedno i aktivan stavi da novi aktivni bude zadnji
-      
+      const wpToRemove = this.waypoints[this.waypoints.findIndex(wp=>wp.id === id)];
+      // dodaj ga u deletedwaypoints
+      this.deletedWaypoints = [...this.deletedWaypoints,wpToRemove];
+
+      // izbaci ga iz waypoints liste
       this.waypoints = this.waypoints.filter(wp=>wp.id !== id)
       this.updateNames();
+      // ako je obrisani wp bio ujedno i aktivan stavi da novi aktivni bude zadnji
       if(this.activeWP.id === id){
         const lastWP = this.waypoints[this.waypoints.length -1];
         this.setActiveWP(lastWP)
-        // this.center = [lastWP.lat,lastWP.lng];
       }
       
+    },
+    undoRemove(){
+      // ubaci zadnji ubaceni wp iz deletedWaypoints nazad u waypoints na pripadajuce mjesto
+      if(this.deletedWaypoints.length != 0){
+        // kloniranje liste (kako ne bi doslo do mutacija originala)
+        const newWaypoints =  [...this.waypoints];
+        const lastDeletedWP = this.deletedWaypoints[this.deletedWaypoints.length -1];
+        // insertaj u listu obrisani element na njegovo staro mjesto u redosljedu
+        newWaypoints.splice(lastDeletedWP.name,0,lastDeletedWP);
+        // spremi promjene
+        this.waypoints = newWaypoints;
+      }
+      // obrisi zadnji element iz deletedWaypoints
+      this.deletedWaypoints = [...this.deletedWaypoints].pop();
     }
 
   }
