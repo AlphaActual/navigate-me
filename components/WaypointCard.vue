@@ -6,7 +6,7 @@
           Lat: {{ formatLatitude(waypoint.lat) }} <br>
           Long: {{ formatLongitude(waypoint.lng) }}<br>
           Created: {{ waypoint.timeCreated }}
-          <button class="delete-button btn btn-danger d-inline-block" @click="$emit('delete-WP-event',waypoint.id)">Delete</button>
+          <!-- <button class="delete-button btn btn-danger d-inline-block" @click="$emit('delete-WP-event',waypoint.id)">Delete</button> -->
         </div>
     </div>
 </template>

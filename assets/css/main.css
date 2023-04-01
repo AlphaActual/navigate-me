@@ -1,6 +1,5 @@
 * {
     box-sizing: border-box;
-    color:blue;
 }
 .leaflet-marker-icon:hover {
     width: 30px !important;
