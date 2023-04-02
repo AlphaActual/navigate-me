@@ -34,8 +34,9 @@
             <l-tile-layer :url="url"></l-tile-layer>
             <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id">
               <l-popup> 
-                <p>WP{{wp.name}}</p> 
-                <p></p>
+                <p class="p-0 m-0">WP{{wp.name}}</p> 
+                <p class="p-0 m-0">Next course {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
+                <p class="p-0 m-0">Wp to Wp: {{ wp.wpToWp != 'N/A'? wp.wpToWp.toFixed(2) + ' NM':'N/A'}}</p>
                 </l-popup>
             </l-marker>
             <l-polyline :lat-lngs="getLinesCoordinates" ></l-polyline>
@@ -61,7 +62,8 @@ export default {
       waypoints: [],
       deletedWaypoints: [],
       sortedDescending: true,
-      activeWP: 0
+      activeWP: 0,
+      shipSpeed: 7
 
       
     }
@@ -99,6 +101,7 @@ export default {
         let indexes = this.waypoints.map((_e,i)=>i)
         let updatedArray = indexes.map(index=>{return {...this.waypoints[index],name:index}});
         this.waypoints = updatedArray;
+        this.calculateNavData();
       }
 
     },
@@ -130,9 +133,10 @@ export default {
           name: 0,
           lat: latitude,
           lng: longitude,
+          nextCourse: 'N/A',
+          wpToWp: 'N/A',
           timeCreated: `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${datum.getHours()}:${datum.getMinutes()}:${datum.getSeconds()}`
         };
-        console.log(newWaypoint);
         // ubaci novi waypoint u waypoints array na nacin:
 
         // ako je waypoints array prazan ubaci na zadnje mjesto
@@ -155,7 +159,6 @@ export default {
         this.setActiveWP(this.waypoints[updatedNewWPindex])       
       }
     },
-    
     removeWP(id){
       if(id){
         // izbaci ga iz waypoints liste
@@ -169,7 +172,47 @@ export default {
           }
         }
       }
-      
+    }, 
+    calculateCourse(wp1,wp2) {
+      let dLon = (wp2.lng - wp1.lng);
+      let y = Math.sin(dLon) * Math.cos(wp2.lat);
+      let x = Math.cos(wp1.lat) * Math.sin(wp2.lat) - Math.sin(wp1.lat) * Math.cos(wp2.lat) * Math.cos(dLon);
+      let brng = Math.atan2(y, x) * 180 / Math.PI;
+      return (brng + 360) % 360;
+    },
+     calculateDistance(wp1,wp2) {
+      let R = 6371e3; // radius of the earth in meters
+      let phi1 = wp1.lat * Math.PI/180;
+      let phi2 = wp2.lat * Math.PI/180;
+      let deltaPhi = (wp2.lat-wp1.lat) * Math.PI/180;
+      let deltaLambda = (wp2.lng-wp1.lng) * Math.PI/180;
+
+      let a = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) +
+              Math.cos(phi1) * Math.cos(phi2) *
+              Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
+      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      let distance = R * c;
+
+      let nauticalMilesPerMeter = 0.000539957;
+      let distanceInNauticalMiles = distance * nauticalMilesPerMeter;
+
+      return distanceInNauticalMiles;
+    },
+    getTotalDistance(){
+      let totalDistance = this.waypoints.reduce((acc,wp)=>{wp.wpToWp != 'N/A'? acc + wp.wpToWp:acc+0},0);
+    },
+    calculateNavData(){
+      if(this.waypoints.length > 1){
+        let updatedWPs = [...this.waypoints];
+        updatedWPs.forEach((wp,i)=>{
+          if(this.waypoints[i+1]){
+            wp.nextCourse = this.calculateCourse(wp,this.waypoints[i+1])
+            wp.wpToWp = this.calculateDistance(wp,this.waypoints[i+1]);
+          }
+        })
+        this.waypoints = updatedWPs;
+        console.log(this.waypoints);
+      }
     }
   }
 }
