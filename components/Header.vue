@@ -1,7 +1,8 @@
 <template>
     <div class="header d-flex justify-content-between align-items-center ps-2 pe-2">
-        <div>{{pageTitle}}</div>
-        <div>Tu ce biti razni info  podaci</div>
+        <div class="fw-bold fs-5">{{pageTitle}}</div>
+        <div>Total time: {{totalT}} hrs</div>
+        <div>Total distance: {{totalD.toFixed(2)}} NM</div>
         <div>Username</div>
     </div>
 </template>
@@ -10,6 +11,14 @@ export default {
     name:"Header",
     props: {
         pageTitle:{
+            type: String,
+            required: true
+        },
+        totalD:{
+            type: Number,
+            required: true
+        },
+        totalT:{
             type: String,
             required: true
         }

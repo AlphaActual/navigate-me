@@ -1,6 +1,6 @@
 <template>
   <div class="main-div">
-     <Header pageTitle="Create/edit route" />
+     <Header pageTitle="Create/edit route" :totalD="totalDistance" :totalT="this.formatTime(this.totalTimeHrs)" />
   <div class="container-fluid">
     <div class="row wrapper">
 
@@ -10,18 +10,29 @@
             <button class="save-btn btn btn-primary d-block">Save route</button>
           </div>
         </div>
-        
 
-        <div class="d-flex align-items-center">
-          <button class="btn btn-outline-secondary" @click="sortWPs">Sort</button>
-          <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span>
-        </div>
         <hr>
+
+         <div>
+          <div class="d-flex align-items-center">
+            <label class="mb-0 me-1" for="speed-input">Ship speed: </label>
+            <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" class="text-primary btn-secondary-outline d-block"/> kts
+          </div>
+        </div>
+
+        <hr>
+
           <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <button class="btn btn-outline-secondary" @click="sortWPs">Sort</button>
+              <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span>
+            </div>
+
             <div class="btn border border-primary rounded" @click="centerOnActive">Active: <span class="fw-bold text-primary">{{activeWP.name}}</span></div>
             <div @click="removeWP(activeWP.id)" class="btn btn-danger">Delete active</div>
           </div>
         <hr>
+
         <div class="waypoint-container">
           <!-- waypoint list -->
           <WaypointCard  v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP" @card-clicked="handleCardClick(wp)"/>
@@ -34,9 +45,9 @@
             <l-tile-layer :url="url"></l-tile-layer>
             <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id">
               <l-popup> 
-                <p class="p-0 m-0">WP{{wp.name}}</p> 
-                <p class="p-0 m-0">Next course {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
-                <p class="p-0 m-0">Wp to Wp: {{ wp.wpToWp != 'N/A'? wp.wpToWp.toFixed(2) + ' NM':'N/A'}}</p>
+                <p class="p-0 m-0 fw-bold">WP{{wp.name}}</p> 
+                <p class="p-0 m-0">Next course: {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
+                <p class="p-0 m-0">D to next Wp: {{ wp.wpToWp != 'N/A'? wp.wpToWp.toFixed(2) + ' NM':'N/A'}}</p>
                 </l-popup>
             </l-marker>
             <l-polyline :lat-lngs="getLinesCoordinates" ></l-polyline>
@@ -60,12 +71,19 @@ export default {
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       marker: [45.08397548484512, 13.633303642272951],
       waypoints: [],
-      deletedWaypoints: [],
       sortedDescending: true,
       activeWP: 0,
-      shipSpeed: 7
+      shipSpeed: 7,
+      totalDistance: 0,
+      totalTimeHrs:0
+      
 
       
+    }
+  },
+  watch:{
+    shipSpeed(){
+      this.getTotalTime();
     }
   },
   computed: {
@@ -199,10 +217,25 @@ export default {
       return distanceInNauticalMiles;
     },
     getTotalDistance(){
-      let totalDistance = this.waypoints.reduce((acc,wp)=>{wp.wpToWp != 'N/A'? acc + wp.wpToWp:acc+0},0);
+      if(this.waypoints.length>0){
+        this.totalDistance = this.waypoints.reduce((acc,wp)=>{return wp.wpToWp != 'N/A'? acc + wp.wpToWp:acc+0},0);
+
+      }else this.totalDistance =0;
+    },
+    getTotalTime(){
+      if(this.shipSpeed != 0 && this.totalDistance > 0){
+        this.totalTimeHrs = this.totalDistance/this.shipSpeed;
+      }
+    },
+    formatTime(hours) {
+      let dateObj = new Date(hours * 3600 * 1000); // convert hours to milliseconds
+      let hoursFormatted = dateObj.getUTCHours().toString().padStart(2, '0'); // get hours and add leading zero if necessary
+      let minutesFormatted = dateObj.getUTCMinutes().toString().padStart(2, '0'); // get minutes and add leading zero if necessary
+      let secondsFormatted = dateObj.getUTCSeconds().toString().padStart(2, '0'); // get seconds and add leading zero if necessary
+      return `${hoursFormatted}:${minutesFormatted}:${secondsFormatted}`; // return formatted time string
     },
     calculateNavData(){
-      if(this.waypoints.length > 1){
+      if(this.waypoints.length > 0){
         let updatedWPs = [...this.waypoints];
         updatedWPs.forEach((wp,i)=>{
           if(this.waypoints[i+1]){
@@ -210,8 +243,13 @@ export default {
             wp.wpToWp = this.calculateDistance(wp,this.waypoints[i+1]);
           }
         })
+        // zadnji waypoint u arrayu nikad nesmije imati definirane sljedece atribute!
+        updatedWPs[updatedWPs.length-1].wpToWp = 'N/A';
+        updatedWPs[updatedWPs.length-1].nextCourse = 'N/A';
         this.waypoints = updatedWPs;
-        console.log(this.waypoints);
+        // updejtaj ukupnu udaljenost rute
+        this.getTotalDistance();
+        this.getTotalTime();
       }
     }
   }
@@ -243,7 +281,7 @@ export default {
   }
   .waypoint-container {
     overflow: auto;
-    height: calc(100vh - 300px);
+    height: calc(100vh - 280px);
     margin-bottom: 200px;
   }
   .save-btn {
@@ -254,6 +292,10 @@ export default {
   }
   .active {
     border: 1px solid blue;
+  }
+  #speed-input {
+    max-width: 50px;
+    margin-right: 8px;
   }
 
   @media(max-width: 768px){
