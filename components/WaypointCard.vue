@@ -1,11 +1,13 @@
 <template>
     <div>
         <div class="card mb-2 p-2" @click="$emit('card-clicked',waypoint)">
-          Name: WP{{ waypoint.name }} <br>
-          ID: {{waypoint.id}} <br>
+         <span class="fw-bold"> WP{{ waypoint.name }}</span>
+         <p>
+          <!-- ID: {{waypoint.id}} <br> -->
           Lat: {{ formatLatitude(waypoint.lat) }} <br>
           Long: {{ formatLongitude(waypoint.lng) }}<br>
           Created: {{ waypoint.timeCreated }}
+         </p>
           <!-- <button class="delete-button btn btn-danger d-inline-block" @click="$emit('delete-WP-event',waypoint.id)">Delete</button> -->
         </div>
     </div>
@@ -29,6 +31,19 @@ export default {
       let seconds = ((absolute - degrees - minutes / 60) * 3600).toFixed(2); // Get seconds and round to 2 decimal places
       let direction = latitude >= 0 ? "N" : "S"; // Determine N or S
       
+      // degrees = degrees.toString();
+      // minutes = minutes.toString();
+      // let degreesSetLen = 3;
+      // let minutesSetLen = 2;
+
+      // let numZeroesToAdd = degreesSetLen - degrees.length;
+      // degrees = "0".repeat(numZeroesToAdd) + degrees;
+
+      // numZeroesToAdd = minutesSetLen - minutes.length;
+      // minutes = "0".repeat(numZeroesToAdd) + minutes;
+      degrees = String(degrees).padStart(3, '0');
+      minutes = String(minutes).padStart(2, '0');
+
       return degrees + "° " + minutes + "' " + seconds + "\" " + direction;
     },
     formatLongitude(longitude) {
@@ -38,6 +53,21 @@ export default {
       let seconds = ((absolute - degrees - minutes / 60) * 3600).toFixed(2); // Get seconds and round to 2 decimal places
       let direction = longitude >= 0 ? "E" : "W"; // Determine E or W
       
+      // dodavanje prefiksa nula na početak stupnjeva i minuta
+      // 3° -> 003° itd.
+      // degrees = degrees.toString();
+      // minutes = minutes.toString();
+      // let degreesSetLen = 3; 
+      // let minutesSetLen = 2;
+
+      // let numZeroesToAdd = degreesSetLen - degrees.length;
+      // degrees = "0".repeat(numZeroesToAdd) + degrees;
+
+      // numZeroesToAdd = minutesSetLen - minutes.length;
+      // minutes = "0".repeat(numZeroesToAdd) + minutes;
+      degrees = String(degrees).padStart(3, '0');
+      minutes = String(minutes).padStart(2, '0');
+
       return degrees + "° " + minutes + "' " + seconds + "\" " + direction;
     }
   }

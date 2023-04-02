@@ -1,21 +1,26 @@
 <template>
+  <div class="main-div">
+     <Header pageTitle="Create/edit route" />
   <div class="container-fluid">
     <div class="row wrapper">
 
       <aside id="side-panel" class="ps-4 pt-4 pb-4 col-md-3 col-sm-12">
-        <h2>Create/edit route</h2>
+        <div>
+          <div>
+            <button class="save-btn btn btn-primary d-block">Save route</button>
+          </div>
+        </div>
         
 
         <div class="d-flex align-items-center">
-          <button class="btn btn-primary" @click="sortWPs">Sort</button>
-          <button class="btn btn-warning" @click="undoRemove">Undo</button>
+          <button class="btn btn-outline-secondary" @click="sortWPs">Sort</button>
           <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span>
         </div>
         <hr>
-        <!-- dodaj neki transition -->
-        <transition >
-          <span>Active waypoint : {{activeWP.name}}</span>
-        </transition>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="btn border border-primary rounded" @click="centerOnActive">Active: <span class="fw-bold text-primary">{{activeWP.name}}</span></div>
+            <div @click="removeWP(activeWP.id)" class="btn btn-danger">Delete active</div>
+          </div>
         <hr>
         <div class="waypoint-container">
           <!-- waypoint list -->
@@ -39,6 +44,8 @@
       </div>
     </div>
   </div>
+  </div>
+ 
 </template>
 
 <script>
@@ -98,13 +105,16 @@ export default {
     handleMapClick(e){
       if(e.originalEvent.target.alt != "Marker"){
         this.setmarker(e);
-      }else{
-        // console.log(e);
-      }
+      };
     },
     handleCardClick(wp){
       this.setActiveWP(wp)
       this.center = [wp.lat,wp.lng];
+    },
+    centerOnActive(){
+      if(this.activeWP){
+        this.center = [this.activeWP.lat,this.activeWP.lng];
+      }
     },
     sortWPs(){
       this.sortedDescending = !this.sortedDescending;
@@ -120,7 +130,7 @@ export default {
           name: 0,
           lat: latitude,
           lng: longitude,
-          timeCreated: `${datum.getHours()}:${datum.getMinutes()}:${datum.getSeconds()}`
+          timeCreated: `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${datum.getHours()}:${datum.getMinutes()}:${datum.getSeconds()}`
         };
         console.log(newWaypoint);
         // ubaci novi waypoint u waypoints array na nacin:
@@ -147,35 +157,20 @@ export default {
     },
     
     removeWP(id){
-      const wpToRemove = this.waypoints[this.waypoints.findIndex(wp=>wp.id === id)];
-      // dodaj ga u deletedwaypoints
-      this.deletedWaypoints = [...this.deletedWaypoints,wpToRemove];
-
-      // izbaci ga iz waypoints liste
-      this.waypoints = this.waypoints.filter(wp=>wp.id !== id)
-      this.updateNames();
-      // ako je obrisani wp bio ujedno i aktivan stavi da novi aktivni bude zadnji
-      if(this.activeWP.id === id){
-        const lastWP = this.waypoints[this.waypoints.length -1];
-        this.setActiveWP(lastWP)
+      if(id){
+        // izbaci ga iz waypoints liste
+        this.waypoints = this.waypoints.filter(wp=>wp.id !== id)
+        this.updateNames();
+        // ako je obrisani wp bio ujedno i aktivan stavi da novi aktivni bude zadnji
+        if(this.activeWP.id === id){
+          const lastWP = this.waypoints[this.waypoints.length -1];
+          if(lastWP){
+            this.setActiveWP(lastWP)
+          }
+        }
       }
       
-    },
-    undoRemove(){
-      // ubaci zadnji ubaceni wp iz deletedWaypoints nazad u waypoints na pripadajuce mjesto
-      if(this.deletedWaypoints.length != 0){
-        // kloniranje liste (kako ne bi doslo do mutacija originala)
-        const newWaypoints =  [...this.waypoints];
-        const lastDeletedWP = this.deletedWaypoints[this.deletedWaypoints.length -1];
-        // insertaj u listu obrisani element na njegovo staro mjesto u redosljedu
-        newWaypoints.splice(lastDeletedWP.name,0,lastDeletedWP);
-        // spremi promjene
-        this.waypoints = newWaypoints;
-      }
-      // obrisi zadnji element iz deletedWaypoints
-      this.deletedWaypoints = [...this.deletedWaypoints].pop();
     }
-
   }
 }
 </script>
@@ -187,21 +182,29 @@ export default {
     overflow: hidden;
     height: 100vh;
   }
+  .main-div{
+    height: 100vh;
+    overflow: hidden;
+  }
   .wrapper {
     overflow-y: hidden;
   }
   #map-wrap {
-    height: 100vh;
+    /* header je 40 px */
+    height: calc(100vh - 40px);
     overflow: hidden;
   }
   #side-panel{
-    height: calc(100vh);
-    /* overflow-y: auto; */
+    height: 100%;
+    /* overflow-y: scroll; */
   }
   .waypoint-container {
     overflow: auto;
-    height:60%;
-    margin-bottom:200px ;
+    height: calc(100vh - 300px);
+    margin-bottom: 200px;
+  }
+  .save-btn {
+    width: 100%;
   }
   .reverse-arrow {
     transform: rotate(180deg);
