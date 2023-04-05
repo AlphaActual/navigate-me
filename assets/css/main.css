@@ -1,7 +1,17 @@
 * {
     box-sizing: border-box;
 }
+:root{
+    /* colors */
+    --primary-blue: #0d6efd;
+}
+
+
 .leaflet-marker-icon:hover {
     width: 30px !important;
     height: 46px !important;
+}
+.active-card {
+    border-radius: 0.25rem;
+    border: 1px solid var(--primary-blue);
 }

@@ -35,7 +35,7 @@
 
         <div class="waypoint-container">
           <!-- waypoint list -->
-          <WaypointCard  v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP" @card-clicked="handleCardClick(wp)"/>
+          <WaypointCard :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP" @card-clicked="handleCardClick(wp)"/>
         </div>
       </aside>
 
@@ -72,7 +72,7 @@ export default {
       marker: [45.08397548484512, 13.633303642272951],
       waypoints: [],
       sortedDescending: true,
-      activeWP: 0,
+      activeWP: {id:0},
       shipSpeed: 7,
       totalDistance: 0,
       totalTimeHrs:0

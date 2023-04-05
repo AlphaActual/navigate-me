@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card mb-2 p-2" @click="$emit('card-clicked',waypoint)">
+        <div :class="['card','mb-2','p-2',{'active-card':this.activePoint.id == waypoint.id}]" @click="$emit('card-clicked',waypoint)">
          <span class="fw-bold"> WP{{ waypoint.name }}</span>
          <p>
           <!-- ID: {{waypoint.id}} <br> -->
@@ -22,6 +22,10 @@ export default {
     waypoint:{
         type: Object,
         required:true
+    },
+    activePoint: {
+      type: Object,
+      required: true
     }
 
   },

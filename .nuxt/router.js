@@ -4,6 +4,7 @@ import { normalizeURL, decode } from 'ufo'
 import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
+const _4a9e6880 = () => interopDefault(import('..\\pages\\add-edit-route.vue' /* webpackChunkName: "pages/add-edit-route" */))
 const _59e34034 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages/index" */))
 
 const emptyFn = () => {}
@@ -18,6 +19,10 @@ export const routerOptions = {
   scrollBehavior,
 
   routes: [{
+    path: "/add-edit-route",
+    component: _4a9e6880,
+    name: "add-edit-route"
+  }, {
     path: "/",
     component: _59e34034,
     name: "index"
