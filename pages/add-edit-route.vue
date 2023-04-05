@@ -17,6 +17,7 @@
           <div class="d-flex align-items-center">
             <label class="mb-0 me-1" for="speed-input">Ship speed: </label>
             <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" class="text-primary btn-secondary-outline d-block"/> kts
+            <button @click="updateSpeeds" class="btn btn-outline-primary ms-1">&#8594;</button>
           </div>
         </div>
 
@@ -35,7 +36,7 @@
 
         <div class="waypoint-container">
           <!-- waypoint list -->
-          <WaypointCard :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP" @card-clicked="handleCardClick(wp)"/>
+          <WaypointCard :lastWp="waypoints[waypoints.length-1]" :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP" @card-clicked="handleCardClick(wp)"/>
         </div>
       </aside>
 
@@ -46,8 +47,9 @@
             <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id">
               <l-popup> 
                 <p class="p-0 m-0 fw-bold">WP{{wp.name}}</p> 
-                <p class="p-0 m-0">Next course: {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
-                <p class="p-0 m-0">D to next Wp: {{ wp.wpToWp != 'N/A'? wp.wpToWp.toFixed(2) + ' NM':'N/A'}}</p>
+                <p class="p-0 m-0">Course: {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
+                <p class="p-0 m-0">Distance: {{ wp.wpToWp != 'N/A'? wp.wpToWp.toFixed(2) + ' NM':'N/A'}}</p>
+                <p class="p-0 m-0">Speed: {{wp.id != waypoints[waypoints.length-1].id ? wp.speed + ' kts':'N/A'}}</p>
                 </l-popup>
             </l-marker>
             <l-polyline :lat-lngs="getLinesCoordinates" ></l-polyline>
@@ -153,6 +155,7 @@ export default {
           lng: longitude,
           nextCourse: 'N/A',
           wpToWp: 'N/A',
+          speed: this.shipSpeed,
           timeCreated: `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${datum.getHours()}:${datum.getMinutes()}:${datum.getSeconds()}`
         };
         // ubaci novi waypoint u waypoints array na nacin:
@@ -191,6 +194,17 @@ export default {
         }
       }
     }, 
+    updateSpeeds(){
+      // pronadji indeks aktivnog waypointa
+      const activeIndex = this.waypoints.findIndex(wp=>wp.id === this.activeWP.id)
+      // updejtaj speed za sve waypointove od aktivnog pa do kraja arraya
+      let updatedArray = [...this.waypoints];
+      for (let i = activeIndex; i < updatedArray.length; i++) {
+        updatedArray[i].speed = this.shipSpeed;
+      }
+      this.waypoints = updatedArray;
+      this.getTotalTime();
+    },
     calculateCourse(wp1,wp2) {
       let dLon = (wp2.lng - wp1.lng);
       let y = Math.sin(dLon) * Math.cos(wp2.lat);
@@ -223,9 +237,9 @@ export default {
       }else this.totalDistance =0;
     },
     getTotalTime(){
-      if(this.shipSpeed != 0 && this.totalDistance > 0){
-        this.totalTimeHrs = this.totalDistance/this.shipSpeed;
-      }
+      if(this.waypoints.length<1) return;
+      let eta = this.waypoints.map(wp=> wp.wpToWp != 'N/A'? wp.wpToWp/wp.speed : 0);
+      this.totalTimeHrs = eta.reduce((acc,time)=>acc+time);
     },
     formatTime(hours) {
       let dateObj = new Date(hours * 3600 * 1000); // convert hours to milliseconds

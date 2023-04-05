@@ -8,6 +8,7 @@
           Long: {{ formatLongitude(waypoint.lng) }}<br>
           Next Course: {{ waypoint.nextCourse != 'N/A'? Math.floor(waypoint.nextCourse)+'°':'N/A'}} <br>
           To next Wp: {{ waypoint.wpToWp != 'N/A'? waypoint.wpToWp.toFixed(2) + ' NM':'N/A'}} <br>
+          Speed to next Wp: {{ waypoint.id != lastWp.id ? waypoint.speed + ' kts':'N/A'}} <br>
           Created: {{ waypoint.timeCreated }}
          </p>
           <!-- <button class="delete-button btn btn-danger d-inline-block" @click="$emit('delete-WP-event',waypoint.id)">Delete</button> -->
@@ -24,6 +25,10 @@ export default {
         required:true
     },
     activePoint: {
+      type: Object,
+      required: true
+    },
+    lastWp: {
       type: Object,
       required: true
     }
