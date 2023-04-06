@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row wrapper">
 
-      <aside id="side-panel" class="ps-4 pt-4 pb-4 col-md-3 col-sm-12">
+      <aside id="side-panel" class="ps-4 pt-4 pb-4">
         <div>
           <div>
             <button class="save-btn btn btn-primary d-block">Save route</button>
@@ -29,8 +29,11 @@
               <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span>
             </div>
 
-            <div class="btn border border-primary rounded" @click="centerOnActive">Active: <span class="fw-bold text-primary">{{activeWP.name}}</span></div>
-            <div @click="removeWP(activeWP.id)" class="btn btn-danger">Delete active</div>
+            <div>
+              <div class="btn border border-primary rounded" @click="centerOnActive">Active: <span class="fw-bold text-primary">{{activeWP.name}}</span></div>
+              <div @click="insertWp" :class="['btn', 'btn-warning',{'disabled': this.activeWP?.id === this.waypoints[this.waypoints.length-1]?.id}]">Insert</div>
+              <div @click="removeWP(activeWP.id)" class="btn btn-danger">Delete active</div>
+            </div>
           </div>
         <hr>
 
@@ -40,10 +43,11 @@
         </div>
       </aside>
 
-      <div id="map-wrap" class="col-md-9 col-sm-12" >
+      <div id="map-wrap" >
         <client-only>
           <l-map :zoom="zoom" :center="center" @click="handleMapClick">
             <l-tile-layer :url="url"></l-tile-layer>
+            <!-- <l-image-overlay :url="overlayUrl" :bounds="bounds"></l-image-overlay> -->
             <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id">
               <l-popup> 
                 <p class="p-0 m-0 fw-bold">WP{{wp.name}}</p> 
@@ -70,7 +74,10 @@ export default {
     return {
       zoom: 15,
       center: [45.08397548484512, 13.633303642272951],
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      url: 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png',
+      // url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      // overlayUrl: 'http://tiles.openseamap.org/seamark/${z}/${x}/${y}.png',
+      // bounds: [[45.5727, 12.9830], [44.924946, 12.363739]],
       marker: [45.08397548484512, 13.633303642272951],
       waypoints: [],
       sortedDescending: true,
@@ -142,7 +149,42 @@ export default {
     sortWPs(){
       this.sortedDescending = !this.sortedDescending;
     },
+    insertWp(){
+      // ubaci ga između njega i sljedećeg (ako postoji)
+      const afterActiveWpIndex = this.waypoints.findIndex(wp=>wp.id === this.activeWP.id) + 1;
+      //ako postoji idući nakon aktivnog
+      const afterActive = this.waypoints[afterActiveWpIndex];
+      if(!afterActive) return;
+
+      // dobivanje međukoordinate i kreiranje wp-a
+      const [midLat,midLng] = this.getMidpoint(this.activeWP,afterActive);
+      let datum = new Date;
+      const newWaypoint = {
+        id: Date.now(),
+        name: 0,
+        lat: midLat,
+        lng: midLng,
+        nextCourse: 'N/A',
+        wpToWp: 'N/A',
+        speed: this.shipSpeed,
+        timeCreated: `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${String(datum.getHours()).padStart(2, '0')}:${String(datum.getMinutes()).padStart(2, '0')}:${String(datum.getSeconds()).padStart(2, '0')}`
+      };
+
+      // ubaci ga na pripradajuće mjesto
+      let waypointsCopy = [...this.waypoints];
+      waypointsCopy.splice(afterActiveWpIndex, 0, newWaypoint);
+      this.waypoints = waypointsCopy;
+
+      this.updateNames();
+
+      const updatedNewWPindex = this.waypoints.findIndex(wp=>wp.id === newWaypoint.id);
+      // postavi ga kao aktivnog
+      this.setActiveWP(this.waypoints[updatedNewWPindex])
+      this.centerOnActive();
+
+    },
     setmarker(e){
+      console.log(e);
       let latitude = e.latlng.lat;
       let longitude = e.latlng.lng;
       let datum = new Date;
@@ -156,16 +198,17 @@ export default {
           nextCourse: 'N/A',
           wpToWp: 'N/A',
           speed: this.shipSpeed,
-          timeCreated: `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${datum.getHours()}:${datum.getMinutes()}:${datum.getSeconds()}`
+          timeCreated: `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${String(datum.getHours()).padStart(2, '0')}:${String(datum.getMinutes()).padStart(2, '0')}:${String(datum.getSeconds()).padStart(2, '0')}`
         };
         // ubaci novi waypoint u waypoints array na nacin:
 
         // ako je waypoints array prazan ubaci na zadnje mjesto
         // ako je zadnji waypoint === aktivni ubaci na zadnje mjesto
-        // ako je neki drugi waypoint aktivan zamjeni ga u arrayu sa ovim novim
+        
         if(!this.waypoints.length || this.waypoints[this.waypoints.length-1].id === this.activeWP.id){
           this.waypoints = [...this.waypoints,newWaypoint];
-        }else {
+        // ako je neki drugi waypoint aktivan zamjeni ga u arrayu sa ovim novim ili ga dodaj između njega i sljedećeg (insertWp)
+        }else{
           this.waypoints = this.waypoints.map(wp=>{
             if(wp.id === this.activeWP.id) return newWaypoint
             else return wp;
@@ -174,7 +217,7 @@ export default {
 
         // podesi imena (ako imamo wp1,wp2,wp3 i obrisemo wp2, potrebno je svima podesiti imena tako da se wp3 sada zove wp2)
         this.updateNames();
-        // pronadi index to waypointa (nakon sto su sva imena updejtana)
+        // pronadi index tog waypointa (nakon sto su sva imena updejtana)
         const updatedNewWPindex = this.waypoints.findIndex(wp=>wp.id === newWaypoint.id);
         // postavi ga kao aktivnog
         this.setActiveWP(this.waypoints[updatedNewWPindex])       
@@ -212,7 +255,21 @@ export default {
       let brng = Math.atan2(y, x) * 180 / Math.PI;
       return (brng + 360) % 360;
     },
-     calculateDistance(wp1,wp2) {
+    getMidpoint(wp1, wp2) {
+      // Extract the x and y values from the coordinates
+      const x1 = wp1.lat;
+      const y1 = wp1.lng;
+      const x2 = wp2.lat;
+      const y2 = wp2.lng;
+
+      // Calculate the midpoint x and y values
+      const midpointX = (x1 + x2) / 2;
+      const midpointY = (y1 + y2) / 2;
+
+      // Return the midpoint coordinates as a new array
+      return [midpointX, midpointY];
+    },
+    calculateDistance(wp1,wp2) {
       let R = 6371e3; // radius of the earth in meters
       let phi1 = wp1.lat * Math.PI/180;
       let phi2 = wp2.lat * Math.PI/180;

@@ -42,16 +42,6 @@ export default {
       let seconds = ((absolute - degrees - minutes / 60) * 3600).toFixed(2); // Get seconds and round to 2 decimal places
       let direction = latitude >= 0 ? "N" : "S"; // Determine N or S
       
-      // degrees = degrees.toString();
-      // minutes = minutes.toString();
-      // let degreesSetLen = 3;
-      // let minutesSetLen = 2;
-
-      // let numZeroesToAdd = degreesSetLen - degrees.length;
-      // degrees = "0".repeat(numZeroesToAdd) + degrees;
-
-      // numZeroesToAdd = minutesSetLen - minutes.length;
-      // minutes = "0".repeat(numZeroesToAdd) + minutes;
       degrees = String(degrees).padStart(3, '0');
       minutes = String(minutes).padStart(2, '0');
 
@@ -64,18 +54,6 @@ export default {
       let seconds = ((absolute - degrees - minutes / 60) * 3600).toFixed(2); // Get seconds and round to 2 decimal places
       let direction = longitude >= 0 ? "E" : "W"; // Determine E or W
       
-      // dodavanje prefiksa nula na početak stupnjeva i minuta
-      // 3° -> 003° itd.
-      // degrees = degrees.toString();
-      // minutes = minutes.toString();
-      // let degreesSetLen = 3; 
-      // let minutesSetLen = 2;
-
-      // let numZeroesToAdd = degreesSetLen - degrees.length;
-      // degrees = "0".repeat(numZeroesToAdd) + degrees;
-
-      // numZeroesToAdd = minutesSetLen - minutes.length;
-      // minutes = "0".repeat(numZeroesToAdd) + minutes;
       degrees = String(degrees).padStart(3, '0');
       minutes = String(minutes).padStart(2, '0');
 
@@ -90,6 +68,7 @@ export default {
 <style scoped>
   .card {
     cursor: pointer;
+    margin-right: 4px;
   }
   .card:hover{
     transform: scale(0.95);
