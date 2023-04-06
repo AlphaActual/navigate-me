@@ -48,7 +48,7 @@
           <l-map :zoom="zoom" :center="center" @click="handleMapClick">
             <l-tile-layer :url="url"></l-tile-layer>
             <!-- <l-image-overlay :url="overlayUrl" :bounds="bounds"></l-image-overlay> -->
-            <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id">
+            <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id" :icon="firstMarkerIcon">
               <l-popup> 
                 <p class="p-0 m-0 fw-bold">WP{{wp.name}}</p> 
                 <p class="p-0 m-0">Course: {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
@@ -84,7 +84,21 @@ export default {
       activeWP: {id:0},
       shipSpeed: 7,
       totalDistance: 0,
-      totalTimeHrs:0
+      totalTimeHrs:0,
+      defaultMarkerIcon: L.icon({
+        iconUrl: '/marker-icon.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+      }),
+      firstMarkerIcon: L.icon({
+        iconUrl: 'https://www.amriscgroupswag.com/Themes/AmriscTheme/Content/images/icon-Waypoint.png',
+        iconSize: [41, 41],
+        iconAnchor: [20, 20],
+        popupAnchor: [1, -34],
+        tooltipAnchor: [16, -28],
+      }),
       
 
       
@@ -142,8 +156,17 @@ export default {
       this.center = [wp.lat,wp.lng];
     },
     centerOnActive(){
-      if(this.activeWP){
-        this.center = [this.activeWP.lat,this.activeWP.lng];
+      // ako postoji aktivni waypoint
+      if(this.activeWP?.id){
+      
+      // dodavanjem ovog deviationa postize se promjena stanja u varijabli center kako bi se retriggeralo centriranje mape svakim pritiskom na gumb koji poziva ovu funkciju 
+      // u suprotnom, ako nema promjene, neće doći ni do centriranja. Budući da se pogled mape može promjeniti bez da se promjeni aktivni WP stoga je ovaj workaround za to stanje.
+        const DEVIATION = 0.0001;
+        if(this.center[0] == this.activeWP.lat){
+          this.center = [this.activeWP.lat + DEVIATION,this.activeWP.lng + DEVIATION];
+        }else{
+          this.center = [this.activeWP.lat,this.activeWP.lng];
+        }
       }
     },
     sortWPs(){
@@ -184,7 +207,6 @@ export default {
 
     },
     setmarker(e){
-      console.log(e);
       let latitude = e.latlng.lat;
       let longitude = e.latlng.lng;
       let datum = new Date;
