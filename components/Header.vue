@@ -1,8 +1,8 @@
 <template>
     <div class="header d-flex justify-content-between align-items-center ps-2 pe-2">
         <div class="fw-bold fs-5">{{pageTitle}}</div>
-        <div>Total time: {{totalT}} hrs</div>
-        <div>Total distance: {{totalD.toFixed(2)}} NM</div>
+        <div>Total time: <span class="fw-bold"> {{totalT}}</span> hrs</div>
+        <div>Total distance: <span class="fw-bold"> {{totalD.toFixed(2)}}</span> NM</div>
         <div>Username</div>
     </div>
 </template>

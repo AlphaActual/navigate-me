@@ -15,9 +15,10 @@
 
          <div>
           <div class="d-flex align-items-center">
-            <label class="mb-0 me-1" for="speed-input">Ship speed: </label>
+            <label class="mb-0 me-2" for="speed-input">Set speed: </label>
             <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" class="text-primary btn-secondary-outline d-block"/> kts
-            <button @click="updateSpeeds" class="btn btn-outline-primary ms-1">&#8594;</button>
+            <button @click="updateSpeeds" class=" animated-button btn ms-1"><i class=" icon-1 fa-solid fa-play"></i><i class=" icon-2 fa-solid fa-play"></i><i class=" icon-3 fa-solid fa-play"></i></button>
+            <!-- <button @click="updateSpeeds" class="btn btn-outline-primary ms-1">&#8594;</button> -->
           </div>
         </div>
 
@@ -25,21 +26,21 @@
 
           <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-              <button class="btn btn-outline-secondary" @click="sortWPs">Sort</button>
-              <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span>
+              <button class=" sort-button btn btn-outline-secondary" @click="sortWPs">Sort <i :class="['fa-solid', 'fa-arrow-down',{ 'reverse-arrow': !sortedDescending }]"></i></button>
+              <!-- <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span> -->
             </div>
 
             <div>
-              <div class="btn border border-primary rounded" @click="centerOnActive">Active: <span class="fw-bold text-primary">{{activeWP.name}}</span></div>
+              <div class="btn border border-primary rounded" @click="centerOnActive">Active: <span class="fw-bold text-primary">{{activeWP?.name}}</span></div>
               <div @click="insertWp" :class="['btn', 'btn-warning',{'disabled': this.activeWP?.id === this.waypoints[this.waypoints.length-1]?.id}]">Insert</div>
-              <div @click="removeWP(activeWP.id)" class="btn btn-danger">Delete active</div>
+              <div @click="removeWP(activeWP?.id)" class="btn btn-danger">Delete active</div>
             </div>
           </div>
         <hr>
 
         <div class="waypoint-container">
           <!-- waypoint list -->
-          <WaypointCard :lastWp="waypoints[waypoints.length-1]" :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @delete-WP-event="removeWP" @card-clicked="handleCardClick(wp)"/>
+          <WaypointCard :lastWp="waypoints[waypoints.length-1]" :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @card-clicked="handleCardClick(wp)"/>
         </div>
       </aside>
 
@@ -48,7 +49,7 @@
           <l-map :zoom="zoom" :center="center" @click="handleMapClick">
             <l-tile-layer :url="url"></l-tile-layer>
             <!-- <l-image-overlay :url="overlayUrl" :bounds="bounds"></l-image-overlay> -->
-            <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id" :icon="firstMarkerIcon">
+            <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id" :icon="firstMarkerIcon" >
               <l-popup> 
                 <p class="p-0 m-0 fw-bold">WP{{wp.name}}</p> 
                 <p class="p-0 m-0">Course: {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
@@ -85,15 +86,15 @@ export default {
       shipSpeed: 7,
       totalDistance: 0,
       totalTimeHrs:0,
-      defaultMarkerIcon: L.icon({
-        iconUrl: '/marker-icon.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        tooltipAnchor: [16, -28],
-      }),
+      // defaultMarkerIcon: L.icon({
+      //   iconUrl: '/assets/img/icons/start.png',
+      //   iconSize: [25, 41],
+      //   iconAnchor: [12, 41],
+      //   popupAnchor: [1, -34],
+      //   tooltipAnchor: [16, -28],
+      // }),
       firstMarkerIcon: L.icon({
-        iconUrl: 'https://www.amriscgroupswag.com/Themes/AmriscTheme/Content/images/icon-Waypoint.png',
+        iconUrl: '/assets/start.png',
         iconSize: [41, 41],
         iconAnchor: [20, 20],
         popupAnchor: [1, -34],
@@ -247,14 +248,18 @@ export default {
     },
     removeWP(id){
       if(id){
+        const activeWPIndex = this.waypoints.findIndex(wp=>wp.id === this.activeWP.id);
         // izbaci ga iz waypoints liste
+       
         this.waypoints = this.waypoints.filter(wp=>wp.id !== id)
         this.updateNames();
-        // ako je obrisani wp bio ujedno i aktivan stavi da novi aktivni bude zadnji
+        // ako je obrisani wp bio ujedno i aktivan stavi da novi aktivni bude onaj prije njega (ako postoji)
         if(this.activeWP.id === id){
-          const lastWP = this.waypoints[this.waypoints.length -1];
-          if(lastWP){
-            this.setActiveWP(lastWP)
+          const prevWP = this.waypoints[activeWPIndex -1];
+          if(prevWP){
+            this.setActiveWP(prevWP);
+          }else {
+            this.setActiveWP(this.waypoints[this.waypoints.length-1]);
           }
         }
       }
@@ -349,6 +354,7 @@ export default {
 }
 </script>
 <style scoped>
+@import '~/assets/css/main.css';
   * {
     transition:all 400ms ease;
   }
@@ -380,15 +386,25 @@ export default {
   .save-btn {
     width: 100%;
   }
+  .sort-button {
+    transition: none;
+  }
+  .icon-1, .icon-2, .icon-3 {
+    color: var(--primary-blue);
+  }
   .reverse-arrow {
     transform: rotate(180deg);
   }
   .active {
-    border: 1px solid blue;
+    border: 1px solid var(--primary-blue);
   }
   #speed-input {
     max-width: 50px;
     margin-right: 8px;
+    border: none;
+    border-radius: 3px;
+    text-align: center;
+    padding-left: 11px;
   }
 
   @media(max-width: 768px){

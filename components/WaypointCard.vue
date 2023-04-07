@@ -87,10 +87,11 @@ export default {
 </script>
 
 <style scoped>
+@import '~/assets/css/main.css';
 .card {
   cursor: pointer;
   margin-right: 4px;
-  background-color: #fffdf9;
+  background-color: var(--card-color);
 }
 
 .card:hover {
