@@ -49,7 +49,7 @@
           <l-map :zoom="zoom" :center="center" @click="handleMapClick">
             <l-tile-layer :url="url"></l-tile-layer>
             <!-- <l-image-overlay :url="overlayUrl" :bounds="bounds"></l-image-overlay> -->
-            <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id" :icon="firstMarkerIcon" >
+            <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id" :icon="selectMarkerIcon()" >
               <l-popup> 
                 <p class="p-0 m-0 fw-bold">WP{{wp.name}}</p> 
                 <p class="p-0 m-0">Course: {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
@@ -86,23 +86,6 @@ export default {
       shipSpeed: 7,
       totalDistance: 0,
       totalTimeHrs:0,
-      // defaultMarkerIcon: L.icon({
-      //   iconUrl: '/assets/img/icons/start.png',
-      //   iconSize: [25, 41],
-      //   iconAnchor: [12, 41],
-      //   popupAnchor: [1, -34],
-      //   tooltipAnchor: [16, -28],
-      // }),
-      firstMarkerIcon: L.icon({
-        iconUrl: '/assets/start.png',
-        iconSize: [41, 41],
-        iconAnchor: [20, 20],
-        popupAnchor: [1, -34],
-        tooltipAnchor: [16, -28],
-      }),
-      
-
-      
     }
   },
   watch:{
@@ -120,7 +103,7 @@ export default {
     },
     getLinesCoordinates(){
       return [this.waypoints.map(wp=>[wp.lat,wp.lng])];
-    }
+    },
 
   },
   
@@ -135,8 +118,6 @@ export default {
       this.setActiveWP(selectedWP)
       // centriraj aktivan wp
       this.center = [selectedWP.lat,selectedWP.lng];
-
-
     },
     updateNames(){
       if(this.waypoints.length > 0){
@@ -146,6 +127,22 @@ export default {
         this.calculateNavData();
       }
 
+    },
+    selectMarkerIcon(){
+      let url = '';
+      if(this.waypoints.length === 1 ){
+        url = '/_nuxt/assets/img/icons/test.png';
+      }else if(this.waypoints.length > 1){
+        url = '/_nuxt/assets/img/icons/start.png';
+      }
+      // ipak će morati postojati odvojeni elementi markera za svaku od ikona...
+      return  L.icon({
+                iconUrl: url,
+                iconSize: [41, 41],
+                iconAnchor: [20, 20],
+                popupAnchor: [1, -34],
+                tooltipAnchor: [16, -28],
+              })
     },
     handleMapClick(e){
       if(e.originalEvent.target.alt != "Marker"){
