@@ -7,7 +7,8 @@
       <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
         <div>
           <div>
-            <button class="save-btn btn btn-primary d-block">Save route</button>
+            <button class="save-btn btn btn-primary d-block mb-2">Save route</button>
+            <input v-model="routeName" name="name-input" id="name-input" type="text" class="btn-secondary-outline d-block"/>
           </div>
         </div>
 
@@ -49,7 +50,7 @@
           <l-map :zoom="zoom" :center="center" @click="handleMapClick">
             <l-tile-layer :url="url"></l-tile-layer>
             <!-- <l-image-overlay :url="overlayUrl" :bounds="bounds"></l-image-overlay> -->
-            <l-marker v-for="(wp) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id" :icon="firstMarkerIcon" >
+            <l-marker v-for="(wp,index) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id" :icon="index === 0 ? firstMarkerIcon : defaultMarkerIcon" >
               <l-popup> 
                 <p class="p-0 m-0 fw-bold">WP{{wp.name}}</p> 
                 <p class="p-0 m-0">Course: {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
@@ -77,6 +78,7 @@ export default {
   name: 'IndexPage',
   data() {
     return {
+      routeName:'My route',
       zoom: 15,
       center: [45.08397548484512, 13.633303642272951],
       url: 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png',
@@ -96,14 +98,14 @@ export default {
                 iconAnchor: [20, 20],
                 popupAnchor: [1, -34],
                 tooltipAnchor: [16, -28],
-              }),
+                }),
       defaultMarkerIcon: L.icon({
                 iconUrl: require('@/assets/img/icons/default.png'),
-                iconSize: [41, 41],
-                iconAnchor: [20, 20],
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
                 popupAnchor: [1, -34],
                 tooltipAnchor: [16, -28],
-              })
+                })
     }
   },
   watch:{
@@ -404,6 +406,11 @@ export default {
     border-radius: 3px;
     text-align: center;
     padding-left: 11px;
+  }
+  #name-input {
+    width: 100%;
+    border:1px solid gray;
+    border-radius:3px;
   }
 
   @media(max-width: 768px){

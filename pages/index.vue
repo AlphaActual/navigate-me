@@ -17,7 +17,7 @@
               <label for="exampleInputPassword1" class="form-label">Password</label>
               <input type="password" class="form-control" id="exampleInputPassword1">
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="text" class="login-button btn btn-outline-primary">Login</button>
           </form>
           
           <nuxt-link to="/add-edit-route"><button class="mt-3 btn btn-outline-success">Dodaj rutu</button></nuxt-link>
@@ -96,6 +96,10 @@ export default {
   .form-container{
     width: 50%;
   }
-  
+  .login-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
   
 </style>

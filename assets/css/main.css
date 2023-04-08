@@ -42,6 +42,12 @@ body {
 }
 
 .leaflet-marker-icon:hover {
+    width: 28px !important;
+    height: 43px !important;
+
+}
+
+.leaflet-marker-icon:first-child:hover {
     width: 45px !important;
     height: 45px !important;
 
