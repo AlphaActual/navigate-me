@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row wrapper">
 
-      <aside id="side-panel" class="ps-4 pt-4 pb-4">
+      <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
         <div>
           <div>
             <button class="save-btn btn btn-primary d-block">Save route</button>
@@ -40,7 +40,7 @@
 
         <div class="waypoint-container">
           <!-- waypoint list -->
-          <WaypointCard :lastWp="waypoints[waypoints.length-1]" :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @card-clicked="handleCardClick(wp)"/>
+          <WaypointCard v-in-viewport.once class="slide-left" :lastWp="waypoints[waypoints.length-1]" :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @card-clicked="handleCardClick(wp)"/>
         </div>
       </aside>
 
@@ -68,7 +68,11 @@
 </template>
 
 <script>
-// import { LMap, LTileLayer, LMarker, LPopup } from 'vue2-leaflet';
+// za koristenje v-in-viewport
+import Vue from 'vue'
+import inViewportDirective from 'vue-in-viewport-directive'
+Vue.directive('in-viewport', inViewportDirective)
+
 export default {
   name: 'IndexPage',
   data() {
@@ -87,14 +91,14 @@ export default {
       totalDistance: 0,
       totalTimeHrs:0,
       firstMarkerIcon: L.icon({
-                iconUrl: '/_nuxt/assets/img/icons/start.png',
+                iconUrl: require('@/assets/img/icons/start.png'),
                 iconSize: [41, 41],
                 iconAnchor: [20, 20],
                 popupAnchor: [1, -34],
                 tooltipAnchor: [16, -28],
               }),
       defaultMarkerIcon: L.icon({
-                iconUrl: '/_nuxt/assets/img/icons/default.png',
+                iconUrl: require('@/assets/img/icons/default.png'),
                 iconSize: [41, 41],
                 iconAnchor: [20, 20],
                 popupAnchor: [1, -34],

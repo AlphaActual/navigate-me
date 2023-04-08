@@ -1,39 +1,43 @@
 <template>
-<div class="container-fluid">
-  <div class="row align-items-center">
-    <div class="col">
-      <img class="img-fluid compass" src="../assets/img/compass.svg" alt="compass">
-      <!-- potonje slike su ovdje kao workaround jer njihovo postojanje triggera babel da napravi dobru rutu do izvora slike
-      bez toga ikone koristene za markere u drugim komponentama vracaju 404 not found, vjerojatno bi trebalo konfigurirati nuxt ili babel -->
-      <img class="img-fluid compass invisible" src="../assets/img/icons/default.png" alt="">
-      <img class="img-fluid compass invisible" src="../assets/img/icons/start.png" alt="">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col image-col">
+        <img class="img-fluid compass" src="../assets/img/compass.svg" alt="compass">  
+      </div>
       
-    </div>
-    <div class="col">
-      <div class="form-container">
-        <form>
-          <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-          </div>
-          <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
-          </div>
-          <button type="submit" class="btn btn-primary">Login</button>
-        </form>
-        <nuxt-link to="/add-edit-route"><button class="mt-3 btn btn-outline-success">Dodaj rutu</button></nuxt-link>
+      <div class="col">
+        <div v-in-viewport class="form-container slide">
+          <form>
+            <div class="mb-3">
+              <label for="exampleInputEmail1" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+              <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword1" class="form-label">Password</label>
+              <input type="password" class="form-control" id="exampleInputPassword1">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+          
+          <nuxt-link to="/add-edit-route"><button class="mt-3 btn btn-outline-success">Dodaj rutu</button></nuxt-link>
+        </div>
+  
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
+// za koristenje v-in-viewport
+import Vue from 'vue'
+import inViewportDirective from 'vue-in-viewport-directive'
+Vue.directive('in-viewport', inViewportDirective)
 
 export default {
-  name:'Main page',
+  name:'login',
+  transition: 'fade',
+  
   mounted(){
     const compass = document.querySelector('.compass');
     let mouseX = 0;
@@ -49,7 +53,6 @@ export default {
       const deltaX = mouseX - centerX;
       const deltaY = mouseY - centerY;
       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-      // const angle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
       let targetAngle = (Math.atan2(deltaY, deltaX) * 180 / Math.PI + 360) % 360;
       const transformValues = compass.style.transform.split(/\w+\(|\);?/);
       const currentAngle = parseFloat(transformValues[1]) || 0;
@@ -63,7 +66,6 @@ export default {
 
       targetAngle = currentAngle + angleDiff;
       const rotation = `rotateZ(${targetAngle +90}deg)`;
-      console.log(targetAngle)
       
       compass.style.transition = `transform ${distance/1500}s ease-in-out`;
       compass.style.transform = `${rotation}`;
@@ -76,10 +78,17 @@ export default {
 </script>
 
 <style scoped>
-  .invisible {
-    position:absolute;
-    z-index: -100;
-    visibility: hidden;
+  
+  .container-fluid {
+    /* background: url('~assets/img/chart-bg.png'); */
+    /* background-color: inherit; */
+    background-size: cover;
+    background-position: center;
+    
+  }
+  
+  .image-col {
+    overflow: hidden;
   }
   .row {
     height: 100vh;
@@ -87,5 +96,6 @@ export default {
   .form-container{
     width: 50%;
   }
+  
   
 </style>
