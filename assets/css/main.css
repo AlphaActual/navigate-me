@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    /* outline: 1px solid red; */
 }
 
 :root {
@@ -36,10 +37,13 @@ body {
 }
 
 
+.leaflet-marker-icon {
+    transition: all .2s ease;
+}
 
 .leaflet-marker-icon:hover {
-    width: 30px !important;
-    height: 46px !important;
+    width: 45px !important;
+    height: 45px !important;
 }
 
 .active-card {
