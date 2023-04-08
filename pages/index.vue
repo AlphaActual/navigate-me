@@ -2,7 +2,12 @@
 <div class="container-fluid">
   <div class="row align-items-center">
     <div class="col">
-      <img class="img-fluid compass" src="../assets/img/compass.svg" alt="">
+      <img class="img-fluid compass" src="../assets/img/compass.svg" alt="compass">
+      <!-- potonje slike su ovdje kao workaround jer njihovo postojanje triggera babel da napravi dobru rutu do izvora slike
+      bez toga ikone koristene za markere u drugim komponentama vracaju 404 not found, vjerojatno bi trebalo konfigurirati nuxt ili babel -->
+      <img class="img-fluid compass invisible" src="../assets/img/icons/default.png" alt="">
+      <img class="img-fluid compass invisible" src="../assets/img/icons/start.png" alt="">
+      
     </div>
     <div class="col">
       <div class="form-container">
@@ -71,6 +76,11 @@ export default {
 </script>
 
 <style scoped>
+  .invisible {
+    position:absolute;
+    z-index: -100;
+    visibility: hidden;
+  }
   .row {
     height: 100vh;
   }
