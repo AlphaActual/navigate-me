@@ -6,6 +6,7 @@
       </div>
       
       <div class="col">
+        <h1 class="main-title display-3">NAVIGATE ME</h1>
         <div v-in-viewport class="form-container slide">
           <form>
             <div class="mb-3">
@@ -19,11 +20,16 @@
             </div>
             <button type="text" class="login-button btn btn-outline-primary">Login</button>
           </form>
+
+          <div style="margin-top: 30px;">
+            <nuxt-link to="/add-edit-route">Uredi rutu (test link)</nuxt-link>
+          </div>
           
-          <nuxt-link to="/add-edit-route"><button class="mt-3 btn btn-outline-success">Dodaj rutu</button></nuxt-link>
         </div>
   
+        <img class="path-image" src="../assets/img/path.svg" alt="path">
       </div>
+
     </div>
   </div>
 </template>
@@ -82,7 +88,13 @@ export default {
 </script>
 
 <style scoped>
-  
+
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel&family=Open+Sans&display=swap');
+  @import '~/assets/css/main.css';
+  .main-title {
+    font-family: 'Cinzel','Times New Roman', Times, serif, sans-serif;
+    color: var(--brown-main);
+  }
   .container-fluid {
     /* background: url('~assets/img/chart-bg.png'); */
     /* background-color: inherit; */
@@ -90,7 +102,14 @@ export default {
     background-position: center;
     
   }
-  
+  .path-image {
+    width: 300px;
+    position: absolute;
+    right:13%;
+    bottom:-41%;
+    
+
+  }
   .image-col {
     overflow: hidden;
   }
@@ -104,6 +123,12 @@ export default {
     display: block;
     width: 100%;
     text-align: center;
+    color:black;
+    border-color:var(--brown-main);
+  }
+  .login-button:hover {
+    background-color: var(--brown-main);
+    color: white;
   }
   
 </style>

@@ -1,6 +1,6 @@
 * {
     box-sizing: border-box;
-    /* outline: 1px solid red; */
+
 }
 
 :root {
@@ -8,7 +8,37 @@
     --primary-blue: #0d6efd;
     --ui-color: #f9f3ea;
     --card-color: #fffdf9;
+    --brown-main: #3e2c12;
+    --danger-main: #FF8961;
+    --warning-main: #FFF7E7;
 }
+
+.bg-brown-main {
+    background-color: var(--brown-main);
+}
+
+.bg-danger-main {
+    background-color: var(--danger-main);
+}
+
+.bg-warning-main {
+    background-color: var(--warning-main);
+}
+
+.text-brown-main {
+    color: var(--brown-main);
+}
+
+.text-danger-main {
+    color: var(--danger-main);
+}
+
+.text-warning-main {
+    color: var(--warning-main);
+}
+
+
+
 
 body {
     background-color: var(--ui-color);
@@ -55,7 +85,7 @@ body {
 
 .active-card {
     border-radius: 0.25rem;
-    border: 1px solid var(--primary-blue);
+    border: 1px solid var(--brown-main);
 }
 
 

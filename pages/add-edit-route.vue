@@ -7,8 +7,8 @@
       <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
         <div>
           <div>
-            <button class="save-btn btn btn-primary d-block mb-2">Save route</button>
-            <input v-model="routeName" name="name-input" id="name-input" type="text" class="btn-secondary-outline d-block"/>
+            <button class="save-btn btn d-block mb-2">Save route</button>
+            <input v-model="routeName" name="name-input" id="name-input" type="text" class="text-center btn-secondary-outline p-1 d-block"/>
           </div>
         </div>
 
@@ -17,7 +17,7 @@
          <div>
           <div class="d-flex align-items-center">
             <label class="mb-0 me-2" for="speed-input">Set speed: </label>
-            <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" class="text-primary btn-secondary-outline d-block"/> kts
+            <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" class="text-danger-main fw-bold btn-secondary-outline d-block"/> kts
             <button @click="updateSpeeds" class=" animated-button btn ms-1"><i class=" icon-1 fa-solid fa-play"></i><i class=" icon-2 fa-solid fa-play"></i><i class=" icon-3 fa-solid fa-play"></i></button>
             <!-- <button @click="updateSpeeds" class="btn btn-outline-primary ms-1">&#8594;</button> -->
           </div>
@@ -32,7 +32,7 @@
             </div>
 
             <div>
-              <div class="btn border border-primary rounded" @click="centerOnActive">Active: <span class="fw-bold text-primary">{{activeWP?.name}}</span></div>
+              <div class="active-wp btn rounded" @click="centerOnActive">Active: <span class="fw-bold text-danger-main">{{activeWP?.name}}</span></div>
               <div @click="insertWp" :class="['btn', 'btn-warning',{'disabled': this.activeWP?.id === this.waypoints[this.waypoints.length-1]?.id}]">Insert</div>
               <div @click="removeWP(activeWP?.id)" class="btn btn-danger">Delete active</div>
             </div>
@@ -386,18 +386,26 @@ export default {
   }
   .save-btn {
     width: 100%;
+    color: white;
+    background-color: var(--brown-main);
+  }
+  .save-btn:hover {
+    opacity: 0.8;
   }
   .sort-button {
     transition: none;
   }
   .icon-1, .icon-2, .icon-3 {
-    color: var(--primary-blue);
+    color: var(--danger-main);
   }
   .reverse-arrow {
     transform: rotate(180deg);
   }
   .active {
-    border: 1px solid var(--primary-blue);
+    border: 1px solid var(--brown-main);
+  }
+  .active-wp {
+    border: 1px solid var(--brown-main);
   }
   #speed-input {
     max-width: 50px;
