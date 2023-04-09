@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="row align-items-center">
       <div class="col image-col">
-        <img class="img-fluid compass" src="../assets/img/compass.svg" alt="compass">  
+        <img class="img-fluid compass" src="../assets/img/kompas.svg" alt="compass">  
       </div>
       
       <div class="col">
@@ -67,9 +67,13 @@ export default {
       targetAngle = currentAngle + angleDiff;
       const rotation = `rotateZ(${targetAngle +90}deg)`;
       
-      compass.style.transition = `transform ${distance/1500}s ease-in-out`;
+      if (distance < 100) {
+        compass.style.transition = `transform .066s ease-in-out`;
+      } else {
+        compass.style.transition = `transform ${distance/1500}s ease-in-out`;        
+      }
+
       compass.style.transform = `${rotation}`;
-      
     }
 
     setInterval(updateCompass, 16);
