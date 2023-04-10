@@ -10,7 +10,8 @@
     --card-color: #fffdf9;
     --brown-main: #3e2c12;
     --danger-main: #FF8961;
-    --warning-main: #FFF7E7;
+    --warning-main: #FFC107;
+
 }
 
 .bg-brown-main {
@@ -66,22 +67,23 @@ body {
     background-color: #8f8f8f;
 }
 
-
+/* style za hover iznad ikona markera */
 .leaflet-marker-icon {
     transition: all .2s ease;
 }
 
-.leaflet-marker-icon:hover {
-    width: 28px !important;
+img[src*="anchor"]:hover,
+img[src*="start"]:hover {
     height: 43px !important;
-
+    width: 43px !important;
 }
 
-.leaflet-marker-icon:first-child:hover {
-    width: 45px !important;
-    height: 45px !important;
-
+img[src*="default"]:hover,
+img[src*="pin"]:hover {
+    height: 43px !important;
+    width: 27px !important;
 }
+
 
 .active-card {
     border-radius: 0.25rem;
