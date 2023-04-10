@@ -17,7 +17,7 @@
          <div>
           <div class="d-flex align-items-center">
             <label class="mb-0 me-2" for="speed-input">Set speed: </label>
-            <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" class="text-danger-main fw-bold btn-secondary-outline d-block"/> kts
+            <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" min="0.1" step="0.1" required class="text-danger-main fw-bold btn-secondary-outline d-block"/> kts
             <button @click="updateSpeeds" class=" animated-button btn ms-1"><i class=" icon-1 fa-solid fa-play"></i><i class=" icon-2 fa-solid fa-play"></i><i class=" icon-3 fa-solid fa-play"></i></button>
             <!-- <button @click="updateSpeeds" class="btn btn-outline-primary ms-1">&#8594;</button> -->
           </div>
@@ -61,7 +61,10 @@
             <l-polyline :lat-lngs="getLinesCoordinates" ></l-polyline>
           </l-map>
         </client-only>
+        <div class="line line-vertical"></div>
+        <div class="line line-horizontal"></div>
       </div>
+
     </div>
   </div>
   </div>
@@ -277,11 +280,10 @@ export default {
       this.getTotalTime();
     },
     calculateCourse(wp1,wp2) {
-      let dLon = (wp2.lng - wp1.lng);
-      let y = Math.sin(dLon) * Math.cos(wp2.lat);
-      let x = Math.cos(wp1.lat) * Math.sin(wp2.lat) - Math.sin(wp1.lat) * Math.cos(wp2.lat) * Math.cos(dLon);
-      let brng = Math.atan2(y, x) * 180 / Math.PI;
-      return (brng + 360) % 360;
+      let dLon = (wp2.lng - wp1.lng); 
+      let dLat = (wp2.lat - wp1.lat); 
+      let course = Math.atan2(dLon, dLat) * 180 / Math.PI; 
+      return (course + 360) % 360;
     },
     getMidpoint(wp1, wp2) {
       // Extract the x and y values from the coordinates
@@ -374,6 +376,22 @@ export default {
     /* header je 40 px */
     height: calc(100vh - 40px);
     overflow: hidden;
+    position: relative;
+  }
+
+  .line {
+    height: 1px;
+    width: 100%;
+    background-color: black;
+    border-bottom:1px solid black;
+    z-index: 400;
+    position: absolute;
+    top:50%;
+    border-color: var(--ui-color);
+  }
+  .line-vertical{
+    transform: rotate(90deg);
+    left: -0px;
   }
   #side-panel{
     height: 100%;
