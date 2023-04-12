@@ -5,76 +5,28 @@
     <div class="row wrapper">
 
       <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
-        <!-- save row -->
+        <!-- search row -->
         <div>
           <div>
-            <button class="save-btn btn d-block mb-2">Save route</button>
-            <input v-model="routeName" name="name-input" id="name-input" type="text" class="text-center btn-secondary-outline p-1 d-block"/>
+            <label for="route-search">Search routes</label>
+            <input v-model="routeName" name="route-search" id="route-search" type="text" class="text-center btn-secondary-outline p-1 d-block" placeholder="Search term"/>
           </div>
         </div>
-        <!-- end of save row -->
-
+        <!-- end of search row -->
         <hr>
-
-        <!-- speed row -->
-         <div>
-          <div class="d-flex align-items-center">
-            <label class="mb-0 me-2" for="speed-input">Set {{circleChecked ? 'radius':'speed'}}: </label>
-            <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" min="0.1" step="0.1" required class="text-danger-main fw-bold btn-secondary-outline d-block"/> {{circleChecked ? 'NM':'kts'}}
-            <button v-if="!circleChecked" @click="updateSpeeds" class=" animated-button btn ms-1"><i class=" icon-1 fa-solid fa-play"></i><i class=" icon-2 fa-solid fa-play"></i><i class=" icon-3 fa-solid fa-play"></i></button>
-          </div>
-        </div>
-        <!-- end of speed row -->
-
+        <button>
+          <nuxt-link to="/add-edit-route">
+            Add new route +
+          </nuxt-link>
+        </button>
         <hr>
-
-        <!-- marker icons row -->
-        <div class="icons-row d-flex justify-content-around align-items-center">
-          
-            <input type="radio" class="btn-check" name="options" id="option-waypoint" autocomplete="off" checked>
-            <label @click="CircleChecked(false)" class="btn btn-warning" for="option-waypoint"><i class="fa-solid fa-location-dot"></i></label>
-
-            <input type="radio" class="btn-check" name="options" id="option-circle" autocomplete="off">
-            <label @click="CircleChecked(true)" class="btn btn-warning" for="option-circle"><i class="fa-regular fa-circle"></i></label>
-
-            <input type="radio" class="btn-check" name="options" id="option-anchor" autocomplete="off">
-            <label @click="CircleChecked(false)" class="btn btn-warning" for="option-anchor"><i class="fa-solid fa-anchor"></i></label>
-
-            <input type="radio" class="btn-check" name="options" id="option-pin" autocomplete="off">
-            <label @click="CircleChecked(false)" class="btn btn-warning" for="option-pin"><i class="fa-solid fa-map-pin"></i></label>
-
-            <div class="marker-info">
-              <input v-model="markerDescription" name="marker-in
-              circleChecked: false,put" id="marker-input" type="text" class="btn-secondary-outline p-1 d-block"/>
-            </div>
-
-          
-        </div>
-        <!--end of marker icons row -->
-
-        <hr>
-
-        <!-- sort active insert delete row -->
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center">
-            <button class=" sort-button btn btn-outline-secondary" @click="sortWPs">Sort <i :class="['fa-solid', 'fa-arrow-down',{ 'reverse-arrow': !sortedDescending }]"></i></button>
-            <!-- <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span> -->
-          </div>
-
-          <div>
-            <div class="active-wp btn rounded" @click="centerOnActive">Active: <span class="fw-bold text-danger-main">{{activeWP?.name}}</span></div>
-            <div @click="insertWp" :class="['btn', 'btn-warning',{'disabled': this.activeWP?.id === this.waypoints[this.waypoints.length-1]?.id}]">Insert</div>
-            <div @click="removeWP(activeWP?.id)" class="btn btn-danger">Delete active</div>
-          </div>
-        </div>
-        <!-- end of sort active insert delete row -->
-
+        <p class="text-center">Available routes</p>
         <hr>
 
         <!-- waypoint cards -->
         <div class="waypoint-container">
           <!-- waypoint list -->
-          <WaypointCard v-in-viewport.once class="slide-left" :lastWp="waypoints[waypoints.length-1]" :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @card-clicked="handleCardClick(wp)"/>
+          <RouteCard v-in-viewport.once class="slide-left"  :activeRoute="activeR" v-for="(routeData) in showSorted" :route="routeData" :key="routeData.id" @card-clicked="handleCardClick(routeData)"/>
         </div>
         <!-- end of waypoint cards -->
       </aside>
@@ -82,7 +34,7 @@
       <div id="map-wrap" >
         <client-only>
           <!-- map -->
-          <l-map :zoom="zoom" :center="center" @click="handleMapClick">
+          <l-map :zoom="zoom" :center="center">
             <!-- tile layer -->
             <l-tile-layer :url="url"></l-tile-layer>
             
@@ -146,10 +98,10 @@ import inViewportDirective from 'vue-in-viewport-directive'
 Vue.directive('in-viewport', inViewportDirective)
 
 export default {
-  name: 'IndexPage',
+  name: 'Routes',
   data() {
     return {
-      routeName:'My new route',
+      routeName:'My route',
       zoom: 15,
       center: [45.08397548484512, 13.633303642272951],
       url: 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png',
@@ -161,13 +113,13 @@ export default {
       circles:[],
       anchors:[],
       pins:[],
-      sortedDescending: true,
-      activeWP: {id:0},
-      shipSpeed: 7,
+      // sortedDescending: true,
+      activeRoute: {id:0},
+      // shipSpeed: 7,
       totalDistance: 0,
       totalTimeHrs:0,
-      markerDescription: 'MyMarkerName',
-      circleChecked: false,
+      // markerDescription: 'MyMarkerName',
+      // circleChecked: false,
       firstMarkerIcon: L.icon({
                 iconUrl: require('@/assets/img/icons/start.png'),
                 iconSize: [41, 41],
@@ -202,6 +154,11 @@ export default {
     shipSpeed(){
       this.getTotalTime();
     }
+  },
+  mounted() {
+    function loadRoute(route){
+      console.log("load stuff");
+    };
   },
   computed: {
     showSorted(){
@@ -260,7 +217,6 @@ export default {
         else if(document.getElementById('option-pin').checked){
           this.setPin(e);
         }
-        console.log(JSON.stringify(this._data));
       };
     },
     handleCardClick(wp){
@@ -651,7 +607,7 @@ export default {
     text-align: center;
     padding-left: 11px;
   }
-  #name-input {
+  #route-search {
     width: 100%;
     border:1px solid gray;
     border-radius:3px;
