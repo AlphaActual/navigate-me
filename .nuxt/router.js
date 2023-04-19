@@ -5,6 +5,7 @@ import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
 const _4a9e6880 = () => interopDefault(import('..\\pages\\add-edit-route.vue' /* webpackChunkName: "pages/add-edit-route" */))
+const _1fe19f50 = () => interopDefault(import('..\\pages\\routes.vue' /* webpackChunkName: "pages/routes" */))
 const _59e34034 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages/index" */))
 
 const emptyFn = () => {}
@@ -22,6 +23,10 @@ export const routerOptions = {
     path: "/add-edit-route",
     component: _4a9e6880,
     name: "add-edit-route"
+  }, {
+    path: "/routes",
+    component: _1fe19f50,
+    name: "routes"
   }, {
     path: "/",
     component: _59e34034,

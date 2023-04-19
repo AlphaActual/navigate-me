@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <div class="row align-items-center">
-      <div class="col image-col">
+      <div class="col-5 image-col">
         <img class="img-fluid compass" src="../assets/img/kompas.svg" alt="compass">  
       </div>
       
@@ -95,6 +95,13 @@ export default {
     font-family: 'Cinzel','Times New Roman', Times, serif, sans-serif;
     color: var(--brown-main);
   }
+  @media screen and (max-width: 1500px) {
+    .main-title {
+      font-size: 3.5rem;
+    }
+  }
+    
+  
   .container-fluid {
     /* background: url('~assets/img/chart-bg.png'); */
     /* background-color: inherit; */
@@ -103,7 +110,8 @@ export default {
     
   }
   .path-image {
-    width: 300px;
+    width: 20vw;
+    max-width: 300px;
     position: absolute;
     right:13%;
     bottom:-41%;
@@ -113,6 +121,9 @@ export default {
   .image-col {
     overflow: hidden;
   }
+  /* .image-col > img {
+    max-width: 80%;
+  } */
   .row {
     height: 100vh;
   }

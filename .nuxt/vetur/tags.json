@@ -2,6 +2,9 @@
   "Header": {
     "description": "Auto imported from components/Header.vue"
   },
+  "RouteCard": {
+    "description": "Auto imported from components/RouteCard.vue"
+  },
   "WaypointCard": {
     "description": "Auto imported from components/WaypointCard.vue"
   }

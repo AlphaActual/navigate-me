@@ -1,4 +1,5 @@
 export { default as Header } from '../..\\components\\Header.vue'
+export { default as RouteCard } from '../..\\components\\RouteCard.vue'
 export { default as WaypointCard } from '../..\\components\\WaypointCard.vue'
 
 // nuxt/nuxt.js#8607
