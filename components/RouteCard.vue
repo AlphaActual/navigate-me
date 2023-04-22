@@ -1,16 +1,33 @@
 <template>
   <div>
-    <div :class="['card', 'mb-2', 'p-2', { 'active-card': this.activeRoute.id == route.id }]"
-      @click="$emit('card-clicked', route)">
-      <span class="fw-bold"> {{ route.name }}</span>
+    <div :tabindex="index" :class="['card', 'mb-2', 'p-2', { 'active-card': this.activeRoute.id == route.id }]"
+      @click="$emit('card-clickeda', route)">
+      <span class="fw-bold"> {{ route.routeName }}</span>
       <p>
-        <span>
-          Total distance: {{ route.distance }}
-        </span>
-        <span>
-          Total duration: {{ route.duration }}
-        </span>
+        <!-- ID: {{route.id}} <br> -->
+        <table>
+          <tr>
+              <td class="pe-4">Duration</td>
+              <td>{{ formatTime(route.totalTimeHrs) }} hrs</td>
+          </tr>
+          <tr>
+              <td class="pe-4">Distance:</td>
+              <td>{{ route.totalDistance.toFixed(2) }} NM</td>
+          </tr>
+          <tr>
+              <td class="pe-4">No. of WPs:</td>
+              <td>{{ route.waypoints.length }}</td>
+          </tr>
+          <tr>
+              <td class="pe-4">Created:</td>
+              <td>{{ route.timeCreated }}</td>
+          </tr>
+        </table>
       </p>
+      <div class="card-options d-flex">
+        <button class="btn btn-warning">Edit</button>
+        <button class="btn btn-warning">Delete</button>
+      </div>
     </div>
   </div>
 </template>
@@ -25,6 +42,10 @@ export default {
     },
     activeRoute: {
       type: Object,
+      required: true
+    },
+    index: {
+      type:Number,
       required: true
     }
   },
@@ -52,6 +73,13 @@ export default {
       minutes = String(minutes).padStart(2, '0');
 
       return degrees + "° " + minutes + "' " + seconds + "\" " + direction;
+    },
+    formatTime(hours) {
+      let dateObj = new Date(hours * 3600 * 1000); // convert hours to milliseconds
+      let hoursFormatted = dateObj.getUTCHours().toString().padStart(2, '0'); // get hours and add leading zero if necessary
+      let minutesFormatted = dateObj.getUTCMinutes().toString().padStart(2, '0'); // get minutes and add leading zero if necessary
+      let secondsFormatted = dateObj.getUTCSeconds().toString().padStart(2, '0'); // get seconds and add leading zero if necessary
+      return `${hoursFormatted}:${minutesFormatted}:${secondsFormatted}`; // return formatted time string
     }
   }
 
@@ -71,4 +99,17 @@ export default {
   transform: scale(0.95);
 }
 
+.card-options {
+  transition: all 500ms ease-in-out;
+  gap:8px;
+  max-height: 0px;
+  overflow: hidden;
+
+}
+.card:focus .card-options {
+  max-height: 100px;
+}
+.card-options > * {
+  width: 50%;
+}
 </style>
