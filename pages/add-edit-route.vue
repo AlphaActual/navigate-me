@@ -8,7 +8,7 @@
         <!-- save row -->
         <div>
           <div>
-            <button class="save-btn btn d-block mb-2">Save route</button>
+            <button @click="saveToLocalStorage" class="save-btn btn d-block mb-2">Save route</button>
             <input v-model="routeName" name="name-input" id="name-input" type="text" class="text-center btn-secondary-outline p-1 d-block"/>
           </div>
         </div>
@@ -149,6 +149,7 @@ export default {
   name: 'IndexPage',
   data() {
     return {
+      routeId: null,
       routeName:'My new route',
       zoom: 15,
       center: [45.08397548484512, 13.633303642272951],
@@ -260,7 +261,7 @@ export default {
         else if(document.getElementById('option-pin').checked){
           this.setPin(e);
         }
-        console.log(JSON.stringify(this._data));
+        console.log(Object.keys(this._data));
       };
     },
     handleCardClick(wp){
@@ -554,7 +555,40 @@ export default {
       minutes = String(minutes).padStart(2, '0');
 
       return degrees + "° " + minutes + "' " + seconds + "\" " + direction;
+    },
+    saveToLocalStorage() {
+      try {
+        const retrievedRoutes = JSON.parse(localStorage.getItem('routesArray'));
+        const datum = new Date;
+        const newRoute = {
+            "routeID": this.routeID || Date.now(),
+            "routeName": this.routeName,
+            "zoom": this.zoom,
+            "center": this.center,
+            "url": this.url,  
+            "marker": this.marker,
+            "waypoints": this.waypoints,
+            "circles": this.circles,
+            "anchors": this.anchors,
+            "pins": this.pins,
+            "sortedDescending": this.sortedDescending,
+            "activeWP": this.activeWP,
+            "shipSpeed": this.shipSpeed,
+            "totalDistance": this.totalDistance,
+            "totalTimeHrs": this.totalTimeHrs,
+            "markerDescription": this.markerDescription,
+            "circleChecked": this.circleChecked,
+            "timeCreated": `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${String(datum.getHours()).padStart(2, '0')}:${String(datum.getMinutes()).padStart(2, '0')}:${String(datum.getSeconds()).padStart(2, '0')}`
+
+        }
+        const updatedRoutes = [...retrievedRoutes, newRoute]
+        console.log('updatedRoutes', updatedRoutes);
+        localStorage.setItem('routesArray', JSON.stringify(updatedRoutes));
+      } catch (e) {
+        console.error('Error saving to local storage:', e);
+      }
     }
+
   }
 }
 </script>

@@ -9,7 +9,7 @@
         <div>
           <div>
             <label for="route-search">Search routes</label>
-            <input v-model="routeName" name="route-search" id="route-search" type="text" class="text-center btn-secondary-outline p-1 d-block" placeholder="Search term"/>
+            <input v-model="routeName" name="route-search" id="route-search" type="text" class="btn-secondary-outline p-1 d-block" placeholder="Search term"/>
           </div>
         </div>
         <!-- end of search row -->
@@ -149,118 +149,7 @@ export default {
                 popupAnchor: [1, -34],
                 tooltipAnchor: [16, -28],
                 }),
-      routes: [
-        {
-          "routeName": "My new route",
-          "zoom": 15,
-          "center": [
-            45.07252047464676,
-            13.628829475154475
-          ],
-          "url": "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png",
-          "marker": [
-            45.08397548484512,
-            13.633303642272951
-          ],
-          "waypoints": [
-            {
-              "id": 1682171340814,
-              "name": 0,
-              "lat": 45.086763129267865,
-              "lng": 13.62175264351158,
-              "nextCourse": 206.56833729487735,
-              "wpToWp": 0.32220406606978225,
-              "speed": 7,
-              "timeCreated": "2023-04-22 15:49:00"
-            },
-            {
-              "id": 1682171398513,
-              "name": 1,
-              "lat": 45.08170284797983,
-              "lng": 13.619222140075628,
-              "nextCourse": 154.86159304805358,
-              "wpToWp": 0.35843153014324947,
-              "speed": 7,
-              "timeCreated": "2023-04-22 15:49:58"
-            },
-            {
-              "id": 1682171400031,
-              "name": 2,
-              "lat": 45.076036013012406,
-              "lng": 13.621881313177823,
-              "nextCourse": 116.83788986053395,
-              "wpToWp": 0.36241231476668206,
-              "speed": 7,
-              "timeCreated": "2023-04-22 15:50:00"
-            },
-            {
-              "id": 1682171403279,
-              "name": 3,
-              "lat": 45.07252047464676,
-              "lng": 13.628829475154475,
-              "nextCourse": 114.47356206386723,
-              "wpToWp": 0.1881019336211304,
-              "speed": 7,
-              "timeCreated": "2023-04-22 15:50:03"
-            },
-            {
-              "id": 1682171517961,
-              "name": 4,
-              "lat": 45.07082324079139,
-              "lng": 13.63255827355944,
-              "nextCourse": "N/A",
-              "wpToWp": "N/A",
-              "speed": "0.2",
-              "timeCreated": "2023-04-22 15:51:57"
-            }
-          ],
-          "circles": [
-            {
-              "id": 1682171428370,
-              "description": "MyMarkerName",
-              "lat": 45.07309631039634,
-              "lng": 13.614547142202447,
-              "radius": 370.40000000000003,
-              "timeCreated": "2023-04-22 15:50:28"
-            }
-          ],
-          "anchors": [
-            {
-              "id": 1682171407933,
-              "description": "MyMarkerName",
-              "lat": 45.08097558508935,
-              "lng": 13.630244841483053,
-              "timeCreated": "2023-04-22 15:50:07"
-            }
-          ],
-          "pins": [
-            {
-              "id": 1682171411570,
-              "description": "MyMarkerName",
-              "lat": 45.07779370109569,
-              "lng": 13.628915254931956,
-              "timeCreated": "2023-04-22 15:50:11"
-            }
-          ],
-          "sortedDescending": true,
-          "activeWP": {
-            "id": 1682171517961,
-            "name": 4,
-            "lat": 45.07082324079139,
-            "lng": 13.63255827355944,
-            "nextCourse": "N/A",
-            "wpToWp": "N/A",
-            "speed": "0.2",
-            "timeCreated": "2023-04-22 15:51:57"
-          },
-          "shipSpeed": "0.2",
-          "totalDistance": 1.2311498446008442,
-          "totalTimeHrs": 0.17587854922869203,
-          "markerDescription": "MyMarkerName",
-          "circleChecked": false,
-          "timeCreated": "2023-04-22 15:51:57"
-        }
-      ]
+      routes: []
     }
   },
   watch:{
@@ -269,9 +158,7 @@ export default {
     }
   },
   mounted() {
-    function loadRoute(){
-      console.log("load stuff");
-    };
+      this.loadRoutes();
   },
   computed: {
     showSorted(){
@@ -625,7 +512,14 @@ export default {
       return degrees + "° " + minutes + "' " + seconds + "\" " + direction;
     },
     showWholeRoute(){
+      // work in progress
       //L.panInside([this.waypoints.map(wp=>[wp.lat,wp.lng])]);
+    },
+    loadRoutes(){
+      const routes = JSON.parse(localStorage.getItem('routesArray'));
+      if(routes){
+        this.routes = routes;
+      }
     }
   }
 }
