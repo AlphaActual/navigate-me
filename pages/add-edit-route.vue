@@ -581,9 +581,13 @@ export default {
             "timeCreated": `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${String(datum.getHours()).padStart(2, '0')}:${String(datum.getMinutes()).padStart(2, '0')}:${String(datum.getSeconds()).padStart(2, '0')}`
 
         }
-        const updatedRoutes = [...retrievedRoutes, newRoute]
+        let updatedRoutes;
+        if(retrievedRoutes){
+           updatedRoutes = [...retrievedRoutes, newRoute]
+        } else {
+          [newRoute]
+        }
         console.log('updatedRoutes', updatedRoutes);
-        localStorage.setItem('routesArray', JSON.stringify(updatedRoutes));
       } catch (e) {
         console.error('Error saving to local storage:', e);
       }
