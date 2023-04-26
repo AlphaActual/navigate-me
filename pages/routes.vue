@@ -9,7 +9,7 @@
         <div>
           <div>
             <label for="route-search">Search routes</label>
-            <input v-model="routeName" name="route-search" id="route-search" type="text" class="btn-secondary-outline p-1 d-block" placeholder="Search term"/>
+            <input v-model="searchTerm" name="route-search" id="route-search" type="text" class="btn-secondary-outline p-1 d-block" placeholder="Search term"/>
           </div>
         </div>
         <!-- end of search row -->
@@ -27,7 +27,7 @@
         <!-- route cards -->
         <div class="route-container">
           <!-- route list -->
-          <RouteCard v-in-viewport.once class="slide-left"  :activeRoute="activeR" v-for="(routeData,i) in showSorted" :route="routeData" :index="i" :key="routeData.id" @card-clicked="handleCardClick(routeData)"/>
+          <RouteCard v-in-viewport.once class="slide-left"  :activeRoute="activeR" v-for="(routeData,i) in searchResults" :route="routeData" :index="i" :key="routeData.id" @card-clicked="handleCardClick(routeData)"/>
         </div>
         <!-- end of route cards -->
       </aside>
@@ -102,6 +102,7 @@ export default {
   name: 'Routes',
   data() {
     return {
+      searchTerm: '',
       routeName:'My route',
       zoom: 15,
       center: [45.08397548484512, 13.633303642272951],
@@ -161,12 +162,9 @@ export default {
       this.loadRoutes();
   },
   computed: {
-    showSorted(){
-      if(this.sortedDescending){
-        return [...this.routes].reverse();
-      }else{
-        return this.routes;
-      }
+    searchResults(){
+      if(this.searchTerm === '') return this.routes;
+      return [...this.routes].filter(route=>route.routeName.toLowerCase().includes(this.searchTerm.toLowerCase()));
     },
     getLinesCoordinates(){
       return [this.waypoints.map(wp=>[wp.lat,wp.lng])];

@@ -8,8 +8,15 @@
         <!-- save row -->
         <div>
           <div>
-            <button @click="saveToLocalStorage" class="save-btn btn d-block mb-2">Save route</button>
+            <div class="d-flex">
+              <button @click="saveToLocalStorage" class="save-btn btn d-flex justify-content-center mb-2">
+                <div>Save route</div>
+                <div v-show="showSpinner" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+              </button>
+            </div>
             <input v-model="routeName" name="name-input" id="name-input" type="text" class="text-center btn-secondary-outline p-1 d-block"/>
+
+            
           </div>
         </div>
         <!-- end of save row -->
@@ -149,6 +156,7 @@ export default {
   name: 'IndexPage',
   data() {
     return {
+      showSpinner: false,
       routeId: null,
       routeName:'My new route',
       zoom: 15,
@@ -261,7 +269,6 @@ export default {
         else if(document.getElementById('option-pin').checked){
           this.setPin(e);
         }
-        console.log(Object.keys(this._data));
       };
     },
     handleCardClick(wp){
@@ -557,6 +564,7 @@ export default {
       return degrees + "° " + minutes + "' " + seconds + "\" " + direction;
     },
     saveToLocalStorage() {
+      this.showSpinner = true;
       try {
         const retrievedRoutes = JSON.parse(localStorage.getItem('routesArray'));
         const datum = new Date;
@@ -583,14 +591,19 @@ export default {
         }
         let updatedRoutes;
         if(retrievedRoutes){
-           updatedRoutes = [...retrievedRoutes, newRoute]
+           updatedRoutes = [newRoute,...retrievedRoutes]
         } else {
-          [newRoute]
+          updatedRoutes = [newRoute]
         }
-        console.log('updatedRoutes', updatedRoutes);
+        console.log('updatedRoutes:', updatedRoutes);
+        localStorage.setItem('routesArray', JSON.stringify(updatedRoutes));
+
       } catch (e) {
         console.error('Error saving to local storage:', e);
       }
+      setTimeout(() => {
+        this.$router.push('/routes');
+      }, 2000);
     }
 
   }
@@ -662,6 +675,7 @@ export default {
     width: 100%;
     color: white;
     background-color: var(--brown-main);
+    transition: all 300ms ease;
   }
   .save-btn:hover {
     opacity: 0.8;
