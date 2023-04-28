@@ -9,7 +9,7 @@
         <div>
           <div>
             <div class="d-flex">
-              <button @click="saveToLocalStorage" class="save-btn btn d-flex justify-content-center mb-2">
+              <button @click="saveToLocalStorage" class="save-btn btn d-flex justify-content-center mb-2" :disabled="isDisabled">
                 <div>Save route</div>
                 <div v-show="showSpinner" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
               </button>
@@ -223,7 +223,9 @@ export default {
     getLinesCoordinates(){
       return [this.waypoints.map(wp=>[wp.lat,wp.lng])];
     },
-
+    isDisabled(){
+      return this.waypoints.length < 1 && this.circles.length < 1 && this.anchors.length < 1 && this.pins.length < 1;
+    },
   },
   
   methods: {

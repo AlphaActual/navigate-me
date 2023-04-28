@@ -205,8 +205,8 @@ export default {
       }
     },
     showBoundArea(){
-      const latitudes = this.waypoints.map(w => {return w.lat})
-      const longitudes = this.waypoints.map(w => {return w.lng})
+      const latitudes = [...this.waypoints,...this.circles,...this.anchors,...this.pins].map(w => {return w.lat})
+      const longitudes = [...this.waypoints,...this.circles,...this.anchors,...this.pins].map(w => {return w.lng})
       const minLat = Math.min(...latitudes);
       const maxLat = Math.max(...latitudes);
       const minLong = Math.min(...longitudes);
@@ -262,25 +262,29 @@ export default {
         this.routes = routes;
       }
     },
-    deleteRoute(id){
-      this.routes = this.routes.filter(route=>route.id !== id);
+    deleteRoute(routeToDelete){
+      this.routes = this.routes.filter(route=>route.routeID !== routeToDelete.routeID);
+      
       localStorage.setItem('routesArray', JSON.stringify(this.routes));
       this.setActiveRoute(this.routes[0]);
-
+      this.clearRouteData(routeToDelete);
+      
+    },
+    clearRouteData(route){
       this.routeName = '';
       this.zoom = 13;
       this.marker = route.marker;
-      this.waypoints = route.waypoints;
+      this.waypoints = [];
       this.circles = [];
       this.anchors = [];
       this.pins = [];
       this.sortedDescending = false;
       this.totalDistance = 0;
       this.totalTimeHrs = 0;
-      this.markerDescription = ''
+      this.markerDescription = '';
       this.circleChecked = false;
       this.timeCreated = '';
-    },
+    }
   }
 }
 </script>

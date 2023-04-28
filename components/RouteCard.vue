@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :tabindex="index" :class="['card', 'mb-2', 'p-2', { 'active-card': this.activeRoute.id == route.id }]"
+    <div :tabindex="index" class="card mb-2 p-2"
       @click="$emit('card-clicked', route)">
       <span class="fw-bold"> {{ route.routeName }}</span>
       <p>
@@ -26,7 +26,7 @@
       </p>
       <div class="card-options d-flex">
         <button class="btn btn-warning">Edit</button>
-        <button @click="$emit('delete-route', route.id)" class="btn btn-warning">Delete</button>
+        <button @click="$emit('delete-route', route)" class="btn btn-warning">Delete</button>
       </div>
     </div>
   </div>
@@ -37,10 +37,6 @@ export default {
   name: 'RouteCard',
   props: {
     route: {
-      type: Object,
-      required: true
-    },
-    activeRoute: {
       type: Object,
       required: true
     },
