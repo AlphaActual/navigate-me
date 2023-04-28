@@ -25,8 +25,8 @@
         </table>
       </p>
       <div class="card-options d-flex">
-        <button class="btn btn-warning">Edit</button>
-        <button @click="$emit('delete-route', route)" class="btn btn-warning">Delete</button>
+        <button class="btn edit-button">Edit</button>
+        <button @click="$emit('delete-route', route)" class="btn btn-danger">Delete</button>
       </div>
     </div>
   </div>
@@ -105,7 +105,17 @@ export default {
 .card:focus .card-options {
   max-height: 100px;
 }
+.card:focus {
+  transition: all 0.3s ease-in-out;
+  background-color: var(--warning-main);
+}
 .card-options > * {
   width: 50%;
+}
+.edit-button {
+  background-color: white;
+}
+.edit-button:hover {
+  background-color: rgb(241, 241, 241);
 }
 </style>

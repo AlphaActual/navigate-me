@@ -93,7 +93,10 @@ export default {
   margin-right: 4px;
   background-color: var(--card-color);
 }
-
+.active-card {
+  transition: all 0.3s ease-in-out;
+  background-color: var(--warning-main);
+}
 .card:hover {
   transform: scale(0.95);
 }
