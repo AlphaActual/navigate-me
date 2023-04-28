@@ -35,7 +35,7 @@
       <div id="map-wrap" >
         <client-only>
           <!-- map -->
-          <l-map :zoom="zoom" :center="center">
+          <l-map :zoom="zoom" :center="center" :bounds="mapBounds">
             <!-- tile layer -->
             <l-tile-layer :url="url"></l-tile-layer>
             
@@ -105,6 +105,7 @@ export default {
       searchTerm: '',
       routeName:'My route',
       zoom: 15,
+      mapBounds: null,
       center: [45.08397548484512, 13.633303642272951],
       url: 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png',
       // url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -120,8 +121,8 @@ export default {
       // shipSpeed: 7,
       totalDistance: 0,
       totalTimeHrs:0,
-      // markerDescription: 'MyMarkerName',
-      // circleChecked: false,
+      markerDescription: 'MyMarkerName',
+      circleChecked: false,
       firstMarkerIcon: L.icon({
                 iconUrl: require('@/assets/img/icons/start.png'),
                 iconSize: [41, 41],
@@ -173,17 +174,46 @@ export default {
   },
   
   methods: {
-    setActiveWP(wp){
-      this.activeWP = wp;
+    setActiveRoute(route){
+      this.activeR = route;
+      this.loadRoute(route);
+      this.showBoundArea();
+    },
+    loadRoute(route){
+      this.routeName = route.routeName;
+      this.zoom = route.zoom;
+      this.center = route.center;
+      this.url = route.url;
+      this.marker = route.marker;
+      this.waypoints = route.waypoints;
+      this.circles = route.circles;
+      this.anchors = route.anchors;
+      this.pins = route.pins;
+      this.sortedDescending = route.sortedDescending;
+      this.activeR = route;
+      this.totalDistance = route.totalDistance;
+      this.totalTimeHrs = route.totalTimeHrs;
+      this.markerDescription = route.markerDescription;
+      this.circleChecked = route.circleChecked;
+      this.timeCreated = route.timeCreated;
+    },
+    showBoundArea(){
+      const latitudes = this.waypoints.map(w => {return w.lat})
+      const longitudes = this.waypoints.map(w => {return w.lng})
+      const minLat = Math.min(...latitudes);
+      const maxLat = Math.max(...latitudes);
+      const minLong = Math.min(...longitudes);
+      const maxLong= Math.max(...longitudes);
+      const corner1 = this.$L.latLng(maxLat, minLong);
+      const corner2 = this.$L.latLng(minLat, maxLong);
+      this.mapBounds = this.$L.latLngBounds(corner1, corner2);
     },
     CircleChecked(val){
       this.circleChecked = val;
     },
     markerClick(id){
       const updatedNewWPindex = this.waypoints.findIndex(wp=>wp.id === id);
-        // postavi ga kao aktivnog
       const selectedWP = this.waypoints[updatedNewWPindex];
-      this.setActiveWP(selectedWP)
       // centriraj aktivan wp
       this.center = [selectedWP.lat,selectedWP.lng];
     },
@@ -217,9 +247,9 @@ export default {
         }
       };
     },
-    handleCardClick(wp){
-      this.setActiveWP(wp)
-      this.center = [wp.lat,wp.lng];
+    handleCardClick(route){
+      this.setActiveRoute(route)
+      // this.center = [wp.lat,wp.lng];
     },
     centerOnActive(){
       // ako postoji aktivni waypoint

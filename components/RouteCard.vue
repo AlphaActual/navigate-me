@@ -1,7 +1,7 @@
 <template>
   <div>
     <div :tabindex="index" :class="['card', 'mb-2', 'p-2', { 'active-card': this.activeRoute.id == route.id }]"
-      @click="$emit('card-clickeda', route)">
+      @click="$emit('card-clicked', route)">
       <span class="fw-bold"> {{ route.routeName }}</span>
       <p>
         <!-- ID: {{route.id}} <br> -->
