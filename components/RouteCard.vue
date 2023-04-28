@@ -26,7 +26,7 @@
       </p>
       <div class="card-options d-flex">
         <button class="btn btn-warning">Edit</button>
-        <button class="btn btn-warning">Delete</button>
+        <button @click="$emit('delete-route', route.id)" class="btn btn-warning">Delete</button>
       </div>
     </div>
   </div>

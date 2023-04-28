@@ -14,12 +14,11 @@
         </div>
         <!-- end of search row -->
         <hr>
-        <button>
-          <nuxt-link to="/add-edit-route">
-            Add new route +
-          </nuxt-link>
-        </button>
-        <button @click="showWholeRoute">Show all</button>
+        <nuxt-link to="/add-edit-route">
+          <div class="add-new-route btn btn-warning">
+              Add new route
+          </div>
+        </nuxt-link>
         <hr>
         <p class="text-center">Available routes</p>
         <hr>
@@ -27,7 +26,7 @@
         <!-- route cards -->
         <div class="route-container">
           <!-- route list -->
-          <RouteCard v-in-viewport.once class="slide-left"  :activeRoute="activeR" v-for="(routeData,i) in searchResults" :route="routeData" :index="i" :key="routeData.id" @card-clicked="handleCardClick(routeData)"/>
+          <RouteCard v-in-viewport.once class="slide-left"  :activeRoute="activeR" v-for="(routeData,i) in searchResults" :route="routeData" :index="i" :key="routeData.id" @card-clicked="handleCardClick(routeData)" @delete-route="deleteRoute"/>
         </div>
         <!-- end of route cards -->
       </aside>
@@ -56,7 +55,6 @@
               <l-popup>
                 <p class="p-0 m-0 fw-bold">{{circle.description}}</p>
                 <p class="p-0 m-0">Radius: {{circle.radius/1852}} NM</p>
-                <button @click="removeCircle(circle.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
               </l-popup>
             </l-circle>
 
@@ -66,7 +64,6 @@
                 <p class="p-0 m-0 fw-bold">{{anchor.description}}</p>
                 <p class="p-0 m-0">Lat: {{formatLatitude(anchor.lat)}}</p>
                 <p class="p-0 m-0">Long: {{formatLongitude(anchor.lng)}}</p>
-                <button @click="removeAnchor(anchor.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
               </l-popup>
             </l-marker>
 
@@ -76,7 +73,6 @@
                 <p class="p-0 m-0 fw-bold">{{pin.description}}</p>
                 <p class="p-0 m-0">Lat: {{formatLatitude(pin.lat)}}</p>
                 <p class="p-0 m-0">Long: {{formatLongitude(pin.lng)}}</p>
-                <button @click="removePin(pin.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
               </l-popup>
             </l-marker>
 
@@ -161,6 +157,7 @@ export default {
   },
   mounted() {
       this.loadRoutes();
+      this.setActiveRoute(this.routes[0])
   },
   computed: {
     searchResults(){
@@ -174,7 +171,11 @@ export default {
   },
   
   methods: {
+    handleCardClick(route){
+      this.setActiveRoute(route)
+    },
     setActiveRoute(route){
+      if(!route) return;
       this.activeR = route;
       this.loadRoute(route);
       this.showBoundArea();
@@ -196,6 +197,12 @@ export default {
       this.markerDescription = route.markerDescription;
       this.circleChecked = route.circleChecked;
       this.timeCreated = route.timeCreated;
+
+      const DEVIATION = 0.0001;
+      let [lat, lng] = route.center;
+      if(this.center === route.center){
+        this.center = [lat + DEVIATION, lng + DEVIATION];
+      }
     },
     showBoundArea(){
       const latitudes = this.waypoints.map(w => {return w.lat})
@@ -217,303 +224,13 @@ export default {
       // centriraj aktivan wp
       this.center = [selectedWP.lat,selectedWP.lng];
     },
-    updateNames(){
-      if(this.waypoints.length > 0){
-        let indexes = this.waypoints.map((_e,i)=>i)
-        let updatedArray = indexes.map(index=>{return {...this.waypoints[index],name:index}});
-        this.waypoints = updatedArray;
-        this.calculateNavData();
-      }
-
-    },
-    handleMapClick(e){
-      if(e.originalEvent.target.alt != "Marker"){
-        // ako je wp
-        if(document.getElementById('option-waypoint').checked){
-          this.setWaypoint(e);
-        }
-
-        // ako je circle
-        else if(document.getElementById('option-circle').checked){
-          this.setCircle(e);
-        }
-        // ako je anchor
-        else if(document.getElementById('option-anchor').checked){
-          this.setAnchor(e);
-        }
-        // ako je pin
-        else if(document.getElementById('option-pin').checked){
-          this.setPin(e);
-        }
-      };
-    },
-    handleCardClick(route){
-      this.setActiveRoute(route)
-      // this.center = [wp.lat,wp.lng];
-    },
-    centerOnActive(){
-      // ako postoji aktivni waypoint
-      if(this.activeWP?.id){
-      
-      // dodavanjem ovog deviationa postize se promjena stanja u varijabli center kako bi se retriggeralo centriranje mape svakim pritiskom na gumb koji poziva ovu funkciju 
-      // u suprotnom, ako nema promjene, neće doći ni do centriranja. Budući da se pogled mape može promjeniti bez da se promjeni aktivni WP stoga je ovaj workaround za to stanje.
-        const DEVIATION = 0.0001;
-        if(this.center[0] == this.activeWP.lat){
-          this.center = [this.activeWP.lat + DEVIATION,this.activeWP.lng + DEVIATION];
-        }else{
-          this.center = [this.activeWP.lat,this.activeWP.lng];
-        }
-      }
-    },
-    sortWPs(){
-      this.sortedDescending = !this.sortedDescending;
-    },
-    insertWp(){
-      // ubaci ga između njega i sljedećeg (ako postoji)
-      const afterActiveWpIndex = this.waypoints.findIndex(wp=>wp.id === this.activeWP.id) + 1;
-      //ako postoji idući nakon aktivnog
-      const afterActive = this.waypoints[afterActiveWpIndex];
-      if(!afterActive) return;
-
-      // dobivanje međukoordinate i kreiranje wp-a
-      const [midLat,midLng] = this.getMidpoint(this.activeWP,afterActive);
-      let datum = new Date;
-      const newWaypoint = {
-        id: Date.now(),
-        name: 0,
-        lat: midLat,
-        lng: midLng,
-        nextCourse: 'N/A',
-        wpToWp: 'N/A',
-        speed: this.shipSpeed,
-        timeCreated: `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${String(datum.getHours()).padStart(2, '0')}:${String(datum.getMinutes()).padStart(2, '0')}:${String(datum.getSeconds()).padStart(2, '0')}`
-      };
-
-      // ubaci ga na pripradajuće mjesto
-      let waypointsCopy = [...this.waypoints];
-      waypointsCopy.splice(afterActiveWpIndex, 0, newWaypoint);
-      this.waypoints = waypointsCopy;
-
-      this.updateNames();
-
-      const updatedNewWPindex = this.waypoints.findIndex(wp=>wp.id === newWaypoint.id);
-      // postavi ga kao aktivnog
-      this.setActiveWP(this.waypoints[updatedNewWPindex])
-      this.centerOnActive();
-
-    },
-    setWaypoint(e){
-      let latitude = e.latlng.lat;
-      let longitude = e.latlng.lng;
-      let datum = new Date;
-      // ako nije kliknuto na marker spremi novi waypoint u listu waypoints
-      if(e.originalEvent.target.alt != "Marker"){
-        const newWaypoint = {
-          id: Date.now(),
-          name: 0,
-          lat: latitude,
-          lng: longitude,
-          nextCourse: 'N/A',
-          wpToWp: 'N/A',
-          speed: this.shipSpeed,
-          timeCreated: `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${String(datum.getHours()).padStart(2, '0')}:${String(datum.getMinutes()).padStart(2, '0')}:${String(datum.getSeconds()).padStart(2, '0')}`
-        };
-        // ubaci novi waypoint u waypoints array na nacin:
-
-        // ako je waypoints array prazan ubaci na zadnje mjesto
-        // ako je zadnji waypoint === aktivni ubaci na zadnje mjesto
-        
-        if(!this.waypoints.length || this.waypoints[this.waypoints.length-1].id === this.activeWP.id){
-          this.waypoints = [...this.waypoints,newWaypoint];
-        // ako je neki drugi waypoint aktivan zamjeni ga u arrayu sa ovim novim ili ga dodaj između njega i sljedećeg (insertWp)
-        }else{
-          this.waypoints = this.waypoints.map(wp=>{
-            if(wp.id === this.activeWP.id) return newWaypoint
-            else return wp;
-          })
-        }
-
-        // podesi imena (ako imamo wp1,wp2,wp3 i obrisemo wp2, potrebno je svima podesiti imena tako da se wp3 sada zove wp2)
-        this.updateNames();
-        // pronadi index tog waypointa (nakon sto su sva imena updejtana)
-        const updatedNewWPindex = this.waypoints.findIndex(wp=>wp.id === newWaypoint.id);
-        // postavi ga kao aktivnog
-        this.setActiveWP(this.waypoints[updatedNewWPindex])       
-      }
-    },
-    removeWP(id){
-      if(id){
-        const activeWPIndex = this.waypoints.findIndex(wp=>wp.id === this.activeWP.id);
-        // izbaci ga iz waypoints liste
-       
-        this.waypoints = this.waypoints.filter(wp=>wp.id !== id)
-        this.updateNames();
-        // ako je obrisani wp bio ujedno i aktivan stavi da novi aktivni bude onaj prije njega (ako postoji)
-        if(this.activeWP.id === id){
-          const prevWP = this.waypoints[activeWPIndex -1];
-          if(prevWP){
-            this.setActiveWP(prevWP);
-          }else {
-            this.setActiveWP(this.waypoints[this.waypoints.length-1]);
-          }
-        }
-      }
-    }, 
-    setCircle(e){
-      let latitude = e.latlng.lat;
-      let longitude = e.latlng.lng;
-      let datum = new Date;
-      
-      const newCircle = {
-        id: Date.now(),
-        description: this.markerDescription,
-        lat: latitude,
-        lng: longitude,
-        radius: this.shipSpeed * 1852, 
-        timeCreated: `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${String(datum.getHours()).padStart(2, '0')}:${String(datum.getMinutes()).padStart(2, '0')}:${String(datum.getSeconds()).padStart(2, '0')}`
-      };
-      
-
-      this.circles = [...this.circles,newCircle];
-    },
-    removeCircle(id){
-      if(id){
-        
-        // izbaci ga iz circles liste
-        this.circles = this.circles.filter(wp=>wp.id !== id)
-      }
-    },
-    setAnchor(e){
-      let latitude = e.latlng.lat;
-      let longitude = e.latlng.lng;
-      let datum = new Date;
-      
-      const newAnchor = {
-        id: Date.now(),
-        description: this.markerDescription,
-        lat: latitude,
-        lng: longitude,
-        timeCreated: `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${String(datum.getHours()).padStart(2, '0')}:${String(datum.getMinutes()).padStart(2, '0')}:${String(datum.getSeconds()).padStart(2, '0')}`
-      };
-      
-
-      this.anchors = [...this.anchors,newAnchor];
-    },
-    removeAnchor(id){
-      if(id){
-        
-        // izbaci ga iz anchors liste
-        this.anchors = this.anchors.filter(wp=>wp.id !== id)
-      }
-    },
-    setPin(e){
-      let latitude = e.latlng.lat;
-      let longitude = e.latlng.lng;
-      let datum = new Date;
-      
-      const newPin = {
-        id: Date.now(),
-        description: this.markerDescription,
-        lat: latitude,
-        lng: longitude,
-        timeCreated: `${datum.getFullYear()}-${String(datum.getMonth()+1).padStart(2, '0')}-${String(datum.getDate()).padStart(2, '0')} ${String(datum.getHours()).padStart(2, '0')}:${String(datum.getMinutes()).padStart(2, '0')}:${String(datum.getSeconds()).padStart(2, '0')}`
-      };
-      
-
-      this.pins = [...this.pins,newPin];
-    },
-    removePin(id){
-      if(id){
-        
-        // izbaci ga iz pins liste
-        this.pins = this.pins.filter(wp=>wp.id !== id)
-      }
-    },
-    updateSpeeds(){
-      if(this.waypoints.length < 1) return;
-      // pronadji indeks aktivnog waypointa
-      const activeIndex = this.waypoints.findIndex(wp=>wp.id === this.activeWP.id)
-      // updejtaj speed za sve waypointove od aktivnog pa do kraja arraya
-      let updatedArray = [...this.waypoints];
-      for (let i = activeIndex; i < updatedArray.length; i++) {
-        updatedArray[i].speed = this.shipSpeed;
-      }
-      this.waypoints = updatedArray;
-      this.getTotalTime();
-    },
-    calculateCourse(wp1,wp2) {
-      let dLon = (wp2.lng - wp1.lng); 
-      let dLat = (wp2.lat - wp1.lat); 
-      let course = Math.atan2(dLon, dLat) * 180 / Math.PI; 
-      return (course + 360) % 360;
-    },
-    getMidpoint(wp1, wp2) {
-      // Extract the x and y values from the coordinates
-      const x1 = wp1.lat;
-      const y1 = wp1.lng;
-      const x2 = wp2.lat;
-      const y2 = wp2.lng;
-
-      // Calculate the midpoint x and y values
-      const midpointX = (x1 + x2) / 2;
-      const midpointY = (y1 + y2) / 2;
-
-      // Return the midpoint coordinates as a new array
-      return [midpointX, midpointY];
-    },
-    calculateDistance(wp1,wp2) {
-      let R = 6371e3; // radius of the earth in meters
-      let phi1 = wp1.lat * Math.PI/180;
-      let phi2 = wp2.lat * Math.PI/180;
-      let deltaPhi = (wp2.lat-wp1.lat) * Math.PI/180;
-      let deltaLambda = (wp2.lng-wp1.lng) * Math.PI/180;
-
-      let a = Math.sin(deltaPhi/2) * Math.sin(deltaPhi/2) +
-              Math.cos(phi1) * Math.cos(phi2) *
-              Math.sin(deltaLambda/2) * Math.sin(deltaLambda/2);
-      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      let distance = R * c;
-
-      let nauticalMilesPerMeter = 0.000539957;
-      let distanceInNauticalMiles = distance * nauticalMilesPerMeter;
-
-      return distanceInNauticalMiles;
-    },
-    getTotalDistance(){
-      if(this.waypoints.length>0){
-        this.totalDistance = this.waypoints.reduce((acc,wp)=>{return wp.wpToWp != 'N/A'? acc + wp.wpToWp:acc+0},0);
-
-      }else this.totalDistance =0;
-    },
-    getTotalTime(){
-      if(this.waypoints.length<1) return;
-      let eta = this.waypoints.map(wp=> wp.wpToWp != 'N/A'? wp.wpToWp/wp.speed : 0);
-      this.totalTimeHrs = eta.reduce((acc,time)=>acc+time);
-    },
+    
     formatTime(hours) {
       let dateObj = new Date(hours * 3600 * 1000); // convert hours to milliseconds
       let hoursFormatted = dateObj.getUTCHours().toString().padStart(2, '0'); // get hours and add leading zero if necessary
       let minutesFormatted = dateObj.getUTCMinutes().toString().padStart(2, '0'); // get minutes and add leading zero if necessary
       let secondsFormatted = dateObj.getUTCSeconds().toString().padStart(2, '0'); // get seconds and add leading zero if necessary
       return `${hoursFormatted}:${minutesFormatted}:${secondsFormatted}`; // return formatted time string
-    },
-    calculateNavData(){
-      if(this.waypoints.length > 0){
-        let updatedWPs = [...this.waypoints];
-        updatedWPs.forEach((wp,i)=>{
-          if(this.waypoints[i+1]){
-            wp.nextCourse = this.calculateCourse(wp,this.waypoints[i+1])
-            wp.wpToWp = this.calculateDistance(wp,this.waypoints[i+1]);
-          }
-        })
-        // zadnji waypoint u arrayu nikad nesmije imati definirane sljedece atribute!
-        updatedWPs[updatedWPs.length-1].wpToWp = 'N/A';
-        updatedWPs[updatedWPs.length-1].nextCourse = 'N/A';
-        this.waypoints = updatedWPs;
-        // updejtaj ukupnu udaljenost rute
-        this.getTotalDistance();
-        this.getTotalTime();
-      }
     },
     formatLatitude(latitude) {
       let absolute = Math.abs(latitude); // Get absolute value of latitude
@@ -539,16 +256,31 @@ export default {
 
       return degrees + "° " + minutes + "' " + seconds + "\" " + direction;
     },
-    showWholeRoute(){
-      // work in progress
-      //L.panInside([this.waypoints.map(wp=>[wp.lat,wp.lng])]);
-    },
     loadRoutes(){
       const routes = JSON.parse(localStorage.getItem('routesArray'));
       if(routes){
         this.routes = routes;
       }
-    }
+    },
+    deleteRoute(id){
+      this.routes = this.routes.filter(route=>route.id !== id);
+      localStorage.setItem('routesArray', JSON.stringify(this.routes));
+      this.setActiveRoute(this.routes[0]);
+
+      this.routeName = '';
+      this.zoom = 13;
+      this.marker = route.marker;
+      this.waypoints = route.waypoints;
+      this.circles = [];
+      this.anchors = [];
+      this.pins = [];
+      this.sortedDescending = false;
+      this.totalDistance = 0;
+      this.totalTimeHrs = 0;
+      this.markerDescription = ''
+      this.circleChecked = false;
+      this.timeCreated = '';
+    },
   }
 }
 </script>
@@ -649,6 +381,9 @@ export default {
     width: 100%;
     border:1px solid gray;
     border-radius:3px;
+  }
+  .add-new-route {
+    width: 100%;
   }
 
   @media(max-width: 768px){

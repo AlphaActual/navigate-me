@@ -158,7 +158,7 @@ export default {
     return {
       showSpinner: false,
       routeId: null,
-      routeName:'My new route',
+      routeName:'MyRoute',
       zoom: 15,
       center: [45.08397548484512, 13.633303642272951],
       url: 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png',
@@ -570,7 +570,7 @@ export default {
         const datum = new Date;
         const newRoute = {
             "routeID": this.routeID || Date.now(),
-            "routeName": this.routeName,
+            "routeName": this.routeName || 'MyRoute',
             "zoom": this.zoom,
             "center": this.center,
             "url": this.url,  
@@ -673,8 +673,7 @@ export default {
   }
   .save-btn {
     width: 100%;
-    color: white;
-    background-color: var(--brown-main);
+    background-color: var(--warning-main);
     transition: all 300ms ease;
   }
   .save-btn:hover {
