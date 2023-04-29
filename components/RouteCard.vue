@@ -25,7 +25,7 @@
         </table>
       </p>
       <div class="card-options d-flex">
-        <button class="btn edit-button">Edit</button>
+        <button @click="$emit('edit-route', route)" class="btn edit-button">Edit</button>
         <button @click="$emit('delete-route', route)" class="btn btn-danger">Delete</button>
       </div>
     </div>

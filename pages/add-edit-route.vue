@@ -1,6 +1,6 @@
 <template>
   <div class="main-div">
-     <Header pageTitle="Create/edit route" :totalD="totalDistance" :totalT="this.formatTime(this.totalTimeHrs)" />
+     <Header back="/routes" pageTitle="Create/edit route" :totalD="totalDistance" :totalT="this.formatTime(this.totalTimeHrs)" />
   <div class="container-fluid">
     <div class="row wrapper">
 
