@@ -26,12 +26,13 @@
         <!-- route cards -->
         <div class="route-container">
           <!-- route list -->
-          <RouteCard v-in-viewport.once class="slide-left"  :activeRoute="activeR" v-for="(routeData,i) in searchResults" :route="routeData" :index="i" :key="routeData.id" @card-clicked="handleCardClick(routeData)" @delete-route="deleteRoute"/>
+          <RouteCard v-in-viewport.once class="slide-left"  :activeRoute="activeR" v-for="(routeData,i) in searchResults" :route="routeData" :index="i" :key="routeData.id" @card-clicked="handleCardClick(routeData)" @delete-route="deleteRoute" @edit-route="editRoute"/>
         </div>
         <!-- end of route cards -->
       </aside>
 
       <div id="map-wrap" >
+        <button class="btn change-map-style" @click="changeMapStyle"><i class="fa-solid fa-palette fa-lg"></i></button>
         <client-only>
           <!-- map -->
           <l-map :zoom="zoom" :center="center" :bounds="mapBounds">
@@ -96,6 +97,7 @@ Vue.directive('in-viewport', inViewportDirective)
 
 export default {
   name: 'Routes',
+  transition: 'fade',
   data() {
     return {
       searchTerm: '',
@@ -158,6 +160,7 @@ export default {
   mounted() {
       this.loadRoutes();
       this.setActiveRoute(this.routes[0])
+      this.loadMapStyle();
   },
   computed: {
     searchResults(){
@@ -184,7 +187,6 @@ export default {
       this.routeName = route.routeName;
       this.zoom = route.zoom;
       this.center = route.center;
-      this.url = route.url;
       this.marker = route.marker;
       this.waypoints = route.waypoints;
       this.circles = route.circles;
@@ -284,7 +286,26 @@ export default {
       this.markerDescription = '';
       this.circleChecked = false;
       this.timeCreated = '';
-    }
+    },
+    editRoute(route){
+      localStorage.setItem('editRoute', JSON.stringify(route));
+      this.$router.push('/add-edit-route');
+    },
+    changeMapStyle(){
+      if(this.url === 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png'){
+        this.url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        localStorage.setItem('mapStyle', JSON.stringify(this.url));
+      }else {
+        this.url = 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png';
+        localStorage.setItem('mapStyle', JSON.stringify(this.url));
+      }
+    },
+    loadMapStyle(){
+      const mapStyle = JSON.parse(localStorage.getItem('mapStyle'));
+      if(mapStyle){
+        this.url = mapStyle;
+      }
+    },
   }
 }
 </script>
@@ -388,6 +409,13 @@ export default {
   }
   .add-new-route {
     width: 100%;
+  }
+  .change-map-style {
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+    z-index: 1000;
+    width: max-content;
   }
 
   @media(max-width: 768px){

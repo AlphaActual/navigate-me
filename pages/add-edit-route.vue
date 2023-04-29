@@ -87,6 +87,7 @@
       </aside>
 
       <div id="map-wrap" >
+        <button class="btn change-map-style" @click="changeMapStyle"><i class="fa-solid fa-palette fa-lg"></i></button>
         <client-only>
           <!-- map -->
           <l-map :zoom="zoom" :center="center" @click="handleMapClick">
@@ -153,7 +154,8 @@ import inViewportDirective from 'vue-in-viewport-directive'
 Vue.directive('in-viewport', inViewportDirective)
 
 export default {
-  name: 'IndexPage',
+  name: 'AddEditRoute',
+  transition: 'fade',
   data() {
     return {
       showSpinner: false,
@@ -226,6 +228,10 @@ export default {
     isDisabled(){
       return this.waypoints.length < 1 && this.circles.length < 1 && this.anchors.length < 1 && this.pins.length < 1;
     },
+  },
+  mounted(){
+    this.loadEditRoute();
+    this.loadMapStyle();
   },
   
   methods: {
@@ -575,7 +581,6 @@ export default {
             "routeName": this.routeName || 'MyRoute',
             "zoom": this.zoom,
             "center": this.center,
-            "url": this.url,  
             "marker": this.marker,
             "waypoints": this.waypoints,
             "circles": this.circles,
@@ -597,7 +602,6 @@ export default {
         } else {
           updatedRoutes = [newRoute]
         }
-        console.log('updatedRoutes:', updatedRoutes);
         localStorage.setItem('routesArray', JSON.stringify(updatedRoutes));
 
       } catch (e) {
@@ -606,8 +610,46 @@ export default {
       setTimeout(() => {
         this.$router.push('/routes');
       }, 2000);
-    }
+    },
+    loadEditRoute(){
+      const routeToLoad = JSON.parse(localStorage.getItem('editRoute'));
+      if(!routeToLoad) return;
 
+      this.routeId = routeToLoad.routeID;
+      this.routeName = routeToLoad.routeName;
+      this.zoom = routeToLoad.zoom;
+      this.center = routeToLoad.center;
+      this.marker = routeToLoad.marker;
+      this.waypoints = routeToLoad.waypoints;
+      this.circles = routeToLoad.circles;
+      this.anchors = routeToLoad.anchors;
+      this.pins = routeToLoad.pins;
+      this.sortedDescending = routeToLoad.sortedDescending;
+      this.activeWP = routeToLoad.activeWP;
+      this.shipSpeed = routeToLoad.shipSpeed;
+      this.totalDistance = routeToLoad.totalDistance;
+      this.totalTimeHrs = routeToLoad.totalTimeHrs;
+      this.markerDescription = routeToLoad.markerDescription;
+      this.circleChecked = routeToLoad.circleChecked;
+
+      localStorage.setItem('editRoute', JSON.stringify(null));
+
+    },
+    changeMapStyle(){
+      if(this.url === 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png'){
+        this.url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        localStorage.setItem('mapStyle', JSON.stringify(this.url));
+      }else {
+        this.url = 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png';
+        localStorage.setItem('mapStyle', JSON.stringify(this.url));
+      }
+    },
+    loadMapStyle(){
+      const mapStyle = JSON.parse(localStorage.getItem('mapStyle'));
+      if(mapStyle){
+        this.url = mapStyle;
+      }
+    },
   }
 }
 </script>
@@ -708,6 +750,13 @@ export default {
     width: 100%;
     border:1px solid gray;
     border-radius:3px;
+  }
+  .change-map-style {
+    position: absolute;
+    bottom: 10px;
+    left: 15px;
+    z-index: 1000;
+    width: max-content;
   }
 
   @media(max-width: 768px){

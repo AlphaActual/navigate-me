@@ -18,11 +18,11 @@
               <label for="exampleInputPassword1" class="form-label">Password</label>
               <input type="password" class="form-control" id="exampleInputPassword1">
             </div>
-            <button type="text" class="login-button btn btn-outline-primary">Login</button>
+            <button type="button" class="login-button btn btn-outline-primary">Login</button>
           </form>
 
           <div style="margin-top: 30px;">
-            <nuxt-link to="/add-edit-route">Uredi rutu (test link)</nuxt-link>
+            <nuxt-link to="/routes">Skip login(for testing)</nuxt-link>
           </div>
           
         </div>
@@ -41,7 +41,7 @@ import inViewportDirective from 'vue-in-viewport-directive'
 Vue.directive('in-viewport', inViewportDirective)
 
 export default {
-  name:'login',
+  name:'Login',
   transition: 'fade',
   
   mounted(){
