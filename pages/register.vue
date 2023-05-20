@@ -31,36 +31,46 @@
               <label for="exampleInputPassword1" class="form-label"
                 >Password</label
               >
+
               <input
                 type="password"
                 class="form-control"
                 id="exampleInputPassword1"
               />
+              <div id="emailHelp" class="form-text">Enter your pasword</div>
             </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword2" class="form-label"></label>
+              Enter a Password
+
+              <input
+                type="password"
+                class="form-control"
+                id="exampleInputPassword2"
+              />
+              <div id="emailHelp" class="form-text">
+                Enter your pasword one more time
+              </div>
+            </div>
+
             <button type="button" class="login-button btn btn-outline-primary">
-              Login
+              Register
             </button>
           </form>
-          <hr />
 
-          <p class="reg-title display-2">New to the app ?</p>
           <div style="margin-top: 30px">
             <button
               ype="button"
               class="login-button btn btn-outline-primary"
-              @click="redirectToRegister"
+              @click="redirectToLogin"
             >
-              Register
+              Back to Login
             </button>
           </div>
-
-          <div style="margin-top: 30px">
-            <nuxt-link to="/routes">Skip login(for testing)</nuxt-link>
-          </div>
         </div>
-
-        <img class="path-image" src="../assets/img/path.svg" alt="path" />
       </div>
+
+      <img class="path-image" src="../assets/img/path.svg" alt="path" />
     </div>
   </div>
 </template>
@@ -117,8 +127,8 @@ export default {
     setInterval(updateCompass, 16);
   },
   methods: {
-    redirectToRegister() {
-      this.$router.push("/register");
+    redirectToLogin() {
+      this.$router.push("/");
     },
   },
 };
@@ -154,8 +164,8 @@ export default {
   overflow: hidden;
 }
 /* .image-col > img {
-    max-width: 80%;
-  } */
+      max-width: 80%;
+    } */
 .row {
   height: 100vh;
 }
@@ -172,11 +182,5 @@ export default {
 .login-button:hover {
   background-color: var(--brown-main);
   color: white;
-}
-
-.reg-title {
-  font-size: 1.5rem;
-  font-family: "Cinzel", "Times New Roman", Times, serif, sans-serif;
-  color: var(--brown-main);
 }
 </style>
