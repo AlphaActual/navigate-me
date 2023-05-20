@@ -1,217 +1,212 @@
 * {
-    box-sizing: border-box;
-
+  box-sizing: border-box;
 }
 
 :root {
-    /* colors */
-    --primary-blue: #0d6efd;
-    --ui-color: #f9f3ea;
-    --card-color: #fffdf9;
-    --brown-main: #3e2c12;
-    --danger-main: #FF8961;
-    --warning-main: #FFC107;
-
+  /* colors */
+  --primary-blue: #0d6efd;
+  --ui-color: #f9f3ea;
+  --card-color: #fffdf9;
+  --brown-main: #3e2c12;
+  --danger-main: #ff8961;
+  --warning-main: #ffc107;
 }
 
 .bg-brown-main {
-    background-color: var(--brown-main);
+  background-color: var(--brown-main);
 }
 
 .bg-danger-main {
-    background-color: var(--danger-main);
+  background-color: var(--danger-main);
 }
 
 .bg-warning-main {
-    background-color: var(--warning-main);
+  background-color: var(--warning-main);
 }
 
 .text-brown-main {
-    color: var(--brown-main);
+  color: var(--brown-main);
 }
 
 .text-danger-main {
-    color: var(--danger-main);
+  color: var(--danger-main);
 }
 
 .text-warning-main {
-    color: var(--warning-main);
+  color: var(--warning-main);
 }
 
-
-
-
 body {
-    background-color: var(--ui-color);
+  background-color: var(--ui-color);
 }
 
 /* Width and height of the scrollbar */
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 10px;
+  width: 5px;
+  height: 10px;
 }
 
 /* Background of the scrollbar */
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+  background: #f1f1f1;
 }
 
 /* Color of the scrollbar thumb */
 ::-webkit-scrollbar-thumb {
-    background-color: #c9c9c9;
-    border-radius: 5px;
+  background-color: #c9c9c9;
+  border-radius: 5px;
 }
 
 /* On hover, highlight the scrollbar thumb */
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #8f8f8f;
+  background-color: #8f8f8f;
 }
 
 /* style za hover iznad ikona markera */
 .leaflet-marker-icon {
-    transition: all .2s ease;
+  transition: all 0.2s ease;
 }
 
 img[src*="anchor"]:hover,
 img[src*="start"]:hover {
-    height: 43px !important;
-    width: 43px !important;
+  height: 43px !important;
+  width: 43px !important;
 }
 
 img[src*="default"]:hover,
 img[src*="pin"]:hover {
-    height: 43px !important;
-    width: 27px !important;
+  height: 43px !important;
+  width: 27px !important;
 }
-
 
 .active-card {
-    border-radius: 0.25rem;
-    border: 1px solid var(--brown-main);
+  border-radius: 0.25rem;
+  border: 1px solid var(--brown-main);
 }
-
 
 /* main ui size */
 #side-panel {
-    width: 400px;
+  width: 400px;
 }
 
 #map-wrap {
-    width: calc(100vw - 400px);
+  width: calc(100vw - 400px);
 }
 
 /* animations */
 
 .animated-button:hover .icon-1 {
-    animation: color-change 1s infinite;
+  animation: color-change 1s infinite;
 }
 
 .animated-button:hover .icon-2 {
-    animation: color-change 1s 0.1s infinite;
+  animation: color-change 1s 0.1s infinite;
 }
 
 .animated-button:hover .icon-3 {
-    animation: color-change 1s 0.2s infinite;
+  animation: color-change 1s 0.2s infinite;
 }
 
 @keyframes color-change {
-    from {
-        opacity: 0;
-    }
+  from {
+    opacity: 0;
+  }
 
-    to {
-        opacity: 1;
-    }
+  to {
+    opacity: 1;
+  }
 }
 
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity .5s !important;
+  transition: opacity 0.5s !important;
 }
 
 .fade-enter,
 .fade-leave-to {
-    opacity: 0 !important;
+  opacity: 0 !important;
 }
 
 .slide {
-    transition: all 1s ease;
-    transform: translateY(50%);
-    opacity: 0;
+  transition: all 1s ease;
+  transform: translateY(50%);
+  opacity: 0;
 }
 
 .slide.in-viewport {
-    transform: translateY(0%);
-    opacity: 1;
+  transform: translateY(0%);
+  opacity: 1;
 }
 
 .slide-left {
-    transition: all 1s ease;
-    transform: translateX(-50%);
-    opacity: 0;
+  transition: all 1s ease;
+  transform: translateX(-50%);
+  opacity: 0;
 }
 
 .slide-left.in-viewport {
-    transform: translateX(0%);
-    opacity: 1;
+  transform: translateX(0%);
+  opacity: 1;
 }
 
 /* loader */
 
 .lds-ellipsis {
-    display: inline-block;
-    position: relative;
-    width: 80px;
-    height: 100%;
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 100%;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
   }
-  .lds-ellipsis div {
-    position: absolute;
-    top: 8px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #fff;
-    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  100% {
+    transform: scale(1);
   }
-  .lds-ellipsis div:nth-child(1) {
-    left: 8px;
-    animation: lds-ellipsis1 0.6s infinite;
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
   }
-  .lds-ellipsis div:nth-child(2) {
-    left: 8px;
-    animation: lds-ellipsis2 0.6s infinite;
+  100% {
+    transform: scale(0);
   }
-  .lds-ellipsis div:nth-child(3) {
-    left: 32px;
-    animation: lds-ellipsis2 0.6s infinite;
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
   }
-  .lds-ellipsis div:nth-child(4) {
-    left: 56px;
-    animation: lds-ellipsis3 0.6s infinite;
+  100% {
+    transform: translate(24px, 0);
   }
-  @keyframes lds-ellipsis1 {
-    0% {
-      transform: scale(0);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
-  @keyframes lds-ellipsis3 {
-    0% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(0);
-    }
-  }
-  @keyframes lds-ellipsis2 {
-    0% {
-      transform: translate(0, 0);
-    }
-    100% {
-      transform: translate(24px, 0);
-    }
-  }
-  
-  
+}
+
+.no-underline:hover {
+  text-decoration: none;
+}
