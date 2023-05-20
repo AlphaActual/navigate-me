@@ -26,7 +26,7 @@
         <!-- route cards -->
         <div class="route-container">
           <!-- route list -->
-          <RouteCard v-in-viewport.once class="slide-left"  :activeRoute="activeR" v-for="(routeData,i) in searchResults" :route="routeData" :index="i" :key="routeData.id" @card-clicked="handleCardClick(routeData)" @delete-route="deleteRoute" @edit-route="editRoute"/>
+          <RouteCard v-in-viewport.once class="slide-left"  :activeRoute="activeR" v-for="(routeData,i) in searchResults" :route="routeData" :index="i" :key="routeData.id" @card-clicked="handleCardClick(routeData)" @delete-route="openModal" @edit-route="editRoute"/>
         </div>
         <!-- end of route cards -->
       </aside>
@@ -85,6 +85,24 @@
 
     </div>
   </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Route deletion</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete this route?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">NO</button>
+            <button @click="deleteRoute" type="button" data-bs-dismiss="modal" class="btn btn-danger">YES</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
  
 </template>
@@ -100,6 +118,7 @@ export default {
   transition: 'fade',
   data() {
     return {
+      routeToDelete: null,
       searchTerm: '',
       routeName:'My route',
       zoom: 15,
@@ -264,12 +283,19 @@ export default {
         this.routes = routes;
       }
     },
-    deleteRoute(routeToDelete){
-      this.routes = this.routes.filter(route=>route.routeID !== routeToDelete.routeID);
+    openModal(route){
+      this.routeToDelete = route;
+      var myModal = new bootstrap.Modal(document.getElementById('exampleModal'))
+      myModal.show();
+    },
+    deleteRoute(){
+      
+      this.routes = this.routes.filter(route=>route.routeID !== this.routeToDelete.routeID);
       
       localStorage.setItem('routesArray', JSON.stringify(this.routes));
+      this.clearRouteData(this.routeToDelete);
       this.setActiveRoute(this.routes[0]);
-      this.clearRouteData(routeToDelete);
+      this.routeToDelete = null;
       
     },
     clearRouteData(route){
@@ -294,11 +320,10 @@ export default {
     changeMapStyle(){
       if(this.url === 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png'){
         this.url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-        localStorage.setItem('mapStyle', JSON.stringify(this.url));
       }else {
         this.url = 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png';
-        localStorage.setItem('mapStyle', JSON.stringify(this.url));
       }
+      localStorage.setItem('mapStyle', JSON.stringify(this.url));
     },
     loadMapStyle(){
       const mapStyle = JSON.parse(localStorage.getItem('mapStyle'));
