@@ -57,14 +57,15 @@
               Register
             </button>
           </form>
-
+          <hr />
+          <p class="reg-title display-2">You already have an account ?</p>
           <div style="margin-top: 30px">
             <button
               ype="button"
               class="login-button btn btn-outline-primary"
               @click="redirectToLogin"
             >
-              Back to Login
+              Login
             </button>
           </div>
         </div>

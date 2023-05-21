@@ -173,10 +173,4 @@ export default {
   background-color: var(--brown-main);
   color: white;
 }
-
-.reg-title {
-  font-size: 1.5rem;
-  font-family: "Cinzel", "Times New Roman", Times, serif, sans-serif;
-  color: var(--brown-main);
-}
 </style>
