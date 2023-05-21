@@ -114,6 +114,7 @@ const db = getFirestore(app);
 // za koristenje v-in-viewport
 import Vue from "vue";
 import inViewportDirective from "vue-in-viewport-directive";
+import { Alert } from "bootstrap";
 Vue.directive("in-viewport", inViewportDirective);
 
 export default {
@@ -177,14 +178,17 @@ export default {
       console.log(app);
       createUserWithEmailAndPassword(auth, this.username, this.password)
         .then(() => {
+          alert("Successful registration");
           console.log("Successful registration");
           // Additional logic after successful registration
         })
         .catch((error) => {
           console.log("Error:", error);
+          const errorMessage = error.message; // Retrieve the error message from the error object
+          alert(errorMessage);
           // Additional error handling logic
         });
-      console.log("Continuing...");
+      console.log("Continue");
     },
   },
 };
