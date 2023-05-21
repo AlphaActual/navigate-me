@@ -15,13 +15,16 @@
           <form>
             <div class="mb-3">
               <label for="exampleInputEmail1" class="form-label"
-                >Email address</label
+                >Email address
+                <span style="color: rgb(240, 94, 94)">*</span></label
               >
               <input
                 type="email"
                 class="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
+                v-model="username"
+                required
               />
               <div id="emailHelp" class="form-text">
                 We'll never share your email with anyone else.
@@ -29,15 +32,21 @@
             </div>
             <div class="mb-3">
               <label for="exampleInputPassword1" class="form-label"
-                >Password</label
+                >Password <span style="color: rgb(240, 94, 94)">*</span></label
               >
               <input
                 type="password"
+                v-model="password"
                 class="form-control"
                 id="exampleInputPassword1"
+                required
               />
             </div>
-            <button type="button" class="login-button btn btn-outline-primary">
+            <button
+              type="button"
+              @click="login()"
+              class="login-button btn btn-outline-primary"
+            >
               Login
             </button>
           </form>
@@ -65,7 +74,34 @@
   </div>
 </template>
 
-<script>
+<script type="module">
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import "firebase/auth";
+import "firebase/firestore";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAH5ceb4XbHesiS81aWFKvu1It1ibXCLZ8",
+  authDomain: "navigate-me-8f648.firebaseapp.com",
+  projectId: "navigate-me-8f648",
+  storageBucket: "navigate-me-8f648.appspot.com",
+  messagingSenderId: "419500803195",
+  appId: "1:419500803195:web:431d7dced4f71ac1d0cede",
+  measurementId: "G-ZRZ4WJF6RM",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
 // za koristenje v-in-viewport
 import Vue from "vue";
 import inViewportDirective from "vue-in-viewport-directive";
@@ -74,6 +110,12 @@ Vue.directive("in-viewport", inViewportDirective);
 export default {
   name: "Login",
   transition: "fade",
+  data() {
+    return {
+      username: "",
+      password: "",
+    };
+  },
 
   mounted() {
     const compass = document.querySelector(".compass");
@@ -119,6 +161,23 @@ export default {
   methods: {
     redirectToRegister() {
       this.$router.push("/register");
+    },
+    login() {
+      console.log("login");
+      const auth = getAuth(); // Get the auth instance
+
+      signInWithEmailAndPassword(auth, this.username, this.password)
+        .then(() => {
+          console.log("Successful login");
+          // Redirect the user to the routes.vue component
+          this.$router.push("/routes");
+        })
+        .catch((error) => {
+          console.log("Error:", error);
+          const errorMessage = error.message; // Retrieve the error message from the error object
+          alert(errorMessage);
+          // Additional error handling logic
+        });
     },
   },
 };

@@ -15,7 +15,8 @@
           <form>
             <div class="mb-3">
               <label for="exampleInputEmail1" class="form-label"
-                >Email address</label
+                >Email address
+                <span style="color: rgb(240, 94, 94)">*</span></label
               >
               <input
                 type="registerEmail"
@@ -23,6 +24,7 @@
                 class="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
+                required
               />
               <div id="emailHelp" class="form-text">
                 We'll never share your email with anyone else.
@@ -30,7 +32,7 @@
             </div>
             <div class="mb-3">
               <label for="exampleInputPassword1" class="form-label"
-                >Password</label
+                >Password <span style="color: rgb(240, 94, 94)">*</span></label
               >
 
               <input
@@ -38,18 +40,20 @@
                 v-model="password"
                 class="form-control"
                 id="exampleInputPassword1"
+                required
               />
-              <div id="emailHelp" class="form-text">Enter your pasword</div>
+              <div id="emailHelp" class="form-text">Enter your password</div>
             </div>
             <div class="mb-3">
               <label for="exampleInputPassword2" class="form-label"></label>
-              Enter a Password
+              Enter a Password <span style="color: rgb(240, 94, 94)">*</span>
 
               <input
                 type="password"
                 v-model="repeatPassword"
                 class="form-control"
                 id="exampleInputPassword2"
+                required
               />
               <div id="emailHelp" class="form-text">
                 Enter your pasword one more time
@@ -64,6 +68,7 @@
               Register
             </button>
           </form>
+
           <hr />
           <p class="reg-title display-2">You already have an account ?</p>
           <div style="margin-top: 30px">
@@ -111,7 +116,9 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
 // za koristenje v-in-viewport
+
 import Vue from "vue";
 import inViewportDirective from "vue-in-viewport-directive";
 import { Alert } from "bootstrap";
@@ -125,6 +132,7 @@ export default {
       username: "",
       password: "",
       repeatPassword: "",
+      showSuccessMessage: false,
     };
   },
 
@@ -176,10 +184,15 @@ export default {
 
     register() {
       console.log(app);
+      if (this.password !== this.repeatPassword) {
+        alert("Repeated password is not the same.");
+        return;
+      }
       createUserWithEmailAndPassword(auth, this.username, this.password)
         .then(() => {
           alert("Successful registration");
           console.log("Successful registration");
+
           // Additional logic after successful registration
         })
         .catch((error) => {
