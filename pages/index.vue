@@ -64,7 +64,13 @@
           </div>
 
           <div style="margin-top: 30px">
-            <nuxt-link to="/routes">Skip login(for testing)</nuxt-link>
+            <button
+              type="button"
+              class="guest-button"
+              @click="redirectToRoutes"
+            >
+              Login as Guest
+            </button>
           </div>
         </div>
 
@@ -179,6 +185,9 @@ export default {
           // Additional error handling logic
         });
     },
+    redirectToRoutes() {
+      this.$router.push("/routes");
+    },
   },
 };
 </script>
@@ -231,5 +240,20 @@ export default {
 .login-button:hover {
   background-color: var(--brown-main);
   color: white;
+}
+
+.guest-button {
+  background-color: #3f51b5;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.guest-button:hover {
+  background-color: #2c3e8c;
 }
 </style>

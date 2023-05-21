@@ -1,59 +1,76 @@
 <template>
-    <div class="header d-flex justify-content-between align-items-center ps-2 pe-2">
-        <div class="fw-bold text-brown-main fs-5 d-flex">
-            <nuxt-link v-if="back" :to="back" class="text-brown-main back-link">
-                <div class="hover-effect ms-2">
-                    <i class="fa-solid fa-arrow-left"></i>
-                    <div class="original-text">
-                        {{pageTitle}}
-                    </div>
-                    <div class="new-text">
-                        Back to {{ back.slice(1) }}
-                    </div>
-                </div>
-            </nuxt-link>
-            <div v-else class="original-text ms-2">
-                {{pageTitle}}
-            </div>
+  <div
+    class="header d-flex justify-content-between align-items-center ps-2 pe-2"
+  >
+    <div class="fw-bold text-brown-main fs-5 d-flex">
+      <nuxt-link v-if="back" :to="back" class="text-brown-main back-link">
+        <div class="hover-effect ms-2">
+          <i class="fa-solid fa-arrow-left"></i>
+          <div class="original-text">
+            {{ pageTitle }}
+          </div>
+          <div class="new-text">Back to {{ back.slice(1) }}</div>
         </div>
-        <div>Total time: <span class="fw-bold text-brown-main"> {{totalT}}</span> hrs</div>
-        <div>Total distance: <span class="fw-bold text-brown-main"> {{totalD.toFixed(2)}}</span> NM</div>
-        <div>Username</div>
+      </nuxt-link>
+      <div v-else class="original-text ms-2">
+        {{ pageTitle }}
+      </div>
     </div>
+    <div>
+      Total time: <span class="fw-bold text-brown-main"> {{ totalT }}</span> hrs
+    </div>
+    <div>
+      Total distance:
+      <span class="fw-bold text-brown-main"> {{ totalD.toFixed(2) }}</span> NM
+    </div>
+    <div>Username</div>
+    <div class="logout-gumb-container">
+      <button class="logout-gumb" @click="logout">Logout</button>
+    </div>
+  </div>
 </template>
 <script>
 export default {
-    name:"Header",
-    props: {
-        back:{
-            type: String,
-            required: false
-        },
-        pageTitle:{
-            type: String,
-            required: true
-        },
-        totalD:{
-            type: Number,
-            required: true
-        },
-        totalT:{
-            type: String,
-            required: true
-        }
-    }
-}
+  name: "Header",
+  props: {
+    back: {
+      type: String,
+      required: false,
+    },
+    pageTitle: {
+      type: String,
+      required: true,
+    },
+    totalD: {
+      type: Number,
+      required: true,
+    },
+    totalT: {
+      type: String,
+      required: true,
+    },
+  },
+  methods: {
+    logout() {
+      // Perform logout logic here
+      // For example, clear session data or call an API endpoint
+
+      // Redirect to index.vue
+      this.$router.push({ name: "index" });
+    },
+  },
+};
 </script>
 <style scoped>
-@import '~/assets/css/main.css';
+@import "~/assets/css/main.css";
 .header {
-    height: 40px;
-    border-bottom: 1px solid gray;
+  height: 40px;
+  border-bottom: 1px solid gray;
 }
 
 .hover-effect {
-    position: relative;
-    min-width: 200px;
+  position: relative;
+  min-width: 200px;
 }
 .hover-effect .original-text {
   position: absolute;
@@ -84,8 +101,7 @@ export default {
   transform: translateY(-50%);
 }
 .back-link:hover {
-    text-decoration: none;
-    color: --var(brown-main);
+  text-decoration: none;
+  color: --var(brown-main);
 }
-
 </style>
