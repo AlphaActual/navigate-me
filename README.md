@@ -18,6 +18,8 @@
 
 <b> Zaduženja Tin Pritišanac: </b>
 - ....
+
+
 <b>Zaduženja Neven Davidović: </b>
 - login/register
 - pohrana i slanje na bazu podataka
