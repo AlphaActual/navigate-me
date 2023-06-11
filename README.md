@@ -6,13 +6,14 @@
   
   [Mentor: doc. dr. sc. Nikola Tanković](ntankovic.unipu.hr) <br>
 
-- Kratki opis funkcionalnosti:
-
-- Link na javni prototip: 
-
-- Zaduženja Tin Pritišanac
-
-- Zaduženja Neven Davidović
+<b>Kratki opis funkcionalnosti:</b>
+-
+<b>Link na javni prototip: </b>
+-
+<b> Zaduženja Tin Pritišanac</b>
+-
+<b>Zaduženja Neven Davidović: </b>
+-
 
 
 
