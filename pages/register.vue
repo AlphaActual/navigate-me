@@ -19,11 +19,11 @@
                 <span style="color: rgb(240, 94, 94)">*</span></label
               >
               <input
-                type="email"
+                type="registerEmail"
+                v-model="username"
                 class="form-control"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
-                v-model="username"
                 required
               />
               <div id="emailHelp" class="form-text">
@@ -34,6 +34,7 @@
               <label for="exampleInputPassword1" class="form-label"
                 >Password <span style="color: rgb(240, 94, 94)">*</span></label
               >
+
               <input
                 type="password"
                 v-model="password"
@@ -41,41 +42,48 @@
                 id="exampleInputPassword1"
                 required
               />
+              <div id="emailHelp" class="form-text">Enter your password</div>
             </div>
+            <div class="mb-3">
+              <label for="exampleInputPassword2" class="form-label"></label>
+              Enter a Password <span style="color: rgb(240, 94, 94)">*</span>
+
+              <input
+                type="password"
+                v-model="repeatPassword"
+                class="form-control"
+                id="exampleInputPassword2"
+                required
+              />
+              <div id="emailHelp" class="form-text">
+                Enter your pasword one more time
+              </div>
+            </div>
+
             <button
               type="button"
-              @click="login()"
+              @click="register"
               class="login-button btn btn-outline-primary"
             >
-              Login
+              Register
             </button>
           </form>
-          <hr />
 
-          <p class="reg-title display-2">New to the app ?</p>
+          <hr />
+          <p class="reg-title display-2">You already have an account ?</p>
           <div style="margin-top: 30px">
             <button
               ype="button"
               class="login-button btn btn-outline-primary"
-              @click="redirectToRegister"
+              @click="redirectToLogin"
             >
-              Register
-            </button>
-          </div>
-
-          <div style="margin-top: 30px">
-            <button
-              type="button"
-              class="guest-button"
-              @click="redirectToRoutes"
-            >
-              Login as Guest
+              Login
             </button>
           </div>
         </div>
-
-        <img class="path-image" src="../assets/img/path.svg" alt="path" />
       </div>
+
+      <img class="path-image" src="../assets/img/path.svg" alt="path" />
     </div>
   </div>
 </template>
@@ -86,7 +94,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import "firebase/auth";
 import "firebase/firestore";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -108,18 +116,23 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
 // za koristenje v-in-viewport
+
 import Vue from "vue";
 import inViewportDirective from "vue-in-viewport-directive";
+import { Alert } from "bootstrap";
 Vue.directive("in-viewport", inViewportDirective);
 
 export default {
-  name: "Login",
+  name: "Signup",
   transition: "fade",
   data() {
     return {
       username: "",
       password: "",
+      repeatPassword: "",
+      showSuccessMessage: false,
     };
   },
 
@@ -165,18 +178,22 @@ export default {
     setInterval(updateCompass, 16);
   },
   methods: {
-    redirectToRegister() {
-      this.$router.push("/register");
+    redirectToLogin() {
+      this.$router.push("/");
     },
-    login() {
-      console.log("login");
-      const auth = getAuth(); // Get the auth instance
 
-      signInWithEmailAndPassword(auth, this.username, this.password)
+    register() {
+      console.log(app);
+      if (this.password !== this.repeatPassword) {
+        alert("Repeated password is not the same.");
+        return;
+      }
+      createUserWithEmailAndPassword(auth, this.username, this.password)
         .then(() => {
-          console.log("Successful login");
-          // Redirect the user to the routes.vue component
-          this.$router.push("/routes");
+          alert("Successful registration");
+          console.log("Successful registration");
+
+          // Additional logic after successful registration
         })
         .catch((error) => {
           console.log("Error:", error);
@@ -184,9 +201,7 @@ export default {
           alert(errorMessage);
           // Additional error handling logic
         });
-    },
-    redirectToRoutes() {
-      this.$router.push("/routes");
+      console.log("Continue");
     },
   },
 };
@@ -222,8 +237,8 @@ export default {
   overflow: hidden;
 }
 /* .image-col > img {
-    max-width: 80%;
-  } */
+      max-width: 80%;
+    } */
 .row {
   height: 100vh;
 }
@@ -240,20 +255,5 @@ export default {
 .login-button:hover {
   background-color: var(--brown-main);
   color: white;
-}
-
-.guest-button {
-  background-color: #3f51b5;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.guest-button:hover {
-  background-color: #2c3e8c;
 }
 </style>

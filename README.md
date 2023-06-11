@@ -1,4 +1,34 @@
-# navigate-me
+# Navigate me
+## Studenti: Tin Pritišanac, Neven Davidović
+  [Fakultet informatike u Puli](https://fipu.unipu.hr/) <br>
+  
+  Kolegij: [ Programsko inženjeratvo](ntankovic.unipu.hr/pi) <br>
+  
+  Mentor: [ doc. dr. sc. Nikola Tanković](ntankovic.unipu.hr) <br>
+  
+<b>Link na javni prototip: [ Navigate me](https://navigate-me.netlify.app/) </b>
+
+<b>Kratki opis funkcionalnosti:</b>
+- Računanje dužine trajanja puta
+- Odabiranje proizvoljnih ruta 
+- Uklanjanje ruta
+- Pregled postojećih ruta
+- Dodavanje i uklanjanje putnih točki
+
+
+<b> Zaduženja Tin Pritišanac: </b>
+- ....
+
+
+<b>Zaduženja Neven Davidović: </b>
+- login/register
+- pohrana i slanje na bazu podataka
+- page "Active route"
+- Use Case Diagram
+- Class Diagram
+
+
+
 
 ## Build Setup
 
