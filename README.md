@@ -5,10 +5,16 @@
   Kolegij: [ Programsko inženjeratvo](ntankovic.unipu.hr/pi) <br>
   
   Mentor: [ doc. dr. sc. Nikola Tanković](ntankovic.unipu.hr) <br>
+  
+<b>Link na javni prototip: [ Navigate me](https://navigate-me.netlify.app/) </b>
 
 <b>Kratki opis funkcionalnosti:</b>
--
-<b>Link na javni prototip: [ Navigate me]() </b>
+- Računanje dužine trajanja puta
+- Odabiranje proizvoljnih ruta 
+- Uklanjanje ruta
+- Pregled postojećih ruta
+- Dodavanje i uklanjanje putnih točki
+
 
 <b> Zaduženja Tin Pritišanac</b>
 -
