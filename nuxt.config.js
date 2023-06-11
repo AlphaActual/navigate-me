@@ -19,7 +19,7 @@ export default {
     script: [
       { src: "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js", integrity: "sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM", crossorigin: "anonymous" },
       { src: "https://unpkg.com/leaflet@1.9.3/dist/leaflet.js", integrity: "sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=", crossorigin: "" },
-      { src: "https://kit.fontawesome.com/e7ff830aab.js", crossorigin: "anonymous" }
+      { src: "https://kit.fontawesome.com/e7ff830aab.js", crossorigin: "anonymous" },
     ]
   },
 
@@ -29,7 +29,9 @@ export default {
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [{ src: '~/plugins/leaflet.js', ssr: false }
+  plugins: [
+    { src: '~/plugins/leaflet.js', ssr: false }
+    // { src: '~/plugins/geolocation.js', ssr: false }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
