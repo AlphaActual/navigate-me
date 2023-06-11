@@ -1,4 +1,20 @@
-# navigate-me
+# Navigate me
+## Studenti: Tin Pritišanac, Neven Davidović
+  [Fakultet informatike u Puli](https://fipu.unipu.hr/) <br>
+  
+  [Kolegij: Programsko inženjeratvo](ntankovic.unipu.hr/pi) <br>
+  
+  [Mentor: doc. dr. sc. Nikola Tanković](ntankovic.unipu.hr) <br>
+
+- Kratki opis funkcionalnosti:
+
+- Link na javni prototip: 
+
+- Zaduženja Tin Pritišanac
+
+- Zaduženja Neven Davidović
+
+
 
 ## Build Setup
 
