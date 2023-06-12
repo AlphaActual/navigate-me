@@ -17,7 +17,10 @@
 
 
 <b> Zaduženja Tin Pritišanac: </b>
-- ....
+- prikaz karte, putnih točki
+- dizajn u figmi
+- logika spajanja putnih točki
+- dizajn aplikacije
 
 
 <b>Zaduženja Neven Davidović: </b>
