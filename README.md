@@ -9,23 +9,39 @@
 <b>Link na javni prototip: [ Navigate me](https://navigate-me.netlify.app/) </b>
 
 <b>Kratki opis funkcionalnosti:</b>
-- Računanje dužine trajanja puta
+- Računanje ukupnog vremenskog trajanja putovanja s obzirom na brzinu broda između pojedinih međutočakka 
 - Odabiranje proizvoljnih ruta 
-- Uklanjanje ruta
+- Uklanjanje i uređivanje ruta
 - Pregled postojećih ruta
-- Dodavanje i uklanjanje putnih točki
+- Dodavanje i uklanjanje putnih točaka
+- Praćenje pozicije korisnika na ruti (geolocation API) i usmjeravanje prema sljedećem waypointu
+- Izračun vremena dolaska na temelju parametara početnog vremena i brzina broda između međutočaka
 
 
 <b> Zaduženja Tin Pritišanac: </b>
+- setup projekta
+- odabir libraryja koji će se koristiti u projektu
+- postavljanje funkcija za rad sa kartom
+- kreacija routes pagea
+- kreacija create-a-route pagea
+- selekcija i prikaz ruta na karti
+- dodavanje, brisanje i editiranje ruta
+- lokalna pohrana u local storage za korisnike goste (Guest)
+- interaktivni tutorial za nove korisnike (TO DO)
+
 
 
 
 <b>Zaduženja Neven Davidović: </b>
 - login/register
 - pohrana i slanje na bazu podataka
-- page "Active route"
+- dohvat podataka iz baze i učitavanje korisničkih podataka
+- page "Active route" (TO DO)
 - Use Case Diagram
 - Class Diagram
+- Prikaz pozicije na temelju geolokacije (TO DO)
+- Praćenje pozicije i usmjeravanje ka sljedećem waypointu (TO DO)
+- izračun ETA (Estimated time of arrival) i drugih parametara putovanja (TO DO)
 
 
 
