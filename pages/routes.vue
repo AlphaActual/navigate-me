@@ -502,7 +502,7 @@ body {
 }
 .route-container {
   overflow: auto;
-  height: calc(100vh - 280px);
+  height: calc(100vh - 300px);
   margin-bottom: 200px;
 }
 .save-btn {

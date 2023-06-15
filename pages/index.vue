@@ -243,7 +243,7 @@ export default {
 }
 
 .guest-button {
-  background-color: #3f51b5;
+  background-color: var(--primary-blue);
   color: white;
   border: none;
   padding: 10px 20px;
@@ -254,6 +254,6 @@ export default {
 }
 
 .guest-button:hover {
-  background-color: #2c3e8c;
+  background-color: var(--primary-blue-hover);
 }
 </style>

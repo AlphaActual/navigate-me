@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="header d-flex justify-content-between align-items-center ps-2 pe-2"
-  >
+  <div class="header d-flex justify-content-between align-items-center ps-2 pe-2">
     <div class="fw-bold text-brown-main fs-5 d-flex">
       <nuxt-link v-if="back" :to="back" class="text-brown-main back-link">
         <div class="hover-effect ms-2">
@@ -25,7 +23,7 @@
     </div>
     <div>Username</div>
     <div class="logout-gumb-container">
-      <button class="logout-gumb" @click="logout">Logout</button>
+      <button class="logout-gumb btn" @click="logout">Logout</button>
     </div>
   </div>
 </template>
@@ -63,6 +61,7 @@ export default {
 </script>
 <style scoped>
 @import "~/assets/css/main.css";
+
 .header {
   height: 40px;
   border-bottom: 1px solid gray;
@@ -72,6 +71,7 @@ export default {
   position: relative;
   min-width: 200px;
 }
+
 .hover-effect .original-text {
   position: absolute;
   top: 0;
@@ -81,16 +81,19 @@ export default {
   transition: all 0.3s ease;
   transform: translateY(0);
 }
+
 .hover-effect:hover .original-text {
   visibility: hidden;
   opacity: 0;
   transform: translateY(50%);
 }
+
 .hover-effect:hover .new-text {
   visibility: visible;
   transform: translateY(0);
   opacity: 1;
 }
+
 .new-text {
   transition: all 0.3s ease;
   position: absolute;
@@ -100,8 +103,17 @@ export default {
   opacity: 0;
   transform: translateY(-50%);
 }
+
 .back-link:hover {
   text-decoration: none;
   color: --var(brown-main);
+}
+.logout-gumb {
+  background-color: var(--primary-blue);
+  color: white;
+  padding: 0px 0.5rem;
+}
+.logout-gumb:hover {
+  background-color: var(--primary-blue-hover);
 }
 </style>

@@ -712,8 +712,7 @@ export default {
   }
   .waypoint-container {
     overflow: auto;
-    height: calc(100vh - 280px);
-    margin-bottom: 200px;
+    height: calc(100vh - 400px);
   }
   .save-btn {
     width: 100%;
