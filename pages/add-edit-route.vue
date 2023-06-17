@@ -1,148 +1,150 @@
 <template>
   <div class="main-div">
-     <Header back="/routes" pageTitle="Create/edit route" :totalD="totalDistance" :totalT="this.formatTime(this.totalTimeHrs)" />
-  <div class="container-fluid">
-    <div class="row wrapper">
+    <Header back="/routes" pageTitle="Create/edit route" :totalD="totalDistance" :totalT="this.formatTime(this.totalTimeHrs)" @load-route="loadTutorialRoute" />
+    <div class="container-fluid">
+      <div class="row wrapper">
 
-      <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
-        <!-- save row -->
-        <div>
+        <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
+          <!-- save row -->
           <div>
-            <div class="d-flex">
-              <button @click="saveToLocalStorage" class="save-btn btn d-flex justify-content-center mb-2" :disabled="isDisabled">
-                <div>Save route</div>
-                <div v-show="showSpinner" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-              </button>
+            <div>
+              <div class="d-flex">
+                <button @click="saveToLocalStorage" class="save-btn btn d-flex justify-content-center mb-2" :disabled="isDisabled" id="save-btn">
+                  <div>Save route</div>
+                  <div v-show="showSpinner" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                </button>
+              </div>
+              <input v-model="routeName" name="name-input" id="name-input" type="text" class="text-center btn-secondary-outline p-1 d-block"/>
+
+              
             </div>
-            <input v-model="routeName" name="name-input" id="name-input" type="text" class="text-center btn-secondary-outline p-1 d-block"/>
+          </div>
+          <!-- end of save row -->
+
+          <hr>
+
+          <!-- speed row -->
+          <div>
+            <div class="d-flex align-items-center">
+              <label class="mb-0 me-2" for="speed-input">Set {{circleChecked ? 'radius':'speed'}}: </label>
+              <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" min="0.1" step="0.1" required class="text-danger-main fw-bold btn-secondary-outline d-block"/> {{circleChecked ? 'NM':'kts'}}
+              <button v-if="!circleChecked" @click="updateSpeeds" class=" animated-button btn ms-1"><i class=" icon-1 fa-solid fa-play"></i><i class=" icon-2 fa-solid fa-play"></i><i class=" icon-3 fa-solid fa-play"></i></button>
+            </div>
+          </div>
+          <!-- end of speed row -->
+
+          <hr>
+
+          <!-- marker icons row -->
+          <div class="icons-row d-flex justify-content-around align-items-center">
+            
+              <input type="radio" class="btn-check" name="options" id="option-waypoint" autocomplete="off" checked>
+              <label @click="CircleChecked(false)" class="btn btn-warning" for="option-waypoint"><i class="fa-solid fa-location-dot"></i></label>
+
+              <input type="radio" class="btn-check" name="options" id="option-circle" autocomplete="off">
+              <label @click="CircleChecked(true)" class="btn btn-warning" for="option-circle"><i class="fa-regular fa-circle"></i></label>
+
+              <input type="radio" class="btn-check" name="options" id="option-anchor" autocomplete="off">
+              <label @click="CircleChecked(false)" class="btn btn-warning" for="option-anchor"><i class="fa-solid fa-anchor"></i></label>
+
+              <input type="radio" class="btn-check" name="options" id="option-pin" autocomplete="off">
+              <label @click="CircleChecked(false)" class="btn btn-warning" for="option-pin"><i class="fa-solid fa-map-pin"></i></label>
+
+              <div class="marker-info">
+                <input v-model="markerDescription" name="marker-in
+                circleChecked: false,put" id="marker-input" type="text" class="btn-secondary-outline p-1 d-block"/>
+              </div>
 
             
           </div>
-        </div>
-        <!-- end of save row -->
+          <!--end of marker icons row -->
 
-        <hr>
+          <hr>
 
-        <!-- speed row -->
-         <div>
-          <div class="d-flex align-items-center">
-            <label class="mb-0 me-2" for="speed-input">Set {{circleChecked ? 'radius':'speed'}}: </label>
-            <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" min="0.1" step="0.1" required class="text-danger-main fw-bold btn-secondary-outline d-block"/> {{circleChecked ? 'NM':'kts'}}
-            <button v-if="!circleChecked" @click="updateSpeeds" class=" animated-button btn ms-1"><i class=" icon-1 fa-solid fa-play"></i><i class=" icon-2 fa-solid fa-play"></i><i class=" icon-3 fa-solid fa-play"></i></button>
-          </div>
-        </div>
-        <!-- end of speed row -->
-
-        <hr>
-
-        <!-- marker icons row -->
-        <div class="icons-row d-flex justify-content-around align-items-center">
-          
-            <input type="radio" class="btn-check" name="options" id="option-waypoint" autocomplete="off" checked>
-            <label @click="CircleChecked(false)" class="btn btn-warning" for="option-waypoint"><i class="fa-solid fa-location-dot"></i></label>
-
-            <input type="radio" class="btn-check" name="options" id="option-circle" autocomplete="off">
-            <label @click="CircleChecked(true)" class="btn btn-warning" for="option-circle"><i class="fa-regular fa-circle"></i></label>
-
-            <input type="radio" class="btn-check" name="options" id="option-anchor" autocomplete="off">
-            <label @click="CircleChecked(false)" class="btn btn-warning" for="option-anchor"><i class="fa-solid fa-anchor"></i></label>
-
-            <input type="radio" class="btn-check" name="options" id="option-pin" autocomplete="off">
-            <label @click="CircleChecked(false)" class="btn btn-warning" for="option-pin"><i class="fa-solid fa-map-pin"></i></label>
-
-            <div class="marker-info">
-              <input v-model="markerDescription" name="marker-in
-              circleChecked: false,put" id="marker-input" type="text" class="btn-secondary-outline p-1 d-block"/>
+          <!-- sort active insert delete row -->
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <button class=" sort-button btn btn-outline-secondary" @click="sortWPs">Sort <i :class="['fa-solid', 'fa-arrow-down',{ 'reverse-arrow': !sortedDescending }]"></i></button>
+              <!-- <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span> -->
             </div>
 
-          
-        </div>
-        <!--end of marker icons row -->
-
-        <hr>
-
-        <!-- sort active insert delete row -->
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center">
-            <button class=" sort-button btn btn-outline-secondary" @click="sortWPs">Sort <i :class="['fa-solid', 'fa-arrow-down',{ 'reverse-arrow': !sortedDescending }]"></i></button>
-            <!-- <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span> -->
+            <div>
+              <div class="active-wp btn rounded" @click="centerOnActive">Active: <span class="fw-bold text-danger-main">{{activeWP?.name}}</span></div>
+              <div @click="insertWp" :class="['btn', 'btn-warning',{'disabled': this.activeWP?.id === this.waypoints[this.waypoints.length-1]?.id}]">Insert</div>
+              <div @click="removeWP(activeWP?.id)" class="btn btn-danger">Delete active</div>
+            </div>
           </div>
+          <!-- end of sort active insert delete row -->
 
-          <div>
-            <div class="active-wp btn rounded" @click="centerOnActive">Active: <span class="fw-bold text-danger-main">{{activeWP?.name}}</span></div>
-            <div @click="insertWp" :class="['btn', 'btn-warning',{'disabled': this.activeWP?.id === this.waypoints[this.waypoints.length-1]?.id}]">Insert</div>
-            <div @click="removeWP(activeWP?.id)" class="btn btn-danger">Delete active</div>
+          <hr>
+
+          <!-- waypoint cards -->
+          <div class="waypoint-container">
+            <!-- waypoint list -->
+            <WaypointCard v-in-viewport.once class="slide-left" :lastWp="waypoints[waypoints.length-1]" :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @card-clicked="handleCardClick(wp)"/>
           </div>
-        </div>
-        <!-- end of sort active insert delete row -->
+          <!-- end of waypoint cards -->
+        </aside>
 
-        <hr>
+        <div id="map-wrap" >
+          <button class="btn change-map-style" @click="changeMapStyle"><i class="fa-solid fa-palette fa-lg"></i></button>
+          <client-only>
+            <!-- map -->
+            <l-map :zoom="zoom" :center="center" @click="handleMapClick">
+              <!-- tile layer -->
+              <l-tile-layer :url="url"></l-tile-layer>
+              
+              <!-- waypoint markers -->
+              <l-marker v-for="(wp,index) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id" :icon="index === 0 ? firstMarkerIcon : defaultMarkerIcon" >
+                <l-popup> 
+                  <p class="p-0 m-0 fw-bold">WP{{wp.name}}</p> 
+                  <p class="p-0 m-0">Course: {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
+                  <p class="p-0 m-0">Distance: {{ wp.wpToWp != 'N/A'? wp.wpToWp.toFixed(2) + ' NM':'N/A'}}</p>
+                  <p class="p-0 m-0">Speed: {{wp.id != waypoints[waypoints.length-1].id ? wp.speed + ' kts':'N/A'}}</p>
+                  </l-popup>
+              </l-marker>
+              <!-- polylines -->
+              <l-polyline :lat-lngs="getLinesCoordinates" ></l-polyline>
 
-        <!-- waypoint cards -->
-        <div class="waypoint-container">
-          <!-- waypoint list -->
-          <WaypointCard v-in-viewport.once class="slide-left" :lastWp="waypoints[waypoints.length-1]" :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @card-clicked="handleCardClick(wp)"/>
-        </div>
-        <!-- end of waypoint cards -->
-      </aside>
-
-      <div id="map-wrap" >
-        <button class="btn change-map-style" @click="changeMapStyle"><i class="fa-solid fa-palette fa-lg"></i></button>
-        <client-only>
-          <!-- map -->
-          <l-map :zoom="zoom" :center="center" @click="handleMapClick">
-            <!-- tile layer -->
-            <l-tile-layer :url="url"></l-tile-layer>
-            
-            <!-- waypoint markers -->
-            <l-marker v-for="(wp,index) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id" :icon="index === 0 ? firstMarkerIcon : defaultMarkerIcon" >
-              <l-popup> 
-                <p class="p-0 m-0 fw-bold">WP{{wp.name}}</p> 
-                <p class="p-0 m-0">Course: {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
-                <p class="p-0 m-0">Distance: {{ wp.wpToWp != 'N/A'? wp.wpToWp.toFixed(2) + ' NM':'N/A'}}</p>
-                <p class="p-0 m-0">Speed: {{wp.id != waypoints[waypoints.length-1].id ? wp.speed + ' kts':'N/A'}}</p>
+              <!-- circle markers -->
+              <l-circle v-for="(circle) in circles" :key="circle.id" :lat-lng="[circle.lat, circle.lng]" :radius="circle.radius">
+                <l-popup>
+                  <p class="p-0 m-0 fw-bold">{{circle.description}}</p>
+                  <p class="p-0 m-0">Radius: {{circle.radius/1852}} NM</p>
+                  <button @click="removeCircle(circle.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
                 </l-popup>
-            </l-marker>
-            <!-- polylines -->
-            <l-polyline :lat-lngs="getLinesCoordinates" ></l-polyline>
+              </l-circle>
 
-            <!-- circle markers -->
-            <l-circle v-for="(circle) in circles" :key="circle.id" :lat-lng="[circle.lat, circle.lng]" :radius="circle.radius">
-              <l-popup>
-                <p class="p-0 m-0 fw-bold">{{circle.description}}</p>
-                <p class="p-0 m-0">Radius: {{circle.radius/1852}} NM</p>
-                <button @click="removeCircle(circle.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
-              </l-popup>
-            </l-circle>
+              <!-- anchor markers -->
+              <l-marker v-for="(anchor) in anchors" :key="anchor.id" :lat-lng="[anchor.lat, anchor.lng]" :icon="anchorMarkerIcon">
+                <l-popup>
+                  <p class="p-0 m-0 fw-bold">{{anchor.description}}</p>
+                  <p class="p-0 m-0">Lat: {{formatLatitude(anchor.lat)}}</p>
+                  <p class="p-0 m-0">Long: {{formatLongitude(anchor.lng)}}</p>
+                  <button @click="removeAnchor(anchor.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
+                </l-popup>
+              </l-marker>
 
-            <!-- anchor markers -->
-            <l-marker v-for="(anchor) in anchors" :key="anchor.id" :lat-lng="[anchor.lat, anchor.lng]" :icon="anchorMarkerIcon">
-              <l-popup>
-                <p class="p-0 m-0 fw-bold">{{anchor.description}}</p>
-                <p class="p-0 m-0">Lat: {{formatLatitude(anchor.lat)}}</p>
-                <p class="p-0 m-0">Long: {{formatLongitude(anchor.lng)}}</p>
-                <button @click="removeAnchor(anchor.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
-              </l-popup>
-            </l-marker>
+              <!-- pin markers -->
+              <l-marker v-for="(pin) in pins" :key="pin.id" :lat-lng="[pin.lat, pin.lng]" :icon="pinMarkerIcon">
+                <l-popup>
+                  <p class="p-0 m-0 fw-bold">{{pin.description}}</p>
+                  <p class="p-0 m-0">Lat: {{formatLatitude(pin.lat)}}</p>
+                  <p class="p-0 m-0">Long: {{formatLongitude(pin.lng)}}</p>
+                  <button @click="removePin(pin.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
+                </l-popup>
+              </l-marker>
 
-            <!-- pin markers -->
-            <l-marker v-for="(pin) in pins" :key="pin.id" :lat-lng="[pin.lat, pin.lng]" :icon="pinMarkerIcon">
-              <l-popup>
-                <p class="p-0 m-0 fw-bold">{{pin.description}}</p>
-                <p class="p-0 m-0">Lat: {{formatLatitude(pin.lat)}}</p>
-                <p class="p-0 m-0">Long: {{formatLongitude(pin.lng)}}</p>
-                <button @click="removePin(pin.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
-              </l-popup>
-            </l-marker>
+            </l-map>
+          </client-only>
+          <div class="line line-vertical"></div>
+          <div class="line line-horizontal"></div>
+        </div>
 
-          </l-map>
-        </client-only>
-        <div class="line line-vertical"></div>
-        <div class="line line-horizontal"></div>
       </div>
-
     </div>
-  </div>
+    <!-- <div v-if="this.$store.state.tutorialVisible" class="black-overlay"></div> -->
+    <Tutorial />
   </div>
  
 </template>
@@ -635,6 +637,204 @@ export default {
       localStorage.setItem('editRoute', JSON.stringify(null));
 
     },
+    loadTutorialRoute(){
+      const tutorialRoute = `{
+        "routeID": 1687011983460,
+        "routeName": "Tutorial route",
+        "zoom": 15,
+        "center": [
+            45.07182340255548,
+            13.609442710876467
+        ],
+        "marker": [
+            45.08397548484512,
+            13.633303642272951
+        ],
+        "waypoints": [
+            {
+                "id": 1687011722606,
+                "name": 0,
+                "lat": 45.096155277505694,
+                "lng": 13.636007308959963,
+                "nextCourse": 221.68202952018285,
+                "wpToWp": 0.22558803649253045,
+                "speed": 7,
+                "timeCreated": "2023-06-17 16:22:02"
+            },
+            {
+                "id": 1687011723733,
+                "name": 1,
+                "lat": 45.092974238980844,
+                "lng": 13.633174896240236,
+                "nextCourse": 261.7117401040918,
+                "wpToWp": 0.23402599885408049,
+                "speed": 7,
+                "timeCreated": "2023-06-17 16:22:03"
+            },
+            {
+                "id": 1687011724588,
+                "name": 2,
+                "lat": 45.09218652588025,
+                "lng": 13.627767562866213,
+                "nextCourse": 258.39424652711006,
+                "wpToWp": 0.31258761208938823,
+                "speed": 7,
+                "timeCreated": "2023-06-17 16:22:04"
+            },
+            {
+                "id": 1687011725160,
+                "name": 3,
+                "lat": 45.09073225776601,
+                "lng": 13.620686531066896,
+                "nextCourse": 274.0720981037599,
+                "wpToWp": 0.4351350671500277,
+                "speed": 7,
+                "timeCreated": "2023-06-17 16:22:05"
+            },
+            {
+                "id": 1687011727036,
+                "name": 4,
+                "lat": 45.09145939645188,
+                "lng": 13.610472679138185,
+                "nextCourse": 265.38717622995466,
+                "wpToWp": 0.1922453840090877,
+                "speed": 7,
+                "timeCreated": "2023-06-17 16:22:07"
+            },
+            {
+                "id": 1687011727575,
+                "name": 5,
+                "lat": 45.09109582826613,
+                "lng": 13.605966567993166,
+                "nextCourse": 193.17121504438649,
+                "wpToWp": 0.21203580801306057,
+                "speed": 7,
+                "timeCreated": "2023-06-17 16:22:07"
+            },
+            {
+                "id": 1687011728048,
+                "name": 6,
+                "lat": 45.087611515786854,
+                "lng": 13.605151176452638,
+                "nextCourse": 191.27331230282897,
+                "wpToWp": 0.2480191225912698,
+                "speed": 7,
+                "timeCreated": "2023-06-17 16:22:08"
+            },
+            {
+                "id": 1687011728475,
+                "name": 7,
+                "lat": 45.08352096470447,
+                "lng": 13.60433578491211,
+                "nextCourse": 177.29719789965839,
+                "wpToWp": 0.21844592978606567,
+                "speed": 7,
+                "timeCreated": "2023-06-17 16:22:08"
+            },
+            {
+                "id": 1687011728902,
+                "name": 8,
+                "lat": 45.07988467339586,
+                "lng": 13.604507446289062,
+                "nextCourse": 177.4394018384528,
+                "wpToWp": 0.17293638432622427,
+                "speed": 7,
+                "timeCreated": "2023-06-17 16:22:08"
+            },
+            {
+                "id": 1687011729346,
+                "name": 9,
+                "lat": 45.07700577864089,
+                "lng": 13.604636192321777,
+                "nextCourse": 137.15488262445353,
+                "wpToWp": 0.3719522308240335,
+                "speed": 7,
+                "timeCreated": "2023-06-17 16:22:09"
+            },
+            {
+                "id": 1687011730327,
+                "name": 10,
+                "lat": 45.07182340255548,
+                "lng": 13.609442710876467,
+                "nextCourse": 83.96190753450014,
+                "wpToWp": 0.41767283759593166,
+                "speed": 7,
+                "timeCreated": "2023-06-17 16:22:10"
+            },
+            {
+                "id": 1687011981940,
+                "name": 11,
+                "lat": 45.07285385394578,
+                "lng": 13.619184494018556,
+                "nextCourse": "N/A",
+                "wpToWp": "N/A",
+                "speed": "0.1",
+                "timeCreated": "2023-06-17 16:26:21"
+            }
+        ],
+        "circles": [
+            {
+                "id": 1687011756146,
+                "description": "MyMarkerName",
+                "lat": 45.09488288335903,
+                "lng": 13.608198165893556,
+                "radius": 185.20000000000002,
+                "timeCreated": "2023-06-17 16:22:36"
+            }
+        ],
+        "anchors": [
+            {
+                "id": 1687011733456,
+                "description": "MyMarkerName",
+                "lat": 45.09470111045228,
+                "lng": 13.618969917297365,
+                "timeCreated": "2023-06-17 16:22:13"
+            }
+        ],
+        "pins": [
+            {
+                "id": 1687011735818,
+                "description": "MyMarkerName",
+                "lat": 45.09657940258767,
+                "lng": 13.637380599975588,
+                "timeCreated": "2023-06-17 16:22:15"
+            },
+            {
+                "id": 1687011737334,
+                "description": "MyMarkerName",
+                "lat": 45.084248195193716,
+                "lng": 13.633990287780763,
+                "timeCreated": "2023-06-17 16:22:17"
+            },
+            {
+                "id": 1687011739499,
+                "description": "MyMarkerName",
+                "lat": 45.077551264574474,
+                "lng": 13.625707626342773,
+                "timeCreated": "2023-06-17 16:22:19"
+            }
+        ],
+        "sortedDescending": true,
+        "activeWP": {
+            "id": 1687011981940,
+            "name": 11,
+            "lat": 45.07285385394578,
+            "lng": 13.619184494018556,
+            "nextCourse": "N/A",
+            "wpToWp": "N/A",
+            "speed": "0.1",
+            "timeCreated": "2023-06-17 16:26:21"
+        },
+        "shipSpeed": "0.1",
+        "totalDistance": 3.0406444117317,
+        "totalTimeHrs": 0.4343777731045286,
+        "markerDescription": "MyMarkerName",
+        "circleChecked": true,
+        "timeCreated": "2023-06-17 16:26:23"
+    }`
+      localStorage.setItem('editRoute', tutorialRoute);
+      this.loadEditRoute();
+    },
     changeMapStyle(){
       if(this.url === 'https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png'){
         this.url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -766,4 +966,7 @@ export default {
       overflow: auto;
     }
   }
+  #map-wrap :hover {
+  cursor: crosshair;
+}
 </style>

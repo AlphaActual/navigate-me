@@ -11,6 +11,7 @@
   --brown-main: #3e2c12;
   --danger-main: #ff8961;
   --warning-main: #ffc107;
+  --bright-red: red;
 }
 
 .bg-brown-main {
@@ -94,9 +95,7 @@ img[src*="pin"]:hover {
   width: calc(100vw - 400px);
 }
 
-#map-wrap :hover {
-  cursor: crosshair;
-}
+
 
 /* animations */
 
@@ -154,7 +153,19 @@ img[src*="pin"]:hover {
   opacity: 1;
 }
 
-/* loader */
+.elementFadeIn-leave-to,
+.elementFadeIn-enter-from {
+  opacity: 0;
+}
+.elementFadeIn-leave-from,
+.elementFadeIn-enter-to {
+  opacity: 1;
+}
+.elementFadeIn-leave-active,
+.elementFadeIn-enter-active {
+  transition: opacity 0.5s;
+}
+
 
 .lds-ellipsis {
   display: inline-block;
@@ -227,8 +238,46 @@ img[src*="pin"]:hover {
   text-decoration: none;
 }
 
+.heighlight {
+  outline: 5px dashed var(--bright-red);
+  position: relative;
+  animation: size 3s ease-in-out infinite;
+  transition: all 300ms ease;
+  z-index: 6000;
+}
+@keyframes size {
+  0% {
+    outline:5px dashed var(--bright-red);
+  }
+  
+  25% {
+    outline:5px dashed transparent;
+  }
+  
+  50% {
+    outline:5px dashed var(--bright-red);
+  }
+  
+  75% {
+    outline:5px dashed transparent;
+  }
+  
+  100% {
+    outline:5px dashed var(--bright-red);
+  }
+}
+
 .reg-title {
   font-size: 1.5rem;
   font-family: "Cinzel", "Times New Roman", Times, serif, sans-serif;
   color: var(--brown-main);
+}
+.black-overlay {
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5000;
+  width: 100%;
+  height: 100%;
 }

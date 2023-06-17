@@ -1,161 +1,162 @@
 <template>
   <div class="main-div">
-     <Header back="/routes" pageTitle="Create/edit route" :totalD="totalDistance" :totalT="this.formatTime(this.totalTimeHrs)" />
-  <div class="container-fluid">
-    <div class="row wrapper">
+    <Header back="/routes" pageTitle="Create/edit route" :totalD="totalDistance" :totalT="this.formatTime(this.totalTimeHrs)" />
+    <div class="container-fluid">
+      <div class="row wrapper">
 
-      <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
-        <!-- save row -->
-        <div>
+        <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
+          <!-- save row -->
           <div>
-            <div class="d-flex">
-              <button @click="saveToLocalStorage" class="save-btn btn d-flex justify-content-center mb-2" :disabled="isDisabled">
-                <div>Save route</div>
-                <div v-show="showSpinner" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-              </button>
+            <div>
+              <div class="d-flex">
+                <button @click="saveToLocalStorage" class="save-btn btn d-flex justify-content-center mb-2" :disabled="isDisabled" id="save-btn">
+                  <div>Save route</div>
+                  <div v-show="showSpinner" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                </button>
+              </div>
+              <input v-model="routeName" name="name-input" id="name-input" type="text" class="text-center btn-secondary-outline p-1 d-block"/>
+
+              
             </div>
-            <input v-model="routeName" name="name-input" id="name-input" type="text" class="text-center btn-secondary-outline p-1 d-block"/>
+          </div>
+          <!-- end of save row -->
+
+          <hr>
+
+          <!-- speed row -->
+          <div>
+            <div class="d-flex align-items-center">
+              <label class="mb-0 me-2" for="speed-input">Set {{circleChecked ? 'radius':'speed'}}: </label>
+              <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" min="0.1" step="0.1" required class="text-danger-main fw-bold btn-secondary-outline d-block"/> {{circleChecked ? 'NM':'kts'}}
+              <button v-if="!circleChecked" @click="updateSpeeds" class=" animated-button btn ms-1"><i class=" icon-1 fa-solid fa-play"></i><i class=" icon-2 fa-solid fa-play"></i><i class=" icon-3 fa-solid fa-play"></i></button>
+            </div>
+          </div>
+          <!-- end of speed row -->
+
+          <hr>
+
+          <!-- marker icons row -->
+          <div class="icons-row d-flex justify-content-around align-items-center">
+            
+              <input type="radio" class="btn-check" name="options" id="option-waypoint" autocomplete="off" checked>
+              <label @click="CircleChecked(false)" class="btn btn-warning" for="option-waypoint"><i class="fa-solid fa-location-dot"></i></label>
+
+              <input type="radio" class="btn-check" name="options" id="option-circle" autocomplete="off">
+              <label @click="CircleChecked(true)" class="btn btn-warning" for="option-circle"><i class="fa-regular fa-circle"></i></label>
+
+              <input type="radio" class="btn-check" name="options" id="option-anchor" autocomplete="off">
+              <label @click="CircleChecked(false)" class="btn btn-warning" for="option-anchor"><i class="fa-solid fa-anchor"></i></label>
+
+              <input type="radio" class="btn-check" name="options" id="option-pin" autocomplete="off">
+              <label @click="CircleChecked(false)" class="btn btn-warning" for="option-pin"><i class="fa-solid fa-map-pin"></i></label>
+
+              <div class="marker-info">
+                <input v-model="markerDescription" name="marker-in
+                circleChecked: false,put" id="marker-input" type="text" class="btn-secondary-outline p-1 d-block"/>
+              </div>
 
             
           </div>
-        </div>
-        <!-- end of save row -->
+          <!--end of marker icons row -->
 
-        <hr>
+          <hr>
 
-        <!-- speed row -->
-         <div>
-          <div class="d-flex align-items-center">
-            <label class="mb-0 me-2" for="speed-input">Set {{circleChecked ? 'radius':'speed'}}: </label>
-            <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" min="0.1" step="0.1" required class="text-danger-main fw-bold btn-secondary-outline d-block"/> {{circleChecked ? 'NM':'kts'}}
-            <button v-if="!circleChecked" @click="updateSpeeds" class=" animated-button btn ms-1"><i class=" icon-1 fa-solid fa-play"></i><i class=" icon-2 fa-solid fa-play"></i><i class=" icon-3 fa-solid fa-play"></i></button>
-          </div>
-        </div>
-        <!-- end of speed row -->
-
-        <hr>
-
-        <!-- marker icons row -->
-        <div class="icons-row d-flex justify-content-around align-items-center">
-          
-            <input type="radio" class="btn-check" name="options" id="option-waypoint" autocomplete="off" checked>
-            <label @click="CircleChecked(false)" class="btn btn-warning" for="option-waypoint"><i class="fa-solid fa-location-dot"></i></label>
-
-            <input type="radio" class="btn-check" name="options" id="option-circle" autocomplete="off">
-            <label @click="CircleChecked(true)" class="btn btn-warning" for="option-circle"><i class="fa-regular fa-circle"></i></label>
-
-            <input type="radio" class="btn-check" name="options" id="option-anchor" autocomplete="off">
-            <label @click="CircleChecked(false)" class="btn btn-warning" for="option-anchor"><i class="fa-solid fa-anchor"></i></label>
-
-            <input type="radio" class="btn-check" name="options" id="option-pin" autocomplete="off">
-            <label @click="CircleChecked(false)" class="btn btn-warning" for="option-pin"><i class="fa-solid fa-map-pin"></i></label>
-
-            <div class="marker-info">
-              <input v-model="markerDescription" name="marker-in
-              circleChecked: false,put" id="marker-input" type="text" class="btn-secondary-outline p-1 d-block"/>
+          <!-- sort active insert delete row -->
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <button class=" sort-button btn btn-outline-secondary" @click="sortWPs">Sort <i :class="['fa-solid', 'fa-arrow-down',{ 'reverse-arrow': !sortedDescending }]"></i></button>
+              <!-- <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span> -->
             </div>
 
-          
-        </div>
-        <!--end of marker icons row -->
-
-        <hr>
-
-        <!-- sort active insert delete row -->
-        <div class="d-flex justify-content-between align-items-center">
-          <div class="d-flex align-items-center">
-            <button class=" sort-button btn btn-outline-secondary" @click="sortWPs">Sort <i :class="['fa-solid', 'fa-arrow-down',{ 'reverse-arrow': !sortedDescending }]"></i></button>
-            <!-- <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span> -->
+            <div>
+              <div class="active-wp btn rounded" @click="centerOnActive">Active: <span class="fw-bold text-danger-main">{{activeWP?.name}}</span></div>
+              <div @click="insertWp" :class="['btn', 'btn-warning',{'disabled': this.activeWP?.id === this.waypoints[this.waypoints.length-1]?.id}]">Insert</div>
+              <div @click="removeWP(activeWP?.id)" class="btn btn-danger">Delete active</div>
+            </div>
           </div>
+          <!-- end of sort active insert delete row -->
 
-          <div>
-            <div class="active-wp btn rounded" @click="centerOnActive">Active: <span class="fw-bold text-danger-main">{{activeWP?.name}}</span></div>
-            <div @click="insertWp" :class="['btn', 'btn-warning',{'disabled': this.activeWP?.id === this.waypoints[this.waypoints.length-1]?.id}]">Insert</div>
-            <div @click="removeWP(activeWP?.id)" class="btn btn-danger">Delete active</div>
+          <hr>
+
+          <!-- waypoint cards -->
+          <div class="waypoint-container">
+            <!-- waypoint list -->
+            <WaypointCard v-in-viewport.once class="slide-left" :lastWp="waypoints[waypoints.length-1]" :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @card-clicked="handleCardClick(wp)"/>
           </div>
-        </div>
-        <!-- end of sort active insert delete row -->
+          <!-- end of waypoint cards -->
+        </aside>
 
-        <hr>
+        <div id="map-wrap" >
+          <button class="btn change-map-style" @click="changeMapStyle"><i class="fa-solid fa-palette fa-lg"></i></button>
+          <button class="btn get-my-location" @click="getMyLocation"><i class="fa-solid fa-crosshairs fa-lg"></i></button>
+          <client-only>
+            <!-- map -->
+            <l-map :zoom="zoom" :center="center" @click="handleMapClick">
+              <!-- tile layer -->
+              <l-tile-layer :url="url"></l-tile-layer>
+              
+              <!-- waypoint markers -->
+              <l-marker v-for="(wp,index) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id" :icon="index === 0 ? firstMarkerIcon : defaultMarkerIcon" >
+                <l-popup> 
+                  <p class="p-0 m-0 fw-bold">WP{{wp.name}}</p> 
+                  <p class="p-0 m-0">Course: {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
+                  <p class="p-0 m-0">Distance: {{ wp.wpToWp != 'N/A'? wp.wpToWp.toFixed(2) + ' NM':'N/A'}}</p>
+                  <p class="p-0 m-0">Speed: {{wp.id != waypoints[waypoints.length-1].id ? wp.speed + ' kts':'N/A'}}</p>
+                  </l-popup>
+              </l-marker>
+              <!-- polylines -->
+              <l-polyline :lat-lngs="getLinesCoordinates"></l-polyline>
+              <l-polyline v-if="showBoatPolyline" :lat-lngs="boatPolyline" color="#170"></l-polyline>
 
-        <!-- waypoint cards -->
-        <div class="waypoint-container">
-          <!-- waypoint list -->
-          <WaypointCard v-in-viewport.once class="slide-left" :lastWp="waypoints[waypoints.length-1]" :activePoint="activeWP" v-for="(wp) in showSorted" :waypoint="wp" :key="wp.id" @card-clicked="handleCardClick(wp)"/>
-        </div>
-        <!-- end of waypoint cards -->
-      </aside>
-
-      <div id="map-wrap" >
-        <button class="btn change-map-style" @click="changeMapStyle"><i class="fa-solid fa-palette fa-lg"></i></button>
-        <button class="btn get-my-location" @click="getMyLocation"><i class="fa-solid fa-crosshairs fa-lg"></i></button>
-        <client-only>
-          <!-- map -->
-          <l-map :zoom="zoom" :center="center" @click="handleMapClick">
-            <!-- tile layer -->
-            <l-tile-layer :url="url"></l-tile-layer>
-            
-            <!-- waypoint markers -->
-            <l-marker v-for="(wp,index) in waypoints" :lat-lng="[wp.lat,wp.lng]" @click="markerClick(wp.id)" :key="wp.id" :icon="index === 0 ? firstMarkerIcon : defaultMarkerIcon" >
-              <l-popup> 
-                <p class="p-0 m-0 fw-bold">WP{{wp.name}}</p> 
-                <p class="p-0 m-0">Course: {{wp.nextCourse != 'N/A'? Math.floor(wp.nextCourse)+'°':'N/A'}}</p>
-                <p class="p-0 m-0">Distance: {{ wp.wpToWp != 'N/A'? wp.wpToWp.toFixed(2) + ' NM':'N/A'}}</p>
-                <p class="p-0 m-0">Speed: {{wp.id != waypoints[waypoints.length-1].id ? wp.speed + ' kts':'N/A'}}</p>
+              <!-- circle markers -->
+              <l-circle v-for="(circle) in circles" :key="circle.id" :lat-lng="[circle.lat, circle.lng]" :radius="circle.radius">
+                <l-popup>
+                  <p class="p-0 m-0 fw-bold">{{circle.description}}</p>
+                  <p class="p-0 m-0">Radius: {{circle.radius/1852}} NM</p>
+                  <button @click="removeCircle(circle.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
                 </l-popup>
-            </l-marker>
-            <!-- polylines -->
-            <l-polyline :lat-lngs="getLinesCoordinates"></l-polyline>
-            <l-polyline v-if="showBoatPolyline" :lat-lngs="boatPolyline" color="#170"></l-polyline>
+              </l-circle>
 
-            <!-- circle markers -->
-            <l-circle v-for="(circle) in circles" :key="circle.id" :lat-lng="[circle.lat, circle.lng]" :radius="circle.radius">
-              <l-popup>
-                <p class="p-0 m-0 fw-bold">{{circle.description}}</p>
-                <p class="p-0 m-0">Radius: {{circle.radius/1852}} NM</p>
-                <button @click="removeCircle(circle.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
-              </l-popup>
-            </l-circle>
+              <!-- anchor markers -->
+              <l-marker v-for="(anchor) in anchors" :key="anchor.id" :lat-lng="[anchor.lat, anchor.lng]" :icon="anchorMarkerIcon">
+                <l-popup>
+                  <p class="p-0 m-0 fw-bold">{{anchor.description}}</p>
+                  <p class="p-0 m-0">Lat: {{formatLatitude(anchor.lat)}}</p>
+                  <p class="p-0 m-0">Long: {{formatLongitude(anchor.lng)}}</p>
+                  <button @click="removeAnchor(anchor.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
+                </l-popup>
+              </l-marker>
 
-            <!-- anchor markers -->
-            <l-marker v-for="(anchor) in anchors" :key="anchor.id" :lat-lng="[anchor.lat, anchor.lng]" :icon="anchorMarkerIcon">
-              <l-popup>
-                <p class="p-0 m-0 fw-bold">{{anchor.description}}</p>
-                <p class="p-0 m-0">Lat: {{formatLatitude(anchor.lat)}}</p>
-                <p class="p-0 m-0">Long: {{formatLongitude(anchor.lng)}}</p>
-                <button @click="removeAnchor(anchor.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
-              </l-popup>
-            </l-marker>
+              <!-- pin markers -->
+              <l-marker v-for="(pin) in pins" :key="pin.id" :lat-lng="[pin.lat, pin.lng]" :icon="pinMarkerIcon">
+                <l-popup>
+                  <p class="p-0 m-0 fw-bold">{{pin.description}}</p>
+                  <p class="p-0 m-0">Lat: {{formatLatitude(pin.lat)}}</p>
+                  <p class="p-0 m-0">Long: {{formatLongitude(pin.lng)}}</p>
+                  <button @click="removePin(pin.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
+                </l-popup>
+              </l-marker>
+              <!-- my boat -->
+              <l-marker :lat-lng="getBoatCoordinates" :icon="boatMarkerIcon">
+                <!-- <l-popup>
+                  <p class="p-0 m-0 fw-bold">{{pin.description}}</p>
+                  <p class="p-0 m-0">Lat: {{formatLatitude(pin.lat)}}</p>
+                  <p class="p-0 m-0">Long: {{formatLongitude(pin.lng)}}</p>
+                  <button @click="removePin(pin.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
+                </l-popup> -->
+              </l-marker>
 
-            <!-- pin markers -->
-            <l-marker v-for="(pin) in pins" :key="pin.id" :lat-lng="[pin.lat, pin.lng]" :icon="pinMarkerIcon">
-              <l-popup>
-                <p class="p-0 m-0 fw-bold">{{pin.description}}</p>
-                <p class="p-0 m-0">Lat: {{formatLatitude(pin.lat)}}</p>
-                <p class="p-0 m-0">Long: {{formatLongitude(pin.lng)}}</p>
-                <button @click="removePin(pin.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
-              </l-popup>
-            </l-marker>
-            <!-- my boat -->
-            <l-marker :lat-lng="getBoatCoordinates" :icon="boatMarkerIcon">
-              <!-- <l-popup>
-                <p class="p-0 m-0 fw-bold">{{pin.description}}</p>
-                <p class="p-0 m-0">Lat: {{formatLatitude(pin.lat)}}</p>
-                <p class="p-0 m-0">Long: {{formatLongitude(pin.lng)}}</p>
-                <button @click="removePin(pin.id)" class=" btn btn-outline-danger ps-2 pe-2 pt-0 pb-0">Delete</button>
-              </l-popup> -->
-            </l-marker>
+            </l-map>
+          </client-only>
+          <div class="line line-vertical"></div>
+          <div class="line line-horizontal"></div>
+        </div>
 
-          </l-map>
-        </client-only>
-        <div class="line line-vertical"></div>
-        <div class="line line-horizontal"></div>
       </div>
-
     </div>
+    <div v-if="this.$store.state.tutorialVisible" class="black-overlay"></div>
+    <Tutorial />
   </div>
-  </div>
- 
 </template>
 
 <script>
@@ -567,7 +568,7 @@ export default {
       const distances = inputArray.map((wp,i)=>{
         return {
           distance:this.calculateDistance({lat:this.boatPosition[0],lng:this.boatPosition[1]},wp),
-          index:i
+          index:i 
       }});
       const sortedDistances = distances.sort((a,b)=>a.distance-b.distance);
       return inputArray[sortedDistances[0].index];
@@ -867,4 +868,8 @@ export default {
       overflow: auto;
     }
   }
+  #map-wrap :hover {
+  cursor: crosshair;
+}
+
 </style>

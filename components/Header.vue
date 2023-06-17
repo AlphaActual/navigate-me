@@ -23,6 +23,7 @@
     </div>
     <div>Username</div>
     <div class="logout-gumb-container">
+      <button class="logout-gumb btn" @click="()=>{this.startTutorial(); $emit('load-route')}">Tutorial</button>
       <button class="logout-gumb btn" @click="logout">Logout</button>
     </div>
   </div>
@@ -49,6 +50,9 @@ export default {
     },
   },
   methods: {
+    startTutorial(){
+      this.$store.commit('toggleTutorial');
+    },
     logout() {
       // Perform logout logic here
       // For example, clear session data or call an API endpoint

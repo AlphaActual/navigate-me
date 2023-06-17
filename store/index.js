@@ -1,25 +1,20 @@
 export const state = () => ({
-    counter: 0,
-    
+    tutorialVisible: false,
+    isLoggedIn: false,
 })
 
-export const getters = {
-    getCounter(state) {
-        return state.counter
-    }
-}
 
 export const mutations = {
-    increment(state) {
-        state.counter++
+    toggleTutorial(state) {
+        state.tutorialVisible = !state.tutorialVisible;
+    },
+    toggleLogged(state) {
+        state.isLoggedIn = !state.isLoggedIn;
     }
 }
 
-export const actions = {
-    async fetchCounter({ state }) {
-        // make request
-        const res = { data: 10 };
-        state.counter = res.data;
-        return res.data;
-    }
-}
+// ako zelis samo citati vrijednost isLoggedIn onda
+// this.$store.state.isLoggedIn
+
+// ako zelis mijenjati vrijednost isLoggedIn onda
+// this.$store.commit('toggleLogged')
