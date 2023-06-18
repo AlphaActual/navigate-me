@@ -42,13 +42,13 @@ export const state = () => ({
             id: 6,
             title: 'Adjusting the speed between waypoints',
             text: 'To adjust the speed between active and next waypoint first select the <b>Waypoint icon</b> in the side panel , adjust the speed value and press the <b>three arrows icon.</b> <br> Note: Total calculated speed for the route, shown in the nav/info bar, changes as you change each individual speed between WPs  <br> <br> Click on the next button to continue.',
-            elementID: ['.icons-row','speed-input','update-speed-btn','total-time'],
+            elementID: ['waypoint-label','speed-input','update-speed-btn','total-time'],
         },
         {   
             id: 7,
             title: 'Inserting a waypoint',
             text: 'To insert a waypoint between two existing waypoints first make sure <b>Waypoint icon</b> is selected in the side panel, optinally adjust the speed (without pressing the arrows button) and press the <b>insert</b> button. <br> New waypoint will be inserted after the active one.  </b> <br> <br> Click on the next button to continue.',
-            elementID: ['.icons-row','insert-btn'],
+            elementID: ['waypoint-label','insert-btn'],
         },
         {   
             id: 8,

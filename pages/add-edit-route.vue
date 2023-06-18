@@ -37,7 +37,7 @@
           <div class="icons-row d-flex justify-content-around align-items-center">
             
               <input type="radio" class="btn-check" name="options" id="option-waypoint" autocomplete="off" checked>
-              <label @click="CircleChecked(false)" class="btn btn-warning" for="option-waypoint"><i class="fa-solid fa-location-dot"></i></label>
+              <label id="waypoint-label" @click="CircleChecked(false)" class="btn btn-warning" for="option-waypoint"><i class="fa-solid fa-location-dot"></i></label>
 
               <input type="radio" class="btn-check" name="options" id="option-circle" autocomplete="off">
               <label @click="CircleChecked(true)" class="btn btn-warning" for="option-circle"><i class="fa-regular fa-circle"></i></label>
