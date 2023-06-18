@@ -30,7 +30,7 @@ export const state = () => ({
             id: 4,
             title: 'Waypoint parameters',
             text: 'When you click on a waypoint you will see the following info: <br> <br> <li>Course to the next wayoint</li> <li>Distance to the next waypoint</li> <li>Speed to the next waypoint</li> <br> Same info can be seen in the side panel where the selected WP card will be colored <span style="color:#ffc107;">yellow</span>. Try clicking on the cards and different waypoints on the map. <br> <br> Click on the next button to continue.',
-            elementID: ['.leaflet-marker-icon[src="/_nuxt/assets/img/icons/default.png"]','.waypoint-container'],
+            elementID: ['.leaflet-marker-icon','.waypoint-container'],
         },
         {   
             id: 5,
