@@ -7,7 +7,7 @@
         <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
           <!-- save row -->
           <div>
-            <div>
+            <div id="save-row">
               <div class="d-flex">
                 <button @click="saveToLocalStorage" class="save-btn btn d-flex justify-content-center mb-2" :disabled="isDisabled" id="save-btn">
                   <div>Save route</div>
@@ -15,8 +15,6 @@
                 </button>
               </div>
               <input v-model="routeName" name="name-input" id="name-input" type="text" class="text-center btn-secondary-outline p-1 d-block"/>
-
-              
             </div>
           </div>
           <!-- end of save row -->
@@ -28,7 +26,7 @@
             <div class="d-flex align-items-center">
               <label class="mb-0 me-2" for="speed-input">Set {{circleChecked ? 'radius':'speed'}}: </label>
               <input v-model="shipSpeed" name="speed-input" id="speed-input" type="number" min="0.1" step="0.1" required class="text-danger-main fw-bold btn-secondary-outline d-block"/> {{circleChecked ? 'NM':'kts'}}
-              <button v-if="!circleChecked" @click="updateSpeeds" class=" animated-button btn ms-1"><i class=" icon-1 fa-solid fa-play"></i><i class=" icon-2 fa-solid fa-play"></i><i class=" icon-3 fa-solid fa-play"></i></button>
+              <button v-if="!circleChecked" id="update-speed-btn" @click="updateSpeeds" class=" animated-button btn ms-1"><i class=" icon-1 fa-solid fa-play"></i><i class=" icon-2 fa-solid fa-play"></i><i class=" icon-3 fa-solid fa-play"></i></button>
             </div>
           </div>
           <!-- end of speed row -->
@@ -70,8 +68,8 @@
 
             <div>
               <div class="active-wp btn rounded" @click="centerOnActive">Active: <span class="fw-bold text-danger-main">{{activeWP?.name}}</span></div>
-              <div @click="insertWp" :class="['btn', 'btn-warning',{'disabled': this.activeWP?.id === this.waypoints[this.waypoints.length-1]?.id}]">Insert</div>
-              <div @click="removeWP(activeWP?.id)" class="btn btn-danger">Delete active</div>
+              <div id="insert-btn" @click="insertWp" :class="['btn', 'btn-warning',{'disabled': this.activeWP?.id === this.waypoints[this.waypoints.length-1]?.id}]">Insert</div>
+              <div @click="removeWP(activeWP?.id)" class="btn btn-danger" id="delete-active">Delete active</div>
             </div>
           </div>
           <!-- end of sort active insert delete row -->
@@ -87,7 +85,7 @@
         </aside>
 
         <div id="map-wrap" >
-          <button class="btn change-map-style" @click="changeMapStyle"><i class="fa-solid fa-palette fa-lg"></i></button>
+          <button id="map-style-btn" class="btn change-map-style" @click="changeMapStyle"><i class="fa-solid fa-palette fa-lg"></i></button>
           <client-only>
             <!-- map -->
             <l-map :zoom="zoom" :center="center" @click="handleMapClick">
@@ -143,8 +141,7 @@
 
       </div>
     </div>
-    <!-- <div v-if="this.$store.state.tutorialVisible" class="black-overlay"></div> -->
-    <Tutorial />
+    <Tutorial v-if="$store.state.tutorialVisible" :slides="this.$store.state.tutorialSlides1" />
   </div>
  
 </template>
@@ -467,11 +464,9 @@ export default {
       if(this.waypoints.length < 1) return;
       // pronadji indeks aktivnog waypointa
       const activeIndex = this.waypoints.findIndex(wp=>wp.id === this.activeWP.id)
-      // updejtaj speed za sve waypointove od aktivnog pa do kraja arraya
       let updatedArray = [...this.waypoints];
-      for (let i = activeIndex; i < updatedArray.length; i++) {
-        updatedArray[i].speed = this.shipSpeed;
-      }
+      // updejtaj speed aktivnog waypointa
+      updatedArray[activeIndex].speed = this.shipSpeed;
       this.waypoints = updatedArray;
       this.getTotalTime();
     },
@@ -609,6 +604,7 @@ export default {
       } catch (e) {
         console.error('Error saving to local storage:', e);
       }
+      this.$store.commit('setTutorialVisibility',false);
       setTimeout(() => {
         this.$router.push('/routes');
       }, 2000);
@@ -638,13 +634,18 @@ export default {
 
     },
     loadTutorialRoute(){
+      // ako je neka ruta već unesena, ne učitavaj tutorial rutu
+      if(this.waypoints.length > 1) {
+        this.centerOnActive();
+        return;
+      };
       const tutorialRoute = `{
-        "routeID": 1687011983460,
-        "routeName": "Tutorial route",
+        "routeID": 1687082408571,
+        "routeName": "Tutorial:  Rovinj - Crveni otok",
         "zoom": 15,
         "center": [
-            45.07182340255548,
-            13.609442710876467
+            45.06013860266919,
+            13.62431287765503
         ],
         "marker": [
             45.08397548484512,
@@ -652,185 +653,136 @@ export default {
         ],
         "waypoints": [
             {
-                "id": 1687011722606,
+                "id": 1687082282570,
                 "name": 0,
-                "lat": 45.096155277505694,
-                "lng": 13.636007308959963,
-                "nextCourse": 221.68202952018285,
-                "wpToWp": 0.22558803649253045,
+                "lat": 45.08108922052623,
+                "lng": 13.63458037376404,
+                "nextCourse": 174.6482483821179,
+                "wpToWp": 0.11715338191227812,
                 "speed": 7,
-                "timeCreated": "2023-06-17 16:22:02"
+                "timeCreated": "2023-06-18 11:58:02"
             },
             {
-                "id": 1687011723733,
+                "id": 1687082285640,
                 "name": 1,
-                "lat": 45.092974238980844,
-                "lng": 13.633174896240236,
-                "nextCourse": 261.7117401040918,
-                "wpToWp": 0.23402599885408049,
+                "lat": 45.079142235470854,
+                "lng": 13.634762763977053,
+                "nextCourse": 199.59023156313935,
+                "wpToWp": 0.08958152258096556,
                 "speed": 7,
-                "timeCreated": "2023-06-17 16:22:03"
+                "timeCreated": "2023-06-18 11:58:05"
             },
             {
-                "id": 1687011724588,
+                "id": 1687082286692,
                 "name": 2,
-                "lat": 45.09218652588025,
-                "lng": 13.627767562866213,
-                "nextCourse": 258.39424652711006,
-                "wpToWp": 0.31258761208938823,
+                "lat": 45.077695211383016,
+                "lng": 13.634247779846193,
+                "nextCourse": 243.28674081552543,
+                "wpToWp": 0.14578691950598158,
                 "speed": 7,
-                "timeCreated": "2023-06-17 16:22:04"
+                "timeCreated": "2023-06-18 11:58:06"
             },
             {
-                "id": 1687011725160,
+                "id": 1687082287850,
                 "name": 3,
-                "lat": 45.09073225776601,
-                "lng": 13.620686531066896,
-                "nextCourse": 274.0720981037599,
-                "wpToWp": 0.4351350671500277,
+                "lat": 45.07628603228804,
+                "lng": 13.631447553634645,
+                "nextCourse": 238.07298721887153,
+                "wpToWp": 0.21657716980294373,
                 "speed": 7,
-                "timeCreated": "2023-06-17 16:22:05"
+                "timeCreated": "2023-06-18 11:58:07"
             },
             {
-                "id": 1687011727036,
+                "id": 1687082290864,
                 "name": 4,
-                "lat": 45.09145939645188,
-                "lng": 13.610472679138185,
-                "nextCourse": 265.38717622995466,
-                "wpToWp": 0.1922453840090877,
+                "lat": 45.07389944004184,
+                "lng": 13.627617359161379,
+                "nextCourse": 231.61291160311748,
+                "wpToWp": 0.2132987318102703,
                 "speed": 7,
-                "timeCreated": "2023-06-17 16:22:07"
+                "timeCreated": "2023-06-18 11:58:10"
             },
             {
-                "id": 1687011727575,
+                "id": 1687082291879,
                 "name": 5,
-                "lat": 45.09109582826613,
-                "lng": 13.605966567993166,
-                "nextCourse": 193.17121504438649,
-                "wpToWp": 0.21203580801306057,
+                "lat": 45.071247553980406,
+                "lng": 13.624269962310791,
+                "nextCourse": 217.69358807637187,
+                "wpToWp": 0.3399942040670924,
                 "speed": 7,
-                "timeCreated": "2023-06-17 16:22:07"
+                "timeCreated": "2023-06-18 11:58:11"
             },
             {
-                "id": 1687011728048,
+                "id": 1687082293881,
                 "name": 6,
-                "lat": 45.087611515786854,
-                "lng": 13.605151176452638,
-                "nextCourse": 191.27331230282897,
-                "wpToWp": 0.2480191225912698,
+                "lat": 45.06627683036563,
+                "lng": 13.620429039001465,
+                "nextCourse": 202.68959871978976,
+                "wpToWp": 0.1413705759480134,
                 "speed": 7,
-                "timeCreated": "2023-06-17 16:22:08"
+                "timeCreated": "2023-06-18 11:58:13"
             },
             {
-                "id": 1687011728475,
+                "id": 1687082297666,
                 "name": 7,
-                "lat": 45.08352096470447,
-                "lng": 13.60433578491211,
-                "nextCourse": 177.29719789965839,
-                "wpToWp": 0.21844592978606567,
+                "lat": 45.064018645449636,
+                "lng": 13.619484901428224,
+                "nextCourse": 161.2961679542591,
+                "wpToWp": 0.08607841149619887,
                 "speed": 7,
-                "timeCreated": "2023-06-17 16:22:08"
+                "timeCreated": "2023-06-18 11:58:17"
             },
             {
-                "id": 1687011728902,
+                "id": 1687082299593,
                 "name": 8,
-                "lat": 45.07988467339586,
-                "lng": 13.604507446289062,
-                "nextCourse": 177.4394018384528,
-                "wpToWp": 0.17293638432622427,
+                "lat": 45.06262428538732,
+                "lng": 13.619956970214846,
+                "nextCourse": 124.63071369907357,
+                "wpToWp": 0.11454444573187138,
                 "speed": 7,
-                "timeCreated": "2023-06-17 16:22:08"
+                "timeCreated": "2023-06-18 11:58:19"
             },
             {
-                "id": 1687011729346,
+                "id": 1687082300371,
                 "name": 9,
-                "lat": 45.07700577864089,
-                "lng": 13.604636192321777,
-                "nextCourse": 137.15488262445353,
-                "wpToWp": 0.3719522308240335,
+                "lat": 45.06129051785286,
+                "lng": 13.621888160705568,
+                "nextCourse": 115.41108490925421,
+                "wpToWp": 0.12392658375414065,
                 "speed": 7,
-                "timeCreated": "2023-06-17 16:22:09"
+                "timeCreated": "2023-06-18 11:58:20"
             },
             {
-                "id": 1687011730327,
+                "id": 1687082301847,
                 "name": 10,
-                "lat": 45.07182340255548,
-                "lng": 13.609442710876467,
-                "nextCourse": 83.96190753450014,
-                "wpToWp": 0.41767283759593166,
-                "speed": 7,
-                "timeCreated": "2023-06-17 16:22:10"
-            },
-            {
-                "id": 1687011981940,
-                "name": 11,
-                "lat": 45.07285385394578,
-                "lng": 13.619184494018556,
+                "lat": 45.06013860266919,
+                "lng": 13.62431287765503,
                 "nextCourse": "N/A",
                 "wpToWp": "N/A",
-                "speed": "0.1",
-                "timeCreated": "2023-06-17 16:26:21"
+                "speed": 7,
+                "timeCreated": "2023-06-18 11:58:21"
             }
         ],
-        "circles": [
-            {
-                "id": 1687011756146,
-                "description": "MyMarkerName",
-                "lat": 45.09488288335903,
-                "lng": 13.608198165893556,
-                "radius": 185.20000000000002,
-                "timeCreated": "2023-06-17 16:22:36"
-            }
-        ],
-        "anchors": [
-            {
-                "id": 1687011733456,
-                "description": "MyMarkerName",
-                "lat": 45.09470111045228,
-                "lng": 13.618969917297365,
-                "timeCreated": "2023-06-17 16:22:13"
-            }
-        ],
-        "pins": [
-            {
-                "id": 1687011735818,
-                "description": "MyMarkerName",
-                "lat": 45.09657940258767,
-                "lng": 13.637380599975588,
-                "timeCreated": "2023-06-17 16:22:15"
-            },
-            {
-                "id": 1687011737334,
-                "description": "MyMarkerName",
-                "lat": 45.084248195193716,
-                "lng": 13.633990287780763,
-                "timeCreated": "2023-06-17 16:22:17"
-            },
-            {
-                "id": 1687011739499,
-                "description": "MyMarkerName",
-                "lat": 45.077551264574474,
-                "lng": 13.625707626342773,
-                "timeCreated": "2023-06-17 16:22:19"
-            }
-        ],
+        "circles": [],
+        "anchors": [],
+        "pins": [],
         "sortedDescending": true,
         "activeWP": {
-            "id": 1687011981940,
-            "name": 11,
-            "lat": 45.07285385394578,
-            "lng": 13.619184494018556,
+            "id": 1687082301847,
+            "name": 10,
+            "lat": 45.06013860266919,
+            "lng": 13.62431287765503,
             "nextCourse": "N/A",
             "wpToWp": "N/A",
-            "speed": "0.1",
-            "timeCreated": "2023-06-17 16:26:21"
+            "speed": 7,
+            "timeCreated": "2023-06-18 11:58:21"
         },
-        "shipSpeed": "0.1",
-        "totalDistance": 3.0406444117317,
-        "totalTimeHrs": 0.4343777731045286,
+        "shipSpeed": 7,
+        "totalDistance": 1.5883119466097557,
+        "totalTimeHrs": 0.22690170665853657,
         "markerDescription": "MyMarkerName",
-        "circleChecked": true,
-        "timeCreated": "2023-06-17 16:26:23"
+        "circleChecked": false,
+        "timeCreated": "2023-06-18 12:00:08"
     }`
       localStorage.setItem('editRoute', tutorialRoute);
       this.loadEditRoute();

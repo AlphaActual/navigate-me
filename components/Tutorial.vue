@@ -1,6 +1,6 @@
 <template>
     <!-- Modal -->
-    <div v-if="$store.state.tutorialVisible" class="tutorial-content">
+    <div  class="tutorial-content">
         <div>
             <div class="tutorial-content__header d-flex justify-content-between"> 
                 <h5 class="tutorial-content__title" v-html="currentSlide.title"></h5> 
@@ -23,117 +23,75 @@
 
 export default {
     name: 'Tutorial',
+    props: {
+        slides: {
+            type: Array,
+            required: true
+        }
+    },
     data() {
         return {
-            currentSlide: {},
-            slides: [
-                {   
-                    id: 0,   
-                    title: 'Welcome to the Route Planner',
-                    text: 'Here you can create your route and save it to your profile for later use. <br> You can also load your saved routes and edit them.',
-                    elementID: null,
-                },
-                {   
-                    id: 1,
-                    title: 'Creating a Route',
-                    text: 'Slide 2',
-                    elementID: 'save-btn'
-                },
-                {   
-                    id: 2,
-                    title: 'Creating a Route',
-                    text: 'here you type the name of the route',
-                    elementID: 'name-input'
-                },
-                {   
-                    id: 3,
-                    title: 'Moving a waypoint',
-                    text: 'Click on waypoint and then clikt on the new position',
-                    elementID: 'map-wrap'
-                },
-                {   
-                    id: 4,
-                    title: 'Creating a Route',
-                    text: 'Here is speed input',
-                    button: 'Finish!',
-                    elementID: 'speed-input'
-                }
-            ]
+            currentSlide: {}
         }
     },
     mounted() {
         this.currentSlide = this.slides[0];
+        
     },
     methods: {
         nextSlide() {
+            this.removeHighlight();
             let index = this.currentSlide.id;
             if (index < this.slides.length - 1) {
                 this.currentSlide = this.slides[index + 1];
             }
-            // this.removeClonedElement();
-            // this.duplicateElement(this.currentSlide.elementID);
-            this.removeHighlight();
             this.addHighlight();
         },
         prevSlide() {
+            this.removeHighlight();
             let index = this.currentSlide.id;
             if (index > 0) {
                 this.currentSlide = this.slides[index - 1];
             }
-            // this.removeClonedElement();
-            // this.duplicateElement(this.currentSlide.elementID);
-            this.removeHighlight();
             this.addHighlight();
         },
         closeModal() {
-            this.removeClonedElement();
+            this.removeHighlight();
             this.currentSlide = this.slides[0];
             this.$store.commit('toggleTutorial');
         },
-        duplicateElement(elementID) {
-            if (!elementID) {
+        addHighlight(){
+            if (!this.currentSlide.elementID) {
                 return;
             }
-            // Step 1: Select the original element
-            const originalElement = document.getElementById(elementID);
-
-            // Step 2: Create a copy of the element
-            const clonedElement = originalElement.cloneNode(true);
-
-            // Step 3: Set the cloned element's position to absolute
-            clonedElement.style.position = 'absolute';
-            clonedElement.style.zIndex = '10000';
-            clonedElement.classList.add('cloned');
-            clonedElement.classList.add('heighlight');
-
-            // Step 4: Retrieve position and dimensions of the original element relative to the document
-            const originalRect = originalElement.getBoundingClientRect();
-            const originalOffsetTop = originalRect.top + window.scrollY;
-            const originalOffsetLeft = originalRect.left + window.scrollX;
-            const originalOffsetWidth = originalRect.width;
-            const originalOffsetHeight = originalRect.height;
-
-            // Step 5: Set position and dimensions of the cloned element relative to the document
-            clonedElement.style.top = `${originalOffsetTop}px`;
-            clonedElement.style.left = `${originalOffsetLeft}px`;
-            clonedElement.style.width = `${originalOffsetWidth}px`;
-            clonedElement.style.height = `${originalOffsetHeight}px`;
-
-            // Step 6: Append the cloned element to the document body or a container
-            document.body.appendChild(clonedElement);
-        },
-        removeClonedElement() {
-            const clonedElement = document.querySelector('.cloned');
-            if (clonedElement) {
-                clonedElement.remove();
-            }
-        },
-        addHighlight(){
-            document.getElementById(this.currentSlide.elementID).classList.add('heighlight');
+            this.currentSlide.elementID.forEach(element => {
+                // ako je element tipa class, dodaj svim elementima s tom klasom klasu heightlight
+                if(element.includes('.')){
+                    document.querySelectorAll(element).forEach(e => {
+                        e.classList.add('heighlight');
+                    });
+                    return;
+                }
+                // ako je element tipa id, dodaj elementu s tim id-om klasu heightlight
+                document.getElementById(element).classList.add('heighlight');
+            });
         },
         removeHighlight(){
-            document.getElementById(this.currentSlide.elementID).classList.remove('heighlight');
-        }
+            if (!this.currentSlide.elementID) {
+                return;
+            }
+            this.currentSlide.elementID.forEach(element => {
+                // ako je element tipa class, makni svim elementima s tom klasom klasu heightlight
+                if(element.includes('.')){
+                    document.querySelectorAll(element).forEach(e => {
+                        e.classList.remove('heighlight');
+                    });
+                    return;
+                }
+                // ako je element tipa id, ukloni elementu s tim id-om klasu heightlight
+                document.getElementById(element).classList.remove('heighlight');
+            });
+        },
     }
 }
 </script>
@@ -141,14 +99,14 @@ export default {
 <style scoped>
 .tutorial-content {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    bottom: 20px;
+    right: 20px;
     z-index: 11000;
     background-color: #fff;
     padding: 20px;
     width: 600px;
-    height: 300px;
+    height: max-content;
+    min-height: 300px;
     border-radius: 16px;
     display: flex;
     flex-direction: column;

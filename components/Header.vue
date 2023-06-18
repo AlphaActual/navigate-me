@@ -1,5 +1,5 @@
 <template>
-  <div class="header d-flex justify-content-between align-items-center ps-2 pe-2">
+  <div id="header" class="header d-flex justify-content-between align-items-center ps-2 pe-2">
     <div class="fw-bold text-brown-main fs-5 d-flex">
       <nuxt-link v-if="back" :to="back" class="text-brown-main back-link">
         <div class="hover-effect ms-2">
@@ -14,7 +14,7 @@
         {{ pageTitle }}
       </div>
     </div>
-    <div>
+    <div id="total-time">
       Total time: <span class="fw-bold text-brown-main"> {{ totalT }}</span> hrs
     </div>
     <div>
@@ -23,7 +23,7 @@
     </div>
     <div>Username</div>
     <div class="logout-gumb-container">
-      <button class="logout-gumb btn" @click="()=>{this.startTutorial(); $emit('load-route')}">Tutorial</button>
+      <button :disabled="this.$store.state.tutorialVisible" class="logout-gumb btn" @click="()=>{this.startTutorial(); $emit('load-route')}">Tutorial</button>
       <button class="logout-gumb btn" @click="logout">Logout</button>
     </div>
   </div>
