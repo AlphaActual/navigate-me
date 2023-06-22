@@ -42,7 +42,7 @@
 - Prikaz pozicije na temelju geolokacije (TO DO)
 - Praćenje pozicije i usmjeravanje ka sljedećem waypointu (TO DO)
 - izračun ETA (Estimated time of arrival) i drugih parametara putovanja (TO DO)
-
+- pull requests test
 
 
 
