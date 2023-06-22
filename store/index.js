@@ -53,23 +53,29 @@ export const state = () => ({
         {   
             id: 8,
             title: 'Inserting other makers',
-            text: 'To insert other markers (e.g. circle, anchor, pin) simply <b>select</b> the desired marker <b>icon in the side panel</b>, (in case of a circle, adjust it\'s radius above,where the speed box was located), type in a <b>name of the marker</b> in the input field and <b>click on the map.</b> <br> To <b><span style="color:red;">Delete</span></b> a marker click on it on the map and then click <b>delete</b> in the dialog box <br> <br> Click on the next button to continue.',
+            text: 'To <b>insert</b> other markers (e.g. circle, anchor, pin) simply <b>select</b> the desired marker <b>icon in the side panel</b>, (in case of a circle, adjust it\'s radius above,where the speed box was located), type in a <b>name of the marker</b> in the input field and <b>click on the map.</b> <br> <br> Click on the next button to continue.',
             elementID: ['.icons-row'],
         },
         {   
             id: 9,
+            title: 'Removing other makers',
+            text: 'To <b><span style="color:red;">Delete</span></b> a marker or see its info popup, click on it on the map and then click <b>delete</b> in the popup box. <br> <br> <b>Special note:</b> In case of a circle, to see the popup box first make sure circle is selected in the side panel. <br> <br> Click on the next button to continue.',
+            elementID: ['.icons-row'],
+        },
+        {   
+            id: 10,
             title: 'Navigation and info bar',
             text: 'In the navbar you can navigate back to routes page and you will <b>lose any unsaved changes!</b>. <br> You are also presented with the information about the route and the options to see the tutorial again or to log in/log out. <br> <br> Click on the next button to continue.',
             elementID: ['header'],
         },
         {   
-            id: 10,
+            id: 11,
             title: 'Changing map style',
             text: 'To change the map style press the <b>Pallete button</b> in the left bottom corner of the map. <br> <br> Click on the next button to continue.',
             elementID: ['map-style-btn'],
         },
         {   
-            id: 11,
+            id: 12,
             title: 'Naming and saving the route',
             text: 'Type in the name of the route in the input field and press <b>Save button</b> to save the route. <br> <br> Note: Saving a route that has been edited will save it as a <b>new copy</b>. <br> <br> Click on the Finish button to complete the tutorial!',
             elementID: ['save-row'],

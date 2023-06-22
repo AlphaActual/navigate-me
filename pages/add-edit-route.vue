@@ -105,7 +105,7 @@
               <l-polyline :lat-lngs="getLinesCoordinates" ></l-polyline>
 
               <!-- circle markers -->
-              <l-circle v-for="(circle) in circles" :key="circle.id" :lat-lng="[circle.lat, circle.lng]" :radius="circle.radius">
+              <l-circle v-for="(circle) in circles" :key="circle.id" :lat-lng="[circle.lat, circle.lng]" :radius="circle.radius" @click="handleCircleClick">
                 <l-popup>
                   <p class="p-0 m-0 fw-bold">{{circle.description}}</p>
                   <p class="p-0 m-0">Radius: {{circle.radius/1852}} NM</p>
@@ -158,6 +158,7 @@ export default {
   data() {
     return {
       showSpinner: false,
+      showCirclePopup: false,
       routeId: null,
       routeName:'MyRoute',
       zoom: 15,
@@ -227,6 +228,9 @@ export default {
     isDisabled(){
       return this.waypoints.length < 1 && this.circles.length < 1 && this.anchors.length < 1 && this.pins.length < 1;
     },
+    showPopup(){
+      return this.showCirclePopup;
+    },
   },
   mounted(){
     this.loadEditRoute();
@@ -281,11 +285,45 @@ export default {
         else if(document.getElementById('option-pin').checked){
           this.setPin(e);
         }
-      };
+      }
     },
     handleCardClick(wp){
       this.setActiveWP(wp)
       this.center = [wp.lat,wp.lng];
+    },
+    handleCircleClick(e){
+      // ako nije selektiran circle - dozvoli postavljanje markera na krug
+      if(!document.getElementById('option-circle').checked){
+
+        // hide popup - mora biti asinkrono jer se u leafletu funkcija koja otvara popup poziva nakon ove,
+        // a prije toga ne postoji element sa klasom leaflet-popup u DOM-u
+        setTimeout(()=>{
+          const popups = document.querySelectorAll('.leaflet-popup')
+          popups.forEach(popup=>{
+            popup.style.visibility = "hidden";
+          })
+        },1)
+        // ako je waypoint
+        if(document.getElementById('option-waypoint').checked){
+          this.setWaypoint(e);
+        }
+        // ako je sidro
+        else if(document.getElementById('option-anchor').checked){
+          this.setAnchor(e);
+        }
+        // ako je pin
+        else if(document.getElementById('option-pin').checked){
+          this.setPin(e);
+        }
+      }else {
+        // ako je selektiran circle pokazi popup
+        setTimeout(()=>{
+          const popups = document.querySelectorAll('.leaflet-popup')
+          popups.forEach(popup=>{
+            popup.style.visibility = "visible";
+          })
+        },100)
+      }
     },
     centerOnActive(){
       // ako postoji aktivni waypoint
@@ -925,5 +963,8 @@ export default {
   }
   #map-wrap :hover {
   cursor: crosshair;
+}
+.invisible {
+  visibility: hidden;
 }
 </style>
