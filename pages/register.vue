@@ -90,7 +90,9 @@
 
 <script type="module">
 // za koristenje v-in-viewport
-
+import { app } from "~/plugins/firebase.js";
+import { auth } from "~/plugins/firebase.js";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import Vue from "vue";
 import inViewportDirective from "vue-in-viewport-directive";
 import { Alert } from "bootstrap";
