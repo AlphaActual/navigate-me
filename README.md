@@ -23,11 +23,11 @@
 - odabir libraryja koji će se koristiti u projektu
 - postavljanje funkcija za rad sa kartom
 - kreacija routes pagea
-- kreacija create-a-route pagea
+- kreacija add-edit-route pagea
 - selekcija i prikaz ruta na karti
-- dodavanje, brisanje i editiranje ruta
+- dodavanje, brisanje, editiranje i pretraga ruta
 - lokalna pohrana u local storage za korisnike goste (Guest)
-- interaktivni tutorial za nove korisnike (TO DO)
+- Tutorial za nove korisnike
 
 
 
