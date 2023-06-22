@@ -27,7 +27,7 @@
 - selekcija i prikaz ruta na karti
 - dodavanje, brisanje, editiranje i pretraga ruta
 - lokalna pohrana u local storage za korisnike goste (Guest)
-- Tutorial za nove korisnike
+- tutorial za nove korisnike
 
 
 
@@ -39,8 +39,8 @@
 - page "Active route" (TO DO)
 - Use Case Diagram
 - Class Diagram
-- Prikaz pozicije na temelju geolokacije (TO DO)
-- Praćenje pozicije i usmjeravanje ka sljedećem waypointu (TO DO)
+- prikaz pozicije na temelju geolokacije (TO DO)
+- praćenje pozicije i usmjeravanje ka sljedećem waypointu (TO DO)
 - izračun ETA (Estimated time of arrival) i drugih parametara putovanja (TO DO)
 - pull requests test
 
