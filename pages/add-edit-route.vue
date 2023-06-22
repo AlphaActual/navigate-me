@@ -231,6 +231,11 @@ export default {
   mounted(){
     this.loadEditRoute();
     this.loadMapStyle();
+    // ako user nije vidio tutorial pokreni ga
+    if (!localStorage.getItem('tutorialSeen')) {
+      this.loadTutorialRoute();
+      this.$store.commit('setTutorialVisibility',true);
+    }
   },
   
   methods: {
