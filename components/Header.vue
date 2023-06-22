@@ -23,7 +23,7 @@
     </div>
     <div>Username</div>
     <div class="logout-gumb-container">
-      <button :disabled="this.$store.state.tutorialVisible" class="logout-gumb btn" @click="()=>{this.startTutorial(); $emit('load-route')}">Tutorial</button>
+      <button v-show="showTutorial" :disabled="this.$store.state.tutorialVisible" class="logout-gumb btn" @click="()=>{this.startTutorial(); $emit('load-route')}">Tutorial</button>
       <button class="logout-gumb btn" @click="logout">Logout</button>
     </div>
   </div>
@@ -48,10 +48,15 @@ export default {
       type: String,
       required: true,
     },
+    showTutorial: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
   },
   methods: {
     startTutorial(){
-      this.$store.commit('toggleTutorial');
+      this.$store.commit('setTutorialVisibility',true);
     },
     logout() {
       // Perform logout logic here

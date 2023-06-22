@@ -58,7 +58,9 @@ export default {
         closeModal() {
             this.removeHighlight();
             this.currentSlide = this.slides[0];
-            this.$store.commit('toggleTutorial');
+            this.$store.commit('setTutorialVisibility',false);
+            // set local storage key tutorialSeen to true
+            localStorage.setItem('tutorialSeen', true);
         },
         addHighlight(){
             if (!this.currentSlide.elementID) {
