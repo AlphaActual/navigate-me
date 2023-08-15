@@ -63,15 +63,7 @@
             </button>
           </div>
 
-          <div style="margin-top: 30px">
-            <button
-              type="button"
-              class="guest-button"
-              @click="redirectToRoutes"
-            >
-              Login as Guest
-            </button>
-          </div>
+          <div style="margin-top: 30px"></div>
         </div>
 
         <img class="path-image" src="../assets/img/path.svg" alt="path" />

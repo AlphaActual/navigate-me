@@ -166,7 +166,7 @@ export default {
         .then(() => {
           alert("Successful registration");
           console.log("Successful registration");
-
+          this.$router.push("/routes");
           // Additional logic after successful registration
         })
         .catch((error) => {

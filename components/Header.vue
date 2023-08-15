@@ -67,7 +67,9 @@ export default {
       if (user) {
         this.userEmail = user.email;
       } else {
-        this.userEmail = null; // Reset the email when the user signs out
+        this.userEmail = null;
+        this.$router.push("/");
+        // Reset the email when the user signs out
       }
     });
   },
