@@ -195,7 +195,25 @@
 import Vue from "vue";
 import inViewportDirective from "vue-in-viewport-directive";
 Vue.directive("in-viewport", inViewportDirective);
+import { auth } from "~/plugins/firebase.js";
 
+import { onAuthStateChanged } from "firebase/auth";
+
+import { app } from "~/plugins/firebase.js";
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/auth.user
+    console.log(user.email);
+
+    // ...
+  } else {
+    console.log("No user is signed in");
+    // User is signed out
+    // ...
+  }
+});
 export default {
   name: "Routes",
   transition: "fade",

@@ -1,5 +1,8 @@
 <template>
-  <div id="header" class="header d-flex justify-content-between align-items-center ps-2 pe-2">
+  <div
+    id="header"
+    class="header d-flex justify-content-between align-items-center ps-2 pe-2"
+  >
     <div class="fw-bold text-brown-main fs-5 d-flex">
       <nuxt-link v-if="back" :to="back" class="text-brown-main back-link">
         <div class="hover-effect ms-2">
@@ -21,16 +24,53 @@
       Total distance:
       <span class="fw-bold text-brown-main"> {{ totalD.toFixed(2) }}</span> NM
     </div>
-    <div>Username</div>
+    <div>
+      <p v-if="userEmail">Hello, {{ userEmail }}</p>
+      <p v-else>Welcome, Guest</p>
+    </div>
     <div class="logout-gumb-container">
-      <button v-show="showTutorial" :disabled="this.$store.state.tutorialVisible" class="logout-gumb btn" @click="()=>{this.startTutorial(); $emit('load-route')}">Tutorial</button>
+      <button
+        v-show="showTutorial"
+        :disabled="this.$store.state.tutorialVisible"
+        class="logout-gumb btn"
+        @click="
+          () => {
+            this.startTutorial();
+            $emit('load-route');
+          }
+        "
+      >
+        Tutorial
+      </button>
       <button class="logout-gumb btn" @click="logout">Logout</button>
     </div>
   </div>
 </template>
 <script>
+import { FirebaseError } from "firebase/app";
+
+import { app } from "~/plugins/firebase.js";
+import { auth } from "~/plugins/firebase.js";
+import { signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+
 export default {
   name: "Header",
+  data() {
+    return {
+      userEmail: null, // Initialize with null or an empty string
+    };
+  },
+  created() {
+    onAuthStateChanged(auth, (user) => {
+      // Use auth instead of this.$auth
+      if (user) {
+        this.userEmail = user.email;
+      } else {
+        this.userEmail = null; // Reset the email when the user signs out
+      }
+    });
+  },
   props: {
     back: {
       type: String,
@@ -51,19 +91,17 @@ export default {
     showTutorial: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
   },
   methods: {
-    startTutorial(){
-      this.$store.commit('setTutorialVisibility',true);
+    startTutorial() {
+      this.$store.commit("setTutorialVisibility", true);
     },
     logout() {
-      // Perform logout logic here
-      // For example, clear session data or call an API endpoint
-
-      // Redirect to index.vue
-      this.$router.push({ name: "index" });
+      this.isLoggedIn = false;
+      signOut(auth);
+      this.$router.replace({ name: "index" });
     },
   },
 };

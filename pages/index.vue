@@ -83,20 +83,39 @@
 <script type="module">
 // Import the functions you need from the SDKs you need
 import { app } from "~/plugins/firebase.js";
-import { auth } from "~/plugins/firebase.js";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 import Vue from "vue";
 import inViewportDirective from "vue-in-viewport-directive";
 Vue.directive("in-viewport", inViewportDirective);
+import { auth } from "~/plugins/firebase.js";
+
+import { onAuthStateChanged } from "firebase/auth";
+import { getUserData } from "~/plugins/firebase.js";
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/auth.user
+    console.log(user.email);
+
+    // ...
+  } else {
+    console.log("No user is signed in");
+    // User is signed out
+    // ...
+  }
+});
 
 export default {
   name: "Login",
   transition: "fade",
+
   data() {
     return {
       username: "",
       password: "",
+      loggedIn: false,
     };
   },
 
@@ -152,8 +171,8 @@ export default {
       signInWithEmailAndPassword(auth, this.username, this.password)
         .then(() => {
           console.log("Successful login");
-          // Redirect the user to the routes.vue component
-          this.$router.push("/routes");
+          this.loggedIn = true;
+          this.$router.replace({ name: "routes" });
         })
         .catch((error) => {
           console.log("Error:", error);
@@ -163,7 +182,7 @@ export default {
         });
     },
     redirectToRoutes() {
-      this.$router.push("/routes");
+      this.$router.replace({ name: "routes" });
     },
   },
 };
