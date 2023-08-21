@@ -196,10 +196,14 @@ import Vue from "vue";
 import inViewportDirective from "vue-in-viewport-directive";
 Vue.directive("in-viewport", inViewportDirective);
 import { auth } from "~/plugins/firebase.js";
-
+import { doc, setDoc, deleteDoc } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-
+import { getAuth } from "firebase/auth";
 import { app } from "~/plugins/firebase.js";
+import { db } from "~/plugins/firebase.js";
+import { query, where, getDocs } from "firebase/firestore";
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
@@ -278,12 +282,19 @@ export default {
       this.getTotalTime();
     },
   },
+
   mounted() {
     this.loadRoutes();
     this.setActiveRoute(this.routes[0]);
     this.loadMapStyle();
+    console.log("mounted-komponenta");
   },
   computed: {
+    isUserLoggedIn() {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      return !!user;
+    },
     searchResults() {
       if (this.searchTerm === "") return this.routes;
       return [...this.routes].filter((route) =>
@@ -400,12 +411,66 @@ export default {
 
       return degrees + "° " + minutes + "' " + seconds + '" ' + direction;
     },
-    loadRoutes() {
+    async loadRoutes() {
+      console.log("load routes");
+      const routes = [];
+      try {
+        // Get the user email
+        const auth = getAuth();
+        const user = auth.currentUser;
+        let email = "";
+
+        if (user) {
+          // User is signed in.
+          email = user.email;
+        } else if (localStorage.getItem("guestLoggedIn") === "true") {
+          console.log("Successful Login as guest");
+          email = "guest";
+          const localStorageRoutes = JSON.parse(
+            localStorage.getItem("routesArray")
+          );
+          if (localStorageRoutes) {
+            this.routes = localStorageRoutes;
+            return; // Exit the method since routes are loaded from local storage
+          }
+        } else {
+          // No user is signed in.
+          // You might want to handle this case
+        }
+
+        // Initialize Firestore
+        const db = getFirestore();
+
+        // Create a reference to the "routes" collection
+        const routesRef = collection(db, "routes");
+
+        // Define the query
+        const q = query(routesRef, where("userID", "==", email));
+
+        // Execute the query
+        const querySnapshot = await getDocs(q);
+
+        // Loop through the documents and push them to the routes array
+        querySnapshot.forEach((doc) => {
+          routes.push(doc.data());
+        });
+
+        // Update the routes array in the component's state or context
+        this.routes = routes;
+      } catch (error) {
+        console.error("Error loading routes:", error);
+        // Handle the error appropriately
+      }
+
+      console.log("finisih load routes");
+    },
+
+    /*loadRoutes() {
       const routes = JSON.parse(localStorage.getItem("routesArray"));
       if (routes) {
         this.routes = routes;
       }
-    },
+    },*/
     openModal(route) {
       this.routeToDelete = route;
       var myModal = new bootstrap.Modal(
@@ -413,7 +478,44 @@ export default {
       );
       myModal.show();
     },
-    deleteRoute() {
+
+    async deleteRoute() {
+      if (!this.routeToDelete) {
+        return;
+      }
+
+      if (localStorage.getItem("guestLoggedIn") === "true") {
+        // Delete from local storage
+        this.routes = this.routes.filter(
+          (route) => route.routeID !== this.routeToDelete.routeID
+        );
+        localStorage.setItem("routesArray", JSON.stringify(this.routes));
+      }
+
+      if (this.isUserLoggedIn) {
+        // Delete from Firebase
+        const db = getFirestore();
+        const routeDocRef = doc(
+          db,
+          "routes",
+          this.routeToDelete.routeID.toString()
+        );
+
+        try {
+          await deleteDoc(routeDocRef);
+        } catch (error) {
+          console.error("Error deleting route from Firebase:", error);
+          // Handle the error appropriately
+        }
+      }
+
+      // Additional cleanup and navigation logic
+      this.clearRouteData(this.routeToDelete);
+      this.setActiveRoute(this.routes[0]);
+      this.routeToDelete = null;
+    },
+
+    /* deleteRoute() {
       this.routes = this.routes.filter(
         (route) => route.routeID !== this.routeToDelete.routeID
       );
@@ -422,7 +524,7 @@ export default {
       this.clearRouteData(this.routeToDelete);
       this.setActiveRoute(this.routes[0]);
       this.routeToDelete = null;
-    },
+    },*/
     clearRouteData(route) {
       this.routeName = "";
       this.zoom = 13;

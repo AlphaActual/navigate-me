@@ -55,11 +55,20 @@
           <p class="reg-title display-2">New to the app ?</p>
           <div style="margin-top: 30px">
             <button
-              ype="button"
+              type="button"
               class="login-button btn btn-outline-primary"
               @click="redirectToRegister"
             >
               Register
+            </button>
+          </div>
+          <div style="margin-top: 30px">
+            <button
+              type="button"
+              class="login-button btn btn-outline-primary"
+              @click="loginAsGuest"
+            >
+              Login as Guest
             </button>
           </div>
 
@@ -153,6 +162,11 @@ export default {
     setInterval(updateCompass, 16);
   },
   methods: {
+    loginAsGuest() {
+      localStorage.setItem("guestLoggedIn", "true");
+      this.$router.replace({ name: "routes" });
+    },
+
     redirectToRegister() {
       this.$router.push("/register");
     },

@@ -885,23 +885,29 @@ export default {
       return degrees + "° " + minutes + "' " + seconds + '" ' + direction;
     },
     async saveToFirestore() {
+      this.showSpinner = true;
+
       const auth = getAuth();
       const user = auth.currentUser;
+      let email = "";
 
       if (user) {
         // User is signed in.
-
-        const email = user.email;
-        // ...
+        email = user.email;
+      } else if (localStorage.getItem("guestLoggedIn") === "true") {
+        console.log("Successful Login as guest");
+        email = "guest";
       } else {
-        // No user is signed in.
+        // No user is signed in or guest login.
+        console.log("No user or guest login.");
+        return; // Exit the function without saving if no user or guest.
       }
+
       try {
-        const retrievedRoutes = JSON.parse(localStorage.getItem("routesArray"));
         const datum = new Date();
         const newRoute = {
           routeID: this.routeID || Date.now(),
-          userID: user.email,
+          userID: email,
           routeName: this.routeName || "MyRoute",
           zoom: this.zoom,
           center: this.center,
@@ -927,69 +933,29 @@ export default {
           ).padStart(2, "0")}:${String(datum.getSeconds()).padStart(2, "0")}`,
         };
 
-        // Save the new route data to Firestore using the provided syntax
-        await setDoc(doc(db, "routes", newRoute.routeID.toString()), newRoute);
-
-        let updatedRoutes;
-        if (retrievedRoutes) {
-          updatedRoutes = [newRoute, ...retrievedRoutes];
+        if (email === "guest") {
+          // Save the new route data to local storage
+          const retrievedRoutes =
+            JSON.parse(localStorage.getItem("routesArray")) || [];
+          let updatedRoutes = [newRoute, ...retrievedRoutes];
+          localStorage.setItem("routesArray", JSON.stringify(updatedRoutes));
         } else {
-          updatedRoutes = [newRoute];
+          // Save the new route data to Firestore
+          const db = getFirestore();
+          await setDoc(
+            doc(db, "routes", newRoute.routeID.toString()),
+            newRoute
+          );
         }
-        localStorage.setItem("routesArray", JSON.stringify(updatedRoutes));
+
+        this.$store.commit("setTutorialVisibility", false);
+        setTimeout(() => {
+          this.$router.push("/routes");
+        }, 2000);
       } catch (error) {
-        console.error("Error saving to local storage and Firestore:", error);
+        console.error("Error saving data:", error);
+        // Handle the error appropriately
       }
-      this.$store.commit("setTutorialVisibility", false);
-      setTimeout(() => {
-        this.$router.push("/routes");
-      }, 2000);
-    },
-    saveToLocalStorage() {
-      this.showSpinner = true;
-      try {
-        const retrievedRoutes = JSON.parse(localStorage.getItem("routesArray"));
-        const datum = new Date();
-        const newRoute = {
-          routeID: this.routeID || Date.now(),
-          routeName: this.routeName || "MyRoute",
-          zoom: this.zoom,
-          center: this.center,
-          marker: this.marker,
-          waypoints: this.waypoints,
-          circles: this.circles,
-          anchors: this.anchors,
-          pins: this.pins,
-          sortedDescending: this.sortedDescending,
-          activeWP: this.activeWP,
-          shipSpeed: this.shipSpeed,
-          totalDistance: this.totalDistance,
-          totalTimeHrs: this.totalTimeHrs,
-          markerDescription: this.markerDescription,
-          circleChecked: this.circleChecked,
-          timeCreated: `${datum.getFullYear()}-${String(
-            datum.getMonth() + 1
-          ).padStart(2, "0")}-${String(datum.getDate()).padStart(
-            2,
-            "0"
-          )} ${String(datum.getHours()).padStart(2, "0")}:${String(
-            datum.getMinutes()
-          ).padStart(2, "0")}:${String(datum.getSeconds()).padStart(2, "0")}`,
-        };
-        let updatedRoutes;
-        if (retrievedRoutes) {
-          updatedRoutes = [newRoute, ...retrievedRoutes];
-        } else {
-          updatedRoutes = [newRoute];
-        }
-        localStorage.setItem("routesArray", JSON.stringify(updatedRoutes));
-      } catch (e) {
-        console.error("Error saving to local storage:", e);
-      }
-      this.$store.commit("setTutorialVisibility", false);
-      setTimeout(() => {
-        this.$router.push("/routes");
-      }, 2000);
     },
 
     loadEditRoute() {

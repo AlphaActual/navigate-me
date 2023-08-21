@@ -25,7 +25,7 @@
       <span class="fw-bold text-brown-main"> {{ totalD.toFixed(2) }}</span> NM
     </div>
     <div>
-      <p v-if="userEmail">Hello, {{ userEmail }}</p>
+      <p v-if="userEmail">Wellcome, {{ userEmail }}</p>
       <p v-else>Welcome, Guest</p>
     </div>
     <div class="logout-gumb-container">
@@ -58,7 +58,7 @@ export default {
   name: "Header",
   data() {
     return {
-      userEmail: null, // Initialize with null or an empty string
+      userEmail: "", // Initialize with null or an empty string
     };
   },
   created() {
@@ -66,6 +66,8 @@ export default {
       // Use auth instead of this.$auth
       if (user) {
         this.userEmail = user.email;
+      } else if (localStorage.getItem("guestLoggedIn") === "true") {
+        console.log("succesfull Login");
       } else {
         this.userEmail = null;
         this.$router.push("/");
@@ -101,9 +103,9 @@ export default {
       this.$store.commit("setTutorialVisibility", true);
     },
     logout() {
-      this.isLoggedIn = false;
       signOut(auth);
       this.$router.replace({ name: "index" });
+      localStorage.setItem("guestLoggedIn", "false");
     },
   },
 };
