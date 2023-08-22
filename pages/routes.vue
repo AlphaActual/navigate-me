@@ -686,4 +686,31 @@ body {
     overflow: auto;
   }
 }
+
+@media (max-width: 800px) {
+  #side-panel {
+    display: grid;
+    /* gap: 1em; */
+    width: 100%;
+    height: 500px;
+    justify-content: space-between;
+    margin-bottom: 3em;
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .route-container[data-v-26799403] {
+    overflow: scroll;
+    height: 270px;
+  }
+  .main-div[data-v-26799403] {
+    overflow: scroll;
+  }
+  #route-search[data-v-26799403] {
+    text-align: center;
+  }
+  #map-wrap {
+    height: 500px;
+    width: 100%;
+  }
+}
 </style>

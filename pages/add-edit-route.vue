@@ -1280,4 +1280,14 @@ body {
 .invisible {
   visibility: hidden;
 }
+
+@media (max-width: 800px) {
+  #side-panel[data-v-10a81daa] {
+    height: 400px;
+    width: 100%;
+  }
+  #map-wrap[data-v-10a81daa] {
+    width: 100%;
+  }
+}
 </style>

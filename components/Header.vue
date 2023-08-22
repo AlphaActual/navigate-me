@@ -17,14 +17,14 @@
         {{ pageTitle }}
       </div>
     </div>
-    <div id="total-time">
+    <div id="total-time" class="text-brown-main">
       Total time: <span class="fw-bold text-brown-main"> {{ totalT }}</span> hrs
     </div>
-    <div>
+    <div class="text-brown-main">
       Total distance:
       <span class="fw-bold text-brown-main"> {{ totalD.toFixed(2) }}</span> NM
     </div>
-    <div>
+    <div class="welcome-nav-user">
       <p v-if="userEmail">Wellcome, {{ userEmail }}</p>
       <p v-else>Welcome, Guest</p>
     </div>
@@ -42,7 +42,15 @@
       >
         Tutorial
       </button>
-      <button class="logout-gumb btn" @click="logout">Logout</button>
+
+      <img
+        style="width: 35px"
+        @click="logout"
+        class="logout-icon-navigate"
+        src="../assets/img/logout-icon.png"
+        alt=""
+        title="LogOut"
+      />
     </div>
   </div>
 </template>
@@ -166,5 +174,32 @@ export default {
 }
 .logout-gumb:hover {
   background-color: var(--primary-blue-hover);
+}
+
+.welcome-nav-user p {
+  margin-bottom: 0;
+}
+
+.logout-icon-navigate:hover {
+  padding: 0;
+  opacity: 0.9;
+}
+.logout-icon-navigate,
+.hamburger-icon-navigate {
+  width: 35px;
+  padding: 1px;
+  cursor: pointer;
+}
+
+.hamburger-icon-navigate {
+  display: none;
+}
+
+@media (max-width: 800px) {
+  #header {
+    flex-direction: column;
+    height: 160px;
+    padding-bottom: 10px;
+  }
 }
 </style>
