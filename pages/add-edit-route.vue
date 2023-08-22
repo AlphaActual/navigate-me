@@ -153,7 +153,9 @@
           <hr />
 
           <!-- sort active insert delete row -->
-          <div class="d-flex justify-content-between align-items-center">
+          <div
+            class="d-flex justify-content-between align-items-center costum-style-navigate"
+          >
             <div class="d-flex align-items-center">
               <button
                 class="sort-button btn btn-outline-secondary"
@@ -1286,8 +1288,24 @@ body {
     height: 400px;
     width: 100%;
   }
+  .main-div[data-v-10a81daa] {
+    overflow: scroll;
+  }
+  #side-panel {
+    margin-bottom: 15em;
+  }
   #map-wrap[data-v-10a81daa] {
     width: 100%;
+  }
+}
+.tutorial-content[data-v-63aed68e] {
+  width: 310px;
+}
+
+@media (max-width: 400px) {
+  .costum-style-navigate {
+    flex-direction: column;
+    gap: 10px;
   }
 }
 </style>
