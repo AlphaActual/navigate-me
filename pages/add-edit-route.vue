@@ -1299,7 +1299,7 @@ body {
   }
 }
 .tutorial-content[data-v-63aed68e] {
-  width: 310px;
+  max-width: 310px;
 }
 
 @media (max-width: 400px) {
