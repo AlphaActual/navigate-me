@@ -305,6 +305,46 @@ export default {
       return [this.waypoints.map((wp) => [wp.lat, wp.lng])];
     },
   },
+  routes() {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    let email = "";
+
+    if (user) {
+      // User is signed in.
+      email = user.email;
+    } else if (localStorage.getItem("guestLoggedIn") === "true") {
+      console.log("Successful Login as guest");
+      email = "guest";
+      const localStorageRoutes = JSON.parse(
+        localStorage.getItem("routesArray")
+      );
+      if (localStorageRoutes) {
+        return localStorageRoutes;
+      }
+    } else {
+      // No user is signed in.
+      // You might want to handle this case
+    }
+
+    const db = getFirestore();
+    const routesRef = collection(db, "routes");
+    const q = query(routesRef, where("userID", "==", email));
+
+    return new Promise((resolve, reject) => {
+      getDocs(q)
+        .then((querySnapshot) => {
+          const routes = [];
+          querySnapshot.forEach((doc) => {
+            routes.push(doc.data());
+          });
+          resolve(routes);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
 
   methods: {
     handleCardClick(route) {
@@ -439,14 +479,16 @@ export default {
         }
 
         // Initialize Firestore
+        console.log("Initialize Firestore");
         const db = getFirestore();
 
         // Create a reference to the "routes" collection
         const routesRef = collection(db, "routes");
 
         // Define the query
+        console.log("Defining the query");
         const q = query(routesRef, where("userID", "==", email));
-
+        console.log(email);
         // Execute the query
         const querySnapshot = await getDocs(q);
 
@@ -677,13 +719,9 @@ body {
 }
 
 @media (max-width: 768px) {
-  #side-panel,
-  #map-wrap {
-    height: 50vh;
-  }
   body,
   .wrapper {
-    overflow: auto;
+    overflow: scroll;
   }
 }
 
