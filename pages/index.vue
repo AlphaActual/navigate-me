@@ -232,7 +232,7 @@ export default {
 .form-container {
   width: 50%;
 }
-@media (max-width) {
+@media (max-width: 541px) {
   .form-container {
     width: 100% !important;
   }

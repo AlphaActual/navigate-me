@@ -230,7 +230,7 @@ export default {
   background-color: var(--brown-main);
   color: white;
 }
-@media (max-width) {
+@media (max-width: 541px) {
   .form-container {
     width: 100% !important;
   }
