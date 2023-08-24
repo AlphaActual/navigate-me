@@ -287,6 +287,7 @@ export default {
     this.loadRoutes();
     this.setActiveRoute(this.routes[0]);
     this.loadMapStyle();
+
     console.log("mounted-komponenta");
   },
   computed: {
@@ -604,6 +605,15 @@ export default {
         this.url = mapStyle;
       }
     },
+  },
+  async created() {
+    try {
+      await this.loadRoutes(); // Await the data loading
+      this.loading = false;
+    } catch (error) {
+      console.error("Error loading routes:", error);
+      this.loading = false;
+    }
   },
 };
 </script>
