@@ -658,8 +658,8 @@ body {
   left: -0px;
 }
 #side-panel {
-  height: 100%;
-  overflow: hidden;
+  height: 100vh !important;
+  order: 2;
   /* overflow-y: scroll; */
 }
 .icons-row .btn {
@@ -756,7 +756,6 @@ body {
   }
   .route-container[data-v-26799403] {
     overflow: scroll;
-    height: 270px;
   }
   .main-div[data-v-26799403] {
     overflow: scroll;
