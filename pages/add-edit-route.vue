@@ -1170,7 +1170,7 @@ body {
 }
 .main-div {
   height: 100vh;
-  overflow: hidden;
+  overflow: scroll;
 }
 .wrapper {
   overflow-y: hidden;
@@ -1198,6 +1198,7 @@ body {
 }
 #side-panel {
   height: 100%;
+  overflow: hidden;
   /* overflow-y: scroll; */
 }
 .icons-row .btn {

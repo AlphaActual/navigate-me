@@ -656,6 +656,7 @@ body {
 }
 #side-panel {
   height: 100%;
+  overflow: hidden;
   /* overflow-y: scroll; */
 }
 .icons-row .btn {
