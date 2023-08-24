@@ -7,7 +7,7 @@
       :totalT="this.formatTime(this.totalTimeHrs)"
     />
     <div class="container-fluid">
-      <div class="row wrapper">
+      <div class="row wrapper wrapper-grid">
         <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
           <!-- save row -->
           <div>
@@ -908,13 +908,21 @@ export default {
 * {
   transition: all 400ms ease;
 }
+.wrapper-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+#side-panel {
+  height: 100vh !important;
+  order: 2;
+}
+
 body {
   overflow: hidden;
   height: 100vh;
 }
 .main-div {
   height: 100vh;
-  overflow: hidden;
 }
 .wrapper {
   overflow-y: hidden;
@@ -1022,9 +1030,8 @@ body {
 }
 
 @media (max-width: 768px) {
-  #side-panel,
   #map-wrap {
-    height: 50vh;
+    height: 50vh !important;
   }
   body,
   .wrapper {
@@ -1033,5 +1040,43 @@ body {
 }
 #map-wrap :hover {
   cursor: crosshair;
+}
+@media (max-width: 800px) {
+  .waypoint-container {
+    height: 300px !important;
+  }
+  .wrapper-grid {
+    grid-template-columns: 1fr !important;
+  }
+  #side-panel[data-v-10a81daa] {
+    height: 400px;
+    width: 100%;
+  }
+  .main-div[data-v-10a81daa] {
+    overflow: scroll;
+  }
+
+  #map-wrap,
+  #side-panel {
+    width: 100% !important;
+  }
+  .tutorial-content {
+    max-width: 310px !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .costum-style-navigate {
+    overflow-x: scroll;
+  }
+  .gumbi {
+    flex-direction: column;
+    gap: 1em;
+  }
+}
+
+.row-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 </style>
