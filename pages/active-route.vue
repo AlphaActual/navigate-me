@@ -2,7 +2,7 @@
   <div class="main-div">
     <Header
       back="/routes"
-      pageTitle="Create/edit route"
+      pageTitle="Activated Route"
       :totalD="totalDistance"
       :totalT="this.formatTime(this.totalTimeHrs)"
     />
@@ -12,23 +12,9 @@
           <!-- save row -->
           <div>
             <div>
-              <div class="d-flex">
-                <button
-                  @click="saveToLocalStorage"
-                  class="save-btn btn d-flex justify-content-center mb-2"
-                  :disabled="isDisabled"
-                  id="save-btn"
-                >
-                  <div>Save route</div>
-                  <div v-show="showSpinner" class="lds-ellipsis">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                </button>
-              </div>
+              <div class="d-flex"></div>
               <input
+                readonly
                 v-model="routeName"
                 name="name-input"
                 id="name-input"
@@ -77,63 +63,6 @@
           <div
             class="icons-row d-flex justify-content-around align-items-center"
           >
-            <input
-              type="radio"
-              class="btn-check"
-              name="options"
-              id="option-waypoint"
-              autocomplete="off"
-              checked
-            />
-            <label
-              @click="CircleChecked(false)"
-              class="btn btn-warning"
-              for="option-waypoint"
-              ><i class="fa-solid fa-location-dot"></i
-            ></label>
-
-            <input
-              type="radio"
-              class="btn-check"
-              name="options"
-              id="option-circle"
-              autocomplete="off"
-            />
-            <label
-              @click="CircleChecked(true)"
-              class="btn btn-warning"
-              for="option-circle"
-              ><i class="fa-regular fa-circle"></i
-            ></label>
-
-            <input
-              type="radio"
-              class="btn-check"
-              name="options"
-              id="option-anchor"
-              autocomplete="off"
-            />
-            <label
-              @click="CircleChecked(false)"
-              class="btn btn-warning"
-              for="option-anchor"
-              ><i class="fa-solid fa-anchor"></i
-            ></label>
-
-            <input
-              type="radio"
-              class="btn-check"
-              name="options"
-              id="option-pin"
-              autocomplete="off"
-            />
-            <label
-              @click="CircleChecked(false)"
-              class="btn btn-warning"
-              for="option-pin"
-              ><i class="fa-solid fa-map-pin"></i
-            ></label>
-
             <div class="marker-info">
               <input
                 v-model="markerDescription"
@@ -142,6 +71,13 @@
                 id="marker-input"
                 type="text"
                 class="btn-secondary-outline p-1 d-block"
+                style="
+                  background-color: rgb(33, 90, 90);
+                  color: white;
+                  font-weight: 500;
+                  text-align: center;
+                "
+                readonly
               />
             </div>
           </div>
@@ -175,20 +111,7 @@
                   activeWP?.name
                 }}</span>
               </div>
-              <div
-                @click="insertWp"
-                :class="[
-                  'btn',
-                  'btn-warning',
-                  {
-                    disabled:
-                      this.activeWP?.id ===
-                      this.waypoints[this.waypoints.length - 1]?.id,
-                  },
-                ]"
-              >
-                Insert
-              </div>
+
               <div @click="removeWP(activeWP?.id)" class="btn btn-danger">
                 Delete active
               </div>
@@ -224,7 +147,7 @@
           </button>
           <client-only>
             <!-- map -->
-            <l-map :zoom="zoom" :center="center" @click="handleMapClick">
+            <l-map :zoom="zoom" :center="center">
               <!-- tile layer -->
               <l-tile-layer :url="url"></l-tile-layer>
 
@@ -504,20 +427,20 @@ export default {
       if (e.originalEvent.target.alt != "Marker") {
         // ako je wp
         if (document.getElementById("option-waypoint").checked) {
-          this.setWaypoint(e);
+          console.log("just");
         }
 
         // ako je circle
         else if (document.getElementById("option-circle").checked) {
-          this.setCircle(e);
+          console.log("just");
         }
         // ako je anchor
         else if (document.getElementById("option-anchor").checked) {
-          this.setAnchor(e);
+          console.log("just");
         }
         // ako je pin
         else if (document.getElementById("option-pin").checked) {
-          this.setPin(e);
+          console.log("just");
         }
       }
     },
@@ -587,57 +510,12 @@ export default {
       this.setActiveWP(this.waypoints[updatedNewWPindex]);
       this.centerOnActive();
     },
-    setWaypoint(e) {
-      let latitude = e.latlng.lat;
-      let longitude = e.latlng.lng;
-      let datum = new Date();
-      // ako nije kliknuto na marker spremi novi waypoint u listu waypoints
-      if (e.originalEvent.target.alt != "Marker") {
-        const newWaypoint = {
-          id: Date.now(),
-          name: 0,
-          lat: latitude,
-          lng: longitude,
-          nextCourse: "N/A",
-          wpToWp: "N/A",
-          speed: this.shipSpeed,
-          timeCreated: `${datum.getFullYear()}-${String(
-            datum.getMonth() + 1
-          ).padStart(2, "0")}-${String(datum.getDate()).padStart(
-            2,
-            "0"
-          )} ${String(datum.getHours()).padStart(2, "0")}:${String(
-            datum.getMinutes()
-          ).padStart(2, "0")}:${String(datum.getSeconds()).padStart(2, "0")}`,
-        };
-        // ubaci novi waypoint u waypoints array na nacin:
 
-        // ako je waypoints array prazan ubaci na zadnje mjesto
-        // ako je zadnji waypoint === aktivni ubaci na zadnje mjesto
+    // ubaci novi waypoint u waypoints array na nacin:
 
-        if (
-          !this.waypoints.length ||
-          this.waypoints[this.waypoints.length - 1].id === this.activeWP.id
-        ) {
-          this.waypoints = [...this.waypoints, newWaypoint];
-          // ako je neki drugi waypoint aktivan zamjeni ga u arrayu sa ovim novim ili ga dodaj između njega i sljedećeg (insertWp)
-        } else {
-          this.waypoints = this.waypoints.map((wp) => {
-            if (wp.id === this.activeWP.id) return newWaypoint;
-            else return wp;
-          });
-        }
+    // ako je waypoints array prazan ubaci na zadnje mjesto
+    // ako je zadnji waypoint === aktivni ubaci na zadnje mjesto
 
-        // podesi imena (ako imamo wp1,wp2,wp3 i obrisemo wp2, potrebno je svima podesiti imena tako da se wp3 sada zove wp2)
-        this.updateNames();
-        // pronadi index tog waypointa (nakon sto su sva imena updejtana)
-        const updatedNewWPindex = this.waypoints.findIndex(
-          (wp) => wp.id === newWaypoint.id
-        );
-        // postavi ga kao aktivnog
-        this.setActiveWP(this.waypoints[updatedNewWPindex]);
-      }
-    },
     removeWP(id) {
       if (id) {
         const activeWPIndex = this.waypoints.findIndex(
@@ -1124,6 +1002,9 @@ body {
   width: 100%;
   border: 1px solid gray;
   border-radius: 3px;
+  background-color: green;
+  color: white;
+  font-weight: 600;
 }
 .change-map-style {
   position: absolute;

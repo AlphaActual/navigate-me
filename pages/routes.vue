@@ -45,7 +45,6 @@
               :key="routeData.id"
               @card-clicked="handleCardClick(routeData)"
               @delete-route="openModal"
-              @edit-route="editRoute"
               @active-route="activateRoute"
             />
           </div>
