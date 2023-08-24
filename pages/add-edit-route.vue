@@ -1304,8 +1304,9 @@ body {
     overflow: scroll;
   }
 
-  #map-wrap[data-v-10a81daa] {
-    width: 100%;
+  #map-wrap,
+  #side-panel {
+    width: 100% !important;
   }
 }
 .tutorial-content[data-v-63aed68e] {
