@@ -1315,8 +1315,7 @@ body {
 
 @media (max-width: 400px) {
   .costum-style-navigate {
-    flex-direction: column;
-    gap: 10px;
+    overflow-x: scroll;
   }
 }
 
