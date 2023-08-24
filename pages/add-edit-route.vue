@@ -1308,4 +1308,13 @@ body {
     gap: 10px;
   }
 }
+
+.row-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.vue2leaflet-map {
+  max-width: 600px;
+}
 </style>
