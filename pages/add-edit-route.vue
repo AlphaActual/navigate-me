@@ -1290,8 +1290,11 @@ body {
 }
 
 @media (max-width: 800px) {
+  .waypoint-container {
+    height: 300px !important;
+  }
   .wrapper-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
   #side-panel[data-v-10a81daa] {
     height: 400px;
@@ -1300,9 +1303,7 @@ body {
   .main-div[data-v-10a81daa] {
     overflow: scroll;
   }
-  #side-panel {
-    margin-bottom: 15em;
-  }
+
   #map-wrap[data-v-10a81daa] {
     width: 100%;
   }

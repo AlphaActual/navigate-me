@@ -737,7 +737,7 @@ body {
 
 @media (max-width: 800px) {
   .wrapper-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
 
   #side-panel {
