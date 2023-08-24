@@ -7,7 +7,7 @@
       :showTutorial="false"
     />
     <div class="container-fluid">
-      <div class="row wrapper">
+      <div class="row wrapper wrapper-grid">
         <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
           <!-- search row -->
           <div>
@@ -760,5 +760,10 @@ body {
     height: 500px;
     width: 100%;
   }
+}
+
+.wrapper-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 </style>
