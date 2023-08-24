@@ -8,7 +8,7 @@
       @load-route="loadTutorialRoute"
     />
     <div class="container-fluid">
-      <div class="row wrapper">
+      <div class="row wrapper wrapper-grid">
         <aside v-in-viewport id="side-panel" class="ps-4 pt-4 pb-4 slide-left">
           <!-- save row -->
           <div>
@@ -1168,6 +1168,12 @@ body {
   overflow: hidden;
   height: 100vh;
 }
+
+.wrapper-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 .main-div {
   height: 100vh;
 }
@@ -1284,6 +1290,9 @@ body {
 }
 
 @media (max-width: 800px) {
+  .wrapper-grid {
+    grid-template-columns: 1fr;
+  }
   #side-panel[data-v-10a81daa] {
     height: 400px;
     width: 100%;
@@ -1312,9 +1321,5 @@ body {
 .row-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
-}
-
-.vue2leaflet-map {
-  max-width: 600px;
 }
 </style>

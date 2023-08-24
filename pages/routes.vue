@@ -736,6 +736,10 @@ body {
 }
 
 @media (max-width: 800px) {
+  .wrapper-grid {
+    grid-template-columns: 1fr;
+  }
+
   #side-panel {
     display: grid;
     /* gap: 1em; */
