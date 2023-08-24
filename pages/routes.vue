@@ -46,6 +46,7 @@
               @card-clicked="handleCardClick(routeData)"
               @delete-route="openModal"
               @edit-route="editRoute"
+              @active-route="activateRoute"
             />
           </div>
           <!-- end of route cards -->
@@ -586,6 +587,10 @@ export default {
     editRoute(route) {
       localStorage.setItem("editRoute", JSON.stringify(route));
       this.$router.push("/add-edit-route");
+    },
+    activateRoute(route) {
+      localStorage.setItem("activateRoute", JSON.stringify(route));
+      this.$router.push("/active-route");
     },
     changeMapStyle() {
       if (

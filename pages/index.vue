@@ -232,6 +232,12 @@ export default {
 .form-container {
   width: 50%;
 }
+@media (max-width) {
+  .form-container {
+    width: 100% !important;
+  }
+}
+
 .login-button {
   display: block;
   width: 100%;
