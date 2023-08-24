@@ -27,7 +27,9 @@
       <div class="card-options d-flex">
         <button @click="$emit('edit-route', route)" class="btn edit-button">Edit</button>
         <button @click="$emit('delete-route', route)" class="btn btn-danger">Delete</button>
+        <button @click="$emit('active-route', route)" class="btn btn-success">Activate</button>
       </div>
+      
     </div>
   </div>
 </template>

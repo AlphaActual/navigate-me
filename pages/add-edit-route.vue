@@ -1273,7 +1273,11 @@ body {
 }
 
 @media (max-width: 768px) {
-  #side-panel,
+  #side-panel {
+    height: 100vh !important;
+    order: 2;
+  }
+
   #map-wrap {
     height: 50vh;
   }
