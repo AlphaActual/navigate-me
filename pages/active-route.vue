@@ -344,8 +344,6 @@
         </div>
       </div>
     </div>
-    <div v-if="this.$store.state.tutorialVisible" class="black-overlay"></div>
-    <Tutorial />
   </div>
 </template>
 
@@ -359,7 +357,7 @@ import VueGeolocation from "vue-browser-geolocation";
 Vue.use(VueGeolocation);
 
 export default {
-  name: "AddEditRoute",
+  name: "ActivateRoute",
   transition: "fade",
   data() {
     return {
@@ -457,7 +455,7 @@ export default {
     },
   },
   mounted() {
-    this.loadEditRoute();
+    this.loadActivateRoute();
     this.loadMapStyle();
     this.getMyLocation();
   },
@@ -982,8 +980,8 @@ export default {
         this.$router.push("/routes");
       }, 2000);
     },
-    loadEditRoute() {
-      const routeToLoad = JSON.parse(localStorage.getItem("editRoute"));
+    loadActivateRoute() {
+      const routeToLoad = JSON.parse(localStorage.getItem("activateRoute"));
       if (!routeToLoad) return;
 
       this.routeId = routeToLoad.routeID;
