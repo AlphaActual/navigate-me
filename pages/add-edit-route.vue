@@ -1312,9 +1312,9 @@ body {
   #side-panel {
     width: 100% !important;
   }
-}
-.tutorial-content[data-v-63aed68e] {
-  max-width: 310px;
+  .tutorial-content {
+    max-width: 310px !important;
+  }
 }
 
 @media (max-width: 400px) {
