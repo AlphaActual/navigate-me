@@ -29,7 +29,7 @@
       <p v-else>Welcome, Guest</p>
     </div>
     <div class="logout-gumb-container">
-      <button
+      <!--<button
         v-show="showTutorial"
         :disabled="this.$store.state.tutorialVisible"
         class="logout-gumb btn"
@@ -41,7 +41,7 @@
         "
       >
         Tutorial
-      </button>
+      </button>-->
 
       <img
         style="width: 35px"
