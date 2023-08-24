@@ -154,7 +154,7 @@
 
           <!-- sort active insert delete row -->
           <div
-            class="d-flex justify-content-between align-items-center costum-style-navigate"
+            class="d-flex justify-content-between align-items-center costum-style-navigate gumbi"
           >
             <div class="d-flex align-items-center">
               <button
@@ -1320,6 +1320,10 @@ body {
 @media (max-width: 400px) {
   .costum-style-navigate {
     overflow-x: scroll;
+  }
+  .gumbi {
+    flex-direction: column;
+    gap: 1em;
   }
 }
 
