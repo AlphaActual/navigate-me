@@ -628,7 +628,7 @@ body {
 }
 .main-div {
   height: 100vh;
-  overflow: hidden;
+  overflow: scroll;
 }
 .wrapper {
   overflow-y: hidden;
