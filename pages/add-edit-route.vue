@@ -354,19 +354,12 @@
 import Vue from "vue";
 import inViewportDirective from "vue-in-viewport-directive";
 Vue.directive("in-viewport", inViewportDirective);
-import { FirebaseError } from "firebase/app";
+
 import { doc, setDoc } from "firebase/firestore";
-import { app } from "~/plugins/firebase.js";
+
 import { getFirestore } from "firebase/firestore";
-import { signOut } from "firebase/auth";
-import { auth } from "~/plugins/firebase.js";
+
 import { getAuth } from "firebase/auth";
-
-import { onAuthStateChanged } from "firebase/auth";
-import { db } from "~/plugins/firebase.js";
-import { collection, addDoc } from "firebase/firestore";
-
-const userLoggedIn = "";
 
 export default {
   name: "AddEditRoute",
@@ -1204,6 +1197,7 @@ body {
 #side-panel {
   height: 100%;
   overflow: hidden;
+  order: 2;
   /* overflow-y: scroll; */
 }
 .icons-row .btn {

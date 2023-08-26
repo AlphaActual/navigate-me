@@ -45,6 +45,7 @@
               :key="routeData.id"
               @card-clicked="handleCardClick(routeData)"
               @delete-route="openModal"
+              @edit-route="editRoute"
               @active-route="activateRoute"
             />
           </div>
@@ -196,13 +197,11 @@ import Vue from "vue";
 import inViewportDirective from "vue-in-viewport-directive";
 Vue.directive("in-viewport", inViewportDirective);
 import { auth } from "~/plugins/firebase.js";
-import { doc, setDoc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
-import { collection, addDoc } from "firebase/firestore";
+import { collection } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 import { getAuth } from "firebase/auth";
-import { app } from "~/plugins/firebase.js";
-import { db } from "~/plugins/firebase.js";
 import { query, where, getDocs } from "firebase/firestore";
 
 onAuthStateChanged(auth, (user) => {

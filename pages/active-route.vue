@@ -20,6 +20,7 @@
                 id="name-input"
                 type="text"
                 class="text-center btn-secondary-outline p-1 d-block"
+                @input="calculateTimeToNearestWaypoint"
               />
             </div>
           </div>
@@ -28,6 +29,7 @@
           <hr />
 
           <!-- speed row -->
+
           <div>
             <div class="d-flex align-items-center">
               <label class="mb-0 me-2" for="speed-input"
@@ -82,7 +84,7 @@
             </div>
           </div>
           <!--end of marker icons row -->
-
+          <div>Dynamic route: {{ nearestWPTime }}</div>
           <hr />
 
           <!-- sort active insert delete row -->
@@ -106,14 +108,10 @@
 
             <div>
               <div class="active-wp btn rounded" @click="centerOnActive">
-                Active:
+                Focus
                 <span class="fw-bold text-danger-main">{{
                   activeWP?.name
                 }}</span>
-              </div>
-
-              <div @click="removeWP(activeWP?.id)" class="btn btn-danger">
-                Delete active
               </div>
             </div>
           </div>
@@ -282,8 +280,10 @@ Vue.use(VueGeolocation);
 export default {
   name: "ActivateRoute",
   transition: "fade",
+
   data() {
     return {
+      nearestWPTime: "",
       boatPosition: [0, 0],
       boatPolyline: [
         [0, 0],
@@ -362,6 +362,12 @@ export default {
         return this.waypoints;
       }
     },
+
+    // ubaci novi waypoint u waypoints array na nacin:
+
+    // ako je waypoints array prazan ubaci na zadnje mjesto
+    // ako je zadnji waypoint === aktivni ubaci na zadnje mjesto
+
     getLinesCoordinates() {
       return [this.waypoints.map((wp) => [wp.lat, wp.lng])];
     },
@@ -384,6 +390,39 @@ export default {
   },
 
   methods: {
+    calculateTimeToNearestWaypoint() {
+      console.log("Calculating time to nearest waypoint...");
+
+      if (!this.boatPosition || this.waypoints.length < 1) {
+        console.log("Boat position or waypoints missing.");
+        return;
+      }
+
+      const nearestWP = this.findNearestWP(this.waypoints);
+      console.log("Nearest waypoint:", nearestWP);
+
+      const distanceToNearestWP = this.calculateDistance(
+        { lat: this.boatPosition[0], lng: this.boatPosition[1] },
+        nearestWP
+      );
+      console.log("Distance to nearest waypoint:", distanceToNearestWP);
+
+      const speedKnots = this.shipSpeed; // Speed of the ship in knots
+      console.log("Speed in knots:", speedKnots);
+
+      const speedMetersPerSecond = speedKnots * 0.514444; // Convert knots to m/s
+      console.log("Speed in m/s:", speedMetersPerSecond);
+
+      const timeSeconds = distanceToNearestWP / speedMetersPerSecond;
+      console.log("Time in seconds:", timeSeconds);
+
+      const timeToNearestWaypoint = timeSeconds / 3600;
+      console.log("Time to nearest waypoint in hours:", timeToNearestWaypoint);
+
+      this.nearestWPTime = this.formatTime(timeToNearestWaypoint); // Update nearest waypoint time
+      console.log("Nearest waypoint time:", this.nearestWPTime);
+    },
+
     async getMyLocation() {
       let coordinates;
       try {
@@ -395,10 +434,32 @@ export default {
       } catch (err) {
         console.log(err);
       }
+
       console.log(coordinates);
       this.boatPosition = [coordinates.lat, coordinates.lng];
       this.startTracking();
+      this.updateSpeeds(); // Call the method to update speeds
     },
+
+    removeLowerNameWaypoints() {
+      const nearestWP = this.findNearestWP(this.waypoints);
+      const nearestWPName = parseInt(nearestWP.name);
+
+      // Filter waypoints to keep only those with names greater than or equal to the nearest waypoint's name
+      this.waypoints = this.waypoints.filter(
+        (wp) => parseInt(wp.name) >= nearestWPName
+      );
+
+      this.updateNames();
+
+      // Update local storage with the filtered waypoints
+      const routeToLoad = JSON.parse(localStorage.getItem("activateRoute"));
+      if (routeToLoad) {
+        routeToLoad.waypoints = this.waypoints;
+        localStorage.setItem("activateRoute", JSON.stringify(routeToLoad));
+      }
+    },
+
     setActiveWP(wp) {
       this.activeWP = wp;
     },
@@ -423,27 +484,7 @@ export default {
         this.calculateNavData();
       }
     },
-    handleMapClick(e) {
-      if (e.originalEvent.target.alt != "Marker") {
-        // ako je wp
-        if (document.getElementById("option-waypoint").checked) {
-          console.log("just");
-        }
 
-        // ako je circle
-        else if (document.getElementById("option-circle").checked) {
-          console.log("just");
-        }
-        // ako je anchor
-        else if (document.getElementById("option-anchor").checked) {
-          console.log("just");
-        }
-        // ako je pin
-        else if (document.getElementById("option-pin").checked) {
-          console.log("just");
-        }
-      }
-    },
     handleCardClick(wp) {
       this.setActiveWP(wp);
       this.center = [wp.lat, wp.lng];
@@ -467,54 +508,6 @@ export default {
     sortWPs() {
       this.sortedDescending = !this.sortedDescending;
     },
-    insertWp() {
-      // ubaci ga između njega i sljedećeg (ako postoji)
-      const afterActiveWpIndex =
-        this.waypoints.findIndex((wp) => wp.id === this.activeWP.id) + 1;
-      //ako postoji idući nakon aktivnog
-      const afterActive = this.waypoints[afterActiveWpIndex];
-      if (!afterActive) return;
-
-      // dobivanje međukoordinate i kreiranje wp-a
-      const [midLat, midLng] = this.getMidpoint(this.activeWP, afterActive);
-      let datum = new Date();
-      const newWaypoint = {
-        id: Date.now(),
-        name: 0,
-        lat: midLat,
-        lng: midLng,
-        nextCourse: "N/A",
-        wpToWp: "N/A",
-        speed: this.shipSpeed,
-        timeCreated: `${datum.getFullYear()}-${String(
-          datum.getMonth() + 1
-        ).padStart(2, "0")}-${String(datum.getDate()).padStart(
-          2,
-          "0"
-        )} ${String(datum.getHours()).padStart(2, "0")}:${String(
-          datum.getMinutes()
-        ).padStart(2, "0")}:${String(datum.getSeconds()).padStart(2, "0")}`,
-      };
-
-      // ubaci ga na pripradajuće mjesto
-      let waypointsCopy = [...this.waypoints];
-      waypointsCopy.splice(afterActiveWpIndex, 0, newWaypoint);
-      this.waypoints = waypointsCopy;
-
-      this.updateNames();
-
-      const updatedNewWPindex = this.waypoints.findIndex(
-        (wp) => wp.id === newWaypoint.id
-      );
-      // postavi ga kao aktivnog
-      this.setActiveWP(this.waypoints[updatedNewWPindex]);
-      this.centerOnActive();
-    },
-
-    // ubaci novi waypoint u waypoints array na nacin:
-
-    // ako je waypoints array prazan ubaci na zadnje mjesto
-    // ako je zadnji waypoint === aktivni ubaci na zadnje mjesto
 
     removeWP(id) {
       if (id) {
@@ -536,91 +529,7 @@ export default {
         }
       }
     },
-    setCircle(e) {
-      let latitude = e.latlng.lat;
-      let longitude = e.latlng.lng;
-      let datum = new Date();
 
-      const newCircle = {
-        id: Date.now(),
-        description: this.markerDescription,
-        lat: latitude,
-        lng: longitude,
-        radius: this.shipSpeed * 1852,
-        timeCreated: `${datum.getFullYear()}-${String(
-          datum.getMonth() + 1
-        ).padStart(2, "0")}-${String(datum.getDate()).padStart(
-          2,
-          "0"
-        )} ${String(datum.getHours()).padStart(2, "0")}:${String(
-          datum.getMinutes()
-        ).padStart(2, "0")}:${String(datum.getSeconds()).padStart(2, "0")}`,
-      };
-
-      this.circles = [...this.circles, newCircle];
-    },
-    removeCircle(id) {
-      if (id) {
-        // izbaci ga iz circles liste
-        this.circles = this.circles.filter((wp) => wp.id !== id);
-      }
-    },
-    setAnchor(e) {
-      let latitude = e.latlng.lat;
-      let longitude = e.latlng.lng;
-      let datum = new Date();
-
-      const newAnchor = {
-        id: Date.now(),
-        description: this.markerDescription,
-        lat: latitude,
-        lng: longitude,
-        timeCreated: `${datum.getFullYear()}-${String(
-          datum.getMonth() + 1
-        ).padStart(2, "0")}-${String(datum.getDate()).padStart(
-          2,
-          "0"
-        )} ${String(datum.getHours()).padStart(2, "0")}:${String(
-          datum.getMinutes()
-        ).padStart(2, "0")}:${String(datum.getSeconds()).padStart(2, "0")}`,
-      };
-
-      this.anchors = [...this.anchors, newAnchor];
-    },
-    removeAnchor(id) {
-      if (id) {
-        // izbaci ga iz anchors liste
-        this.anchors = this.anchors.filter((wp) => wp.id !== id);
-      }
-    },
-    setPin(e) {
-      let latitude = e.latlng.lat;
-      let longitude = e.latlng.lng;
-      let datum = new Date();
-
-      const newPin = {
-        id: Date.now(),
-        description: this.markerDescription,
-        lat: latitude,
-        lng: longitude,
-        timeCreated: `${datum.getFullYear()}-${String(
-          datum.getMonth() + 1
-        ).padStart(2, "0")}-${String(datum.getDate()).padStart(
-          2,
-          "0"
-        )} ${String(datum.getHours()).padStart(2, "0")}:${String(
-          datum.getMinutes()
-        ).padStart(2, "0")}:${String(datum.getSeconds()).padStart(2, "0")}`,
-      };
-
-      this.pins = [...this.pins, newPin];
-    },
-    removePin(id) {
-      if (id) {
-        // izbaci ga iz pins liste
-        this.pins = this.pins.filter((wp) => wp.id !== id);
-      }
-    },
     updateSpeeds() {
       if (this.waypoints.length < 1) return;
       // pronadji indeks aktivnog waypointa
@@ -700,11 +609,9 @@ export default {
     },
     startTracking() {
       if (!this.boatPosition || this.waypoints.length < 1) return;
-      // pronađi najbliži waypoint
+
+      // Find the nearest waypoint
       let nearestWP = this.findNearestWP(this.waypoints);
-      let nearestWPIndex = this.waypoints.findIndex(
-        (wp) => wp.id === nearestWP.id
-      );
       let courseToNearestWP = this.calculateCourse(
         { lat: this.boatPosition[0], lng: this.boatPosition[1] },
         nearestWP
@@ -713,10 +620,10 @@ export default {
       if (this.compareHeadings(courseToNearestWP, nearestWP.nextCourse)) {
         this.boatPolyline = [this.boatPosition, [nearestWP.lat, nearestWP.lng]];
       } else {
-        // nearestWPIndex++;
-        // if (this.waypoints[nearestWPIndex]) {
-        //   nearestWP = this.waypoints[nearestWPIndex];
-        // }
+        let nearestWPIndex = this.waypoints.findIndex(
+          (wp) => wp.id === nearestWP.id
+        );
+
         while (
           nearestWPIndex < this.waypoints.length - 1 &&
           !this.compareHeadings(courseToNearestWP, nearestWP.nextCourse)
@@ -738,12 +645,22 @@ export default {
           );
         }
         this.boatPolyline = [this.boatPosition, [nearestWP.lat, nearestWP.lng]];
+
+        // Filter waypoints based on the nearest waypoint's name after calculations
+        const nearestWPName = parseInt(nearestWP.name);
+        this.waypoints = this.waypoints.filter(
+          (wp) => parseInt(wp.name) >= nearestWPName
+        );
       }
+
       clearInterval(this.intervalID);
       this.intervalID = setInterval(() => {
         this.showBoatPolyline = !this.showBoatPolyline;
       }, 650);
+      this.removeLowerNameWaypoints();
+      this.calculateTimeToNearestWaypoint();
     },
+
     getTotalDistance() {
       if (this.waypoints.length > 0) {
         this.totalDistance = this.waypoints.reduce((acc, wp) => {
@@ -756,6 +673,7 @@ export default {
       let eta = this.waypoints.map((wp) =>
         wp.wpToWp != "N/A" ? wp.wpToWp / wp.speed : 0
       );
+
       this.totalTimeHrs = eta.reduce((acc, time) => acc + time);
     },
     formatTime(hours) {
@@ -771,6 +689,7 @@ export default {
         .padStart(2, "0"); // get seconds and add leading zero if necessary
       return `${hoursFormatted}:${minutesFormatted}:${secondsFormatted}`; // return formatted time string
     },
+
     calculateNavData() {
       if (this.waypoints.length > 0) {
         let updatedWPs = [...this.waypoints];
@@ -879,7 +798,7 @@ export default {
       this.markerDescription = routeToLoad.markerDescription;
       this.circleChecked = routeToLoad.circleChecked;
 
-      localStorage.setItem("editRoute", JSON.stringify(null));
+      localStorage.setItem("edit.route", JSON.stringify(null));
     },
     changeMapStyle() {
       if (
@@ -963,7 +882,6 @@ body {
 
 .marker-info {
   width: 100%;
-  padding-left: 14px;
 }
 #marker-input {
   width: 100%;
