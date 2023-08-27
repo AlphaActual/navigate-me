@@ -156,23 +156,6 @@
           <div
             class="d-flex justify-content-between align-items-center costum-style-navigate gumbi"
           >
-            <div class="d-flex align-items-center btn-width-sort">
-              <button
-                class="sort-button btn btn-outline-secondary btn-width-sort"
-                @click="sortWPs"
-              >
-                Sort
-                <i
-                  :class="[
-                    'fa-solid',
-                    'fa-arrow-down',
-                    { 'reverse-arrow': !sortedDescending },
-                  ]"
-                ></i>
-              </button>
-              <!-- <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span> -->
-            </div>
-
             <div class="costum-under-sort">
               <div class="active-wp btn rounded" @click="centerOnActive">
                 Active:
@@ -202,6 +185,22 @@
               >
                 Delete active
               </div>
+            </div>
+            <div class="d-flex align-items-center btn-width-sort">
+              <button
+                class="sort-button btn btn-outline-secondary btn-width-sort"
+                @click="sortWPs"
+              >
+                Sort
+                <i
+                  :class="[
+                    'fa-solid',
+                    'fa-arrow-down',
+                    { 'reverse-arrow': !sortedDescending },
+                  ]"
+                ></i>
+              </button>
+              <!-- <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span> -->
             </div>
           </div>
           <!-- end of sort active insert delete row -->
