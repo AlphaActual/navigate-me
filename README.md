@@ -9,13 +9,14 @@
 <b>Link na javni prototip: [ Navigate me](https://navigate-me.netlify.app/) </b>
 
 <b>Kratki opis funkcionalnosti:</b>
-- Računanje ukupnog vremenskog trajanja putovanja s obzirom na brzinu broda između pojedinih međutočakka 
+- Računanje ukupnog vremenskog trajanja putovanja s obzirom na brzinu broda između pojedinih međutočaka 
 - Odabiranje proizvoljnih ruta 
 - Uklanjanje i uređivanje ruta
 - Pregled postojećih ruta
 - Dodavanje i uklanjanje putnih točaka
 - Praćenje pozicije korisnika na ruti (geolocation API) i usmjeravanje prema sljedećem waypointu
 - Izračun vremena dolaska na temelju parametara početnog vremena i brzina broda između međutočaka
+- aktivacija rute te usmjeravanje broda do najbliže točke prema putu
 
 
 <b> Zaduženja Tin Pritišanac: </b>
@@ -36,14 +37,30 @@
 - login/register
 - pohrana i slanje na bazu podataka
 - dohvat podataka iz baze i učitavanje korisničkih podataka
-- page "Active route" 
+- brisanje podataka iz baze
+- page "Active route", "Register" , "Login" 
 - Use Case Diagram
 - Class Diagram
-- prikaz pozicije na temelju geolokacije 
+- prikaz pozicije na temelju geolokacije te automatsko i ručno osvježavanje geolokacije
 - praćenje pozicije i usmjeravanje ka sljedećem waypointu 
-- izračun ETA (Estimated time of arrival) i drugih parametara putovanja (TO DO)
 - pull requests test
 - responsive design
+</br>
+<h2>Kratki video prikaz praćenja rute broda uz aplikaciju navigate me:</h2></br>
+
+
+
+https://github.com/AlphaActual/navigate-me/assets/57957655/b26ae1a2-a4b9-4e96-8d50-031fe427c8c6
+
+
+
+
+
+</br><h2>Navigate me is mobile friendly</h2></br>
+![263550879-f5b8929d-2013-4700-ac85-ae630e4f90f2](https://github.com/AlphaActual/navigate-me/assets/57957655/3f0f6331-59a8-4352-80aa-efac112fffc6)
+![263550956-af51a866-4e2b-4bcc-8d44-0f464ab2fee1](https://github.com/AlphaActual/navigate-me/assets/57957655/b86f1a1c-2e32-4e39-bc6a-cf25e1027312)
+![263550985-57d3bdfb-3309-480b-8a2e-a965c67c2f78](https://github.com/AlphaActual/navigate-me/assets/57957655/d7a4cfb5-2fc6-4fac-9108-072fc23811b1)
+![263551022-4930ec39-b1c0-431a-9806-30d0d22797b1](https://github.com/AlphaActual/navigate-me/assets/57957655/17c08cdd-0083-487a-b76c-92e53f5b3979)
 
 
 
