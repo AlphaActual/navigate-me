@@ -20,7 +20,6 @@
                 id="name-input"
                 type="text"
                 class="text-center btn-secondary-outline p-1 d-block"
-                @input="calculateTimeToNearestWaypoint"
               />
             </div>
           </div>
@@ -655,7 +654,6 @@ export default {
         this.showBoatPolyline = !this.showBoatPolyline;
       }, 650);
       this.removeLowerNameWaypoints();
-      this.calculateTimeToNearestWaypoint();
     },
 
     getTotalDistance() {
