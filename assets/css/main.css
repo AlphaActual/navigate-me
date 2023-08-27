@@ -289,3 +289,9 @@ img[src*="pin"]:hover {
     justify-content: space-between;
   }
 }
+
+@media (max-width: 300px) {
+  .costum-under-sort {
+    gap: 5px;
+  }
+}
