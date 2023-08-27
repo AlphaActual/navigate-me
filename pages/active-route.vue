@@ -89,9 +89,9 @@
 
           <!-- sort active insert delete row -->
           <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center btn-width-sort">
+            <div class="d-flex align-items-center">
               <button
-                class="sort-button btn btn-outline-secondary btn-width-sort"
+                class="sort-button btn btn-outline-secondary"
                 @click="sortWPs"
               >
                 Sort
