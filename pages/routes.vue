@@ -525,12 +525,12 @@ export default {
       if (!this.routeToDelete) {
         return;
       }
+      this.routes = this.routes.filter(
+          (route) => route.routeID !== this.routeToDelete.routeID
+        );
 
       if (localStorage.getItem("guestLoggedIn") === "true") {
         // Delete from local storage
-        this.routes = this.routes.filter(
-          (route) => route.routeID !== this.routeToDelete.routeID
-        );
         localStorage.setItem("routesArray", JSON.stringify(this.routes));
       }
 
