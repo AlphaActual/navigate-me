@@ -173,7 +173,7 @@
               <!-- <span :class="['sort-arrow', 'fs-3', 'ms-1',{ 'reverse-arrow': !sortedDescending } ]">&#8595;</span> -->
             </div>
 
-            <div>
+            <div class="costum-under-sort">
               <div class="active-wp btn rounded" @click="centerOnActive">
                 Active:
                 <span class="fw-bold text-danger-main">{{

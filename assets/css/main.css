@@ -283,4 +283,9 @@ img[src*="pin"]:hover {
   .btn-width-sort {
     width: 100%;
   }
+  .costum-under-sort {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
 }
