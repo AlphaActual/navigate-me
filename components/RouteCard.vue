@@ -5,7 +5,7 @@
       <span class="fw-bold"> {{ route.routeName }}</span>
       <p>
         <!-- ID: {{route.id}} <br> -->
-        <table>
+        <table class="table-route-card">
           <tr>
               <td class="pe-4">Duration</td>
               <td>{{ formatTime(route.totalTimeHrs) }} hrs</td>
@@ -120,4 +120,16 @@ export default {
 .edit-button:hover {
   background-color: rgb(241, 241, 241);
 }
+
+@media(max-width:800px){
+  .table-route-card{
+    display: flex;
+    flex-direction:column ;
+    justify-content: center;
+    max-width: 400px;
+    margin: auto;
+    padding-left: 10px;
+  }
+}
+
 </style>

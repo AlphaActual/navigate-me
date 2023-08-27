@@ -387,6 +387,14 @@ export default {
     this.loadActivateRoute();
     this.loadMapStyle();
     this.getMyLocation();
+    this.locationInterval = setInterval(() => {
+      this.getMyLocation(); // Call periodically
+    }, 10000);
+    console.log("get a location"); // Interval in milliseconds, e.g., every 10 seconds
+  },
+  beforeDestroy() {
+    // Clear the interval when the component is about to be destroyed
+    clearInterval(this.locationInterval);
   },
 
   methods: {
