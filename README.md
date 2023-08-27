@@ -41,10 +41,14 @@
 - page "Active route", "Register" , "Login" 
 - Use Case Diagram
 - Class Diagram
-- prikaz pozicije na temelju geolokacije 
+- prikaz pozicije na temelju geolokacije te automatsko i ručno osvježavanje geolokacije
 - praćenje pozicije i usmjeravanje ka sljedećem waypointu 
 - pull requests test
 - responsive design
+</br>
+<h2>Kratki video prikaz praćenja rute broda uz aplikaciju navigate me:</h2></br>
+
+[![Video Title](http://img.youtube.com/vi/iBt5ESHk_QQ/0.jpg)](http://www.youtube.com/watch?v=iBt5ESHk_QQ)
 
 
 
