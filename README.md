@@ -36,13 +36,14 @@
 - login/register
 - pohrana i slanje na bazu podataka
 - dohvat podataka iz baze i učitavanje korisničkih podataka
-- page "Active route" (TO DO)
+- page "Active route" 
 - Use Case Diagram
 - Class Diagram
-- prikaz pozicije na temelju geolokacije (TO DO)
-- praćenje pozicije i usmjeravanje ka sljedećem waypointu (TO DO)
+- prikaz pozicije na temelju geolokacije 
+- praćenje pozicije i usmjeravanje ka sljedećem waypointu 
 - izračun ETA (Estimated time of arrival) i drugih parametara putovanja (TO DO)
 - pull requests test
+- responsive design
 
 
 
