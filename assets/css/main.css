@@ -95,8 +95,6 @@ img[src*="pin"]:hover {
   width: calc(100vw - 400px);
 }
 
-
-
 /* animations */
 
 .animated-button:hover .icon-1 {
@@ -165,7 +163,6 @@ img[src*="pin"]:hover {
 .elementFadeIn-enter-active {
   transition: opacity 0.5s;
 }
-
 
 .lds-ellipsis {
   display: inline-block;
@@ -247,23 +244,23 @@ img[src*="pin"]:hover {
 }
 @keyframes size {
   0% {
-    outline:5px dashed var(--bright-red);
+    outline: 5px dashed var(--bright-red);
   }
-  
+
   25% {
-    outline:5px dashed transparent;
+    outline: 5px dashed transparent;
   }
-  
+
   50% {
-    outline:5px dashed var(--bright-red);
+    outline: 5px dashed var(--bright-red);
   }
-  
+
   75% {
-    outline:5px dashed transparent;
+    outline: 5px dashed transparent;
   }
-  
+
   100% {
-    outline:5px dashed var(--bright-red);
+    outline: 5px dashed var(--bright-red);
   }
 }
 
@@ -280,4 +277,10 @@ img[src*="pin"]:hover {
   z-index: 5000;
   width: 100%;
   height: 100%;
+}
+
+@media (max-width: 400px) {
+  .btn-width-sort {
+    width: 100%;
+  }
 }

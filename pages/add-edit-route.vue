@@ -156,9 +156,9 @@
           <div
             class="d-flex justify-content-between align-items-center costum-style-navigate gumbi"
           >
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center btn-width-sort">
               <button
-                class="sort-button btn btn-outline-secondary"
+                class="sort-button btn btn-outline-secondary btn-width-sort"
                 @click="sortWPs"
               >
                 Sort
