@@ -390,37 +390,26 @@ export default {
   },
 
   methods: {
-    calculateTimeToNearestWaypoint() {
-      console.log("Calculating time to nearest waypoint...");
+    calculateDistance(boatPosition, waypoint) {
+      let R = 6371e3; // radius of the earth in meters
+      let phi1 = (boatPosition.lat * Math.PI) / 180;
+      let phi2 = (waypoint.lat * Math.PI) / 180;
+      let deltaPhi = ((waypoint.lat - boatPosition.lat) * Math.PI) / 180;
+      let deltaLambda = ((waypoint.lng - boatPosition.lng) * Math.PI) / 180;
 
-      if (!this.boatPosition || this.waypoints.length < 1) {
-        console.log("Boat position or waypoints missing.");
-        return;
-      }
+      let a =
+        Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
+        Math.cos(phi1) *
+          Math.cos(phi2) *
+          Math.sin(deltaLambda / 2) *
+          Math.sin(deltaLambda / 2);
+      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      let distance = R * c;
 
-      const nearestWP = this.findNearestWP(this.waypoints);
-      console.log("Nearest waypoint:", nearestWP);
+      let nauticalMilesPerMeter = 0.000539957;
+      let distanceInNauticalMiles = distance * nauticalMilesPerMeter;
 
-      const distanceToNearestWP = this.calculateDistance(
-        { lat: this.boatPosition[0], lng: this.boatPosition[1] },
-        nearestWP
-      );
-      console.log("Distance to nearest waypoint:", distanceToNearestWP);
-
-      const speedKnots = this.shipSpeed; // Speed of the ship in knots
-      console.log("Speed in knots:", speedKnots);
-
-      const speedMetersPerSecond = speedKnots * 0.514444; // Convert knots to m/s
-      console.log("Speed in m/s:", speedMetersPerSecond);
-
-      const timeSeconds = distanceToNearestWP / speedMetersPerSecond;
-      console.log("Time in seconds:", timeSeconds);
-
-      const timeToNearestWaypoint = timeSeconds / 3600;
-      console.log("Time to nearest waypoint in hours:", timeToNearestWaypoint);
-
-      this.nearestWPTime = this.formatTime(timeToNearestWaypoint); // Update nearest waypoint time
-      console.log("Nearest waypoint time:", this.nearestWPTime);
+      return distanceInNauticalMiles;
     },
 
     async getMyLocation() {
@@ -451,7 +440,7 @@ export default {
       );
 
       this.updateNames();
-
+      this.nearestWPTime = this.calculateDistance(this.boatPosition, nearestWP);
       // Update local storage with the filtered waypoints
       const routeToLoad = JSON.parse(localStorage.getItem("activateRoute"));
       if (routeToLoad) {

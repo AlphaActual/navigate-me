@@ -18,7 +18,7 @@
       </div>
     </div>
     <div id="total-time" class="text-brown-main">
-      Total time static route:
+      Total time:
       <span class="fw-bold text-brown-main"> {{ totalT }}</span> hrs
     </div>
     <div class="text-brown-main">
