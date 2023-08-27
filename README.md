@@ -48,7 +48,11 @@
 </br>
 <h2>Kratki video prikaz praćenja rute broda uz aplikaciju navigate me:</h2></br>
 
-https://github.com/AlphaActual/navigate-me/assets/57957655/d4a603db-b3f3-4357-a070-d9f700021827
+
+
+https://github.com/AlphaActual/navigate-me/assets/57957655/b26ae1a2-a4b9-4e96-8d50-031fe427c8c6
+
+
 
 
 
