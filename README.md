@@ -45,6 +45,8 @@
 - praćenje pozicije i usmjeravanje ka sljedećem waypointu 
 - pull requests test
 - responsive design
+- izračun eta vremena, izračun udaljenosti od najbliže putne točke, izračun vremenaprema brzini broda
+- 
 </br>
 <h2>Kratki video prikaz praćenja rute broda uz aplikaciju navigate me:</h2></br>
 
