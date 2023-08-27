@@ -22,6 +22,43 @@
                 class="text-center btn-secondary-outline p-1 d-block"
               />
             </div>
+            <div class="eta-info">
+              <p>
+                Distance to Nearest Waypoint: {{ distanceToNearestWaypoint }} NM
+              </p>
+
+              <p>Ship Speed to Waypoint: {{ shipSpeedtowaypoint }} knots</p>
+              <div>
+                Update Ship Speed:
+                <input
+                  v-model="userInputSpeed"
+                  type="number"
+                  min="0"
+                  step="1"
+                  style="
+                    width: 50px;
+                    border: none;
+                    color: var(--danger-main);
+                    margin-right: 5px;
+                    border-radius: 3px;
+                    padding-left: 30px;
+                    font-weight: 700;
+                  "
+                />
+                <button
+                  @click="updateSpeed"
+                  class="animated-button btn ms-1"
+                  fdprocessedid="0l3qow"
+                >
+                  <i data-v-5c4d668a="" class="icon-1 fa-solid fa-play"></i
+                  ><i data-v-5c4d668a="" class="icon-2 fa-solid fa-play"></i
+                  ><i class="icon-3 fa-solid fa-play"></i>
+                </button>
+              </div>
+              <p>
+                Estimated Time to Waypoint: {{ estimatedTimeToWaypoint }} hours
+              </p>
+            </div>
           </div>
           <!-- end of save row -->
 
@@ -32,7 +69,7 @@
           <div>
             <div class="d-flex align-items-center">
               <label class="mb-0 me-2" for="speed-input"
-                >Set {{ circleChecked ? "radius" : "speed" }}:
+                >Set Waypoint {{ circleChecked ? "radius" : "speed" }}:
               </label>
               <input
                 v-model="shipSpeed"
@@ -83,7 +120,7 @@
             </div>
           </div>
           <!--end of marker icons row -->
-          <div>Dynamic route: {{ nearestWPTime }}</div>
+
           <hr />
 
           <!-- sort active insert delete row -->
@@ -282,7 +319,9 @@ export default {
 
   data() {
     return {
-      nearestWPTime: "",
+      shipSpeedtowaypoint: "7",
+      userInputSpeed: 7,
+      ETA: 0,
       boatPosition: [0, 0],
       boatPolyline: [
         [0, 0],
@@ -354,6 +393,13 @@ export default {
     },
   },
   computed: {
+    estimatedTimeToWaypoint() {
+      const etaTry = this.distanceToNearestWaypoint / this.shipSpeedtowaypoint;
+      this.ETA = this.formatTime(etaTry); // Computed property for estimated time
+      return (
+        this.distanceToNearestWaypoint / this.shipSpeedtowaypoint
+      ).toFixed(2);
+    },
     showSorted() {
       if (this.sortedDescending) {
         return [...this.waypoints].reverse();
@@ -381,44 +427,42 @@ export default {
     getBoatCoordinates() {
       return this.boatPosition;
     },
+
+    nearestWaypoint() {
+      if (this.waypoints.length === 0) return null;
+
+      const nearest = this.findNearestWP(this.waypoints);
+      return nearest;
+    },
+    distanceToNearestWaypoint() {
+      if (!this.nearestWaypoint) return null;
+
+      const distance = this.calculateDistance(
+        { lat: this.boatPosition[0], lng: this.boatPosition[1] },
+        this.nearestWaypoint
+      ).toFixed(2);
+
+      return distance; // Distance in nautical miles
+    },
   },
+
   mounted() {
     this.loadActivateRoute();
     this.loadMapStyle();
     this.getMyLocation();
     this.locationInterval = setInterval(() => {
-      this.getMyLocation(); // Call periodically
+      this.getMyLocation();
     }, 10000);
     console.log("get a location"); // Interval in milliseconds, e.g., every 10 seconds
   },
   beforeDestroy() {
-    // Clear the interval when the component is about to be destroyed
     clearInterval(this.locationInterval);
   },
 
   methods: {
-    calculateDistance(boatPosition, waypoint) {
-      let R = 6371e3; // radius of the earth in meters
-      let phi1 = (boatPosition.lat * Math.PI) / 180;
-      let phi2 = (waypoint.lat * Math.PI) / 180;
-      let deltaPhi = ((waypoint.lat - boatPosition.lat) * Math.PI) / 180;
-      let deltaLambda = ((waypoint.lng - boatPosition.lng) * Math.PI) / 180;
-
-      let a =
-        Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
-        Math.cos(phi1) *
-          Math.cos(phi2) *
-          Math.sin(deltaLambda / 2) *
-          Math.sin(deltaLambda / 2);
-      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      let distance = R * c;
-
-      let nauticalMilesPerMeter = 0.000539957;
-      let distanceInNauticalMiles = distance * nauticalMilesPerMeter;
-
-      return distanceInNauticalMiles;
+    updateSpeed() {
+      this.shipSpeedtowaypoint = this.userInputSpeed;
     },
-
     async getMyLocation() {
       let coordinates;
       try {
@@ -503,27 +547,6 @@ export default {
     },
     sortWPs() {
       this.sortedDescending = !this.sortedDescending;
-    },
-
-    removeWP(id) {
-      if (id) {
-        const activeWPIndex = this.waypoints.findIndex(
-          (wp) => wp.id === this.activeWP.id
-        );
-        // izbaci ga iz waypoints liste
-
-        this.waypoints = this.waypoints.filter((wp) => wp.id !== id);
-        this.updateNames();
-        // ako je obrisani wp bio ujedno i aktivan stavi da novi aktivni bude onaj prije njega (ako postoji)
-        if (this.activeWP.id === id) {
-          const prevWP = this.waypoints[activeWPIndex - 1];
-          if (prevWP) {
-            this.setActiveWP(prevWP);
-          } else {
-            this.setActiveWP(this.waypoints[this.waypoints.length - 1]);
-          }
-        }
-      }
     },
 
     updateSpeeds() {
@@ -991,5 +1014,21 @@ body {
 .row-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
+}
+
+.update-speed-btn {
+  color: #f9f3ea;
+  background-color: #3e2c12;
+  border-radius: 24px;
+}
+.update-speed-btn:hover {
+  color: #3e2c12;
+  background-color: #f9f3ea;
+}
+.eta-info {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  gap: 0;
 }
 </style>
