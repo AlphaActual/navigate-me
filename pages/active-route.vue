@@ -31,18 +31,11 @@
               <div>
                 Update Ship Speed:
                 <input
+                  class="costum-input"
                   v-model="userInputSpeed"
                   type="number"
                   min="0"
                   step="1"
-                  style="
-                    width: 50px;
-                    border: none;
-                    color: var(--danger-main);
-                    margin-right: 5px;
-                    border-radius: 3px;
-                    font-weight: 700;
-                  "
                 />
                 <button
                   @click="updateSpeed"
@@ -57,7 +50,10 @@
               <p>
                 Estimated Time to Waypoint: {{ estimatedTimeToWaypoint }} hours
               </p>
-              <p>ETA waypoint: <span class="text-danger-main">{{ ETA }}</span> HRS local time</p>
+              <p>
+                ETA waypoint:
+                <span class="text-danger-main">{{ ETA }}</span> HRS local time
+              </p>
             </div>
           </div>
           <!-- end of save row -->
@@ -1032,5 +1028,16 @@ body {
   flex-direction: column;
   margin-top: 20px;
   gap: 0;
+}
+
+.costum-input {
+  width: 50px;
+  border: none;
+  color: var(--danger-main);
+  margin-right: 5px;
+  border-radius: 3px;
+  font-weight: 700;
+  text-align: center;
+  padding-left: 10px;
 }
 </style>
