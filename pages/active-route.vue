@@ -41,7 +41,6 @@
                     color: var(--danger-main);
                     margin-right: 5px;
                     border-radius: 3px;
-                    padding-left: 30px;
                     font-weight: 700;
                   "
                 />
@@ -58,6 +57,7 @@
               <p>
                 Estimated Time to Waypoint: {{ estimatedTimeToWaypoint }} hours
               </p>
+              <p>ETA waypoint: <span class="text-danger-main">{{ ETA }}</span> HRS local time</p>
             </div>
           </div>
           <!-- end of save row -->
@@ -395,10 +395,12 @@ export default {
   computed: {
     estimatedTimeToWaypoint() {
       const etaTry = this.distanceToNearestWaypoint / this.shipSpeedtowaypoint;
-      this.ETA = this.formatTime(etaTry); // Computed property for estimated time
-      return (
-        this.distanceToNearestWaypoint / this.shipSpeedtowaypoint
-      ).toFixed(2);
+      // calculate estimated time of arrival at the nearest waypoint as a sum of current time and etaTry(is in hours)
+      const datum = new Date();
+      const datum2 = new Date(datum.getTime() + etaTry * 3600 * 1000);
+      this.ETA = datum2.toLocaleTimeString("hr-HR");
+
+      return etaTry.toFixed(2);
     },
     showSorted() {
       if (this.sortedDescending) {
