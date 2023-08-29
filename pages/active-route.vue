@@ -5,6 +5,7 @@
       pageTitle="Activated Route"
       :totalD="totalDistance"
       :totalT="this.formatTime(this.totalTimeHrs)"
+      :showTutorial="false"
     />
     <div class="container-fluid">
       <div class="row wrapper wrapper-grid">

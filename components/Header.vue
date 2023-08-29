@@ -25,25 +25,22 @@
       Total distance:
       <span class="fw-bold text-brown-main"> {{ totalD.toFixed(2) }}</span> NM
     </div>
+    <button
+      v-show="showTutorial"
+      :disabled="this.$store.state.tutorialVisible"
+      class="tutorial-gumb btn"
+      @click="
+        () => {
+          this.startTutorial();
+          $emit('load-route');
+        }
+      "
+    >
+      Tutorial
+    </button>
     <div class="welcome-nav-user">
       <p v-if="userEmail">Wellcome, {{ userEmail }}</p>
       <p v-else>Welcome, Guest</p>
-    </div>
-    <div class="logout-gumb-container">
-      <!--<button
-        v-show="showTutorial"
-        :disabled="this.$store.state.tutorialVisible"
-        class="logout-gumb btn"
-        @click="
-          () => {
-            this.startTutorial();
-            $emit('load-route');
-          }
-        "
-      >
-        Tutorial
-      </button>-->
-
       <img
         style="width: 35px"
         @click="logout"
@@ -125,6 +122,7 @@ export default {
 .header {
   height: 40px;
   border-bottom: 1px solid gray;
+  position: relative;
 }
 
 .hover-effect {
@@ -168,15 +166,30 @@ export default {
   text-decoration: none;
   color: --var(brown-main);
 }
+.tutorial-gumb {
+  
+  background-color: var(--warning-main);
+  z-index: 999;
+  @media (min-width: 800px) {
+    position: fixed;
+    top: 53px;
+    left: 70px;
+  }
+}
 .logout-gumb {
   background-color: var(--primary-blue);
   color: white;
   padding: 0px 0.5rem;
+  
 }
 .logout-gumb:hover {
   background-color: var(--primary-blue-hover);
 }
-
+.welcome-nav-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .welcome-nav-user p {
   margin-bottom: 0;
 }

@@ -13,6 +13,10 @@
   --warning-main: #ffc107;
   --bright-red: red;
 }
+body {
+  height: 100vh;
+  overflow: hidden;
+}
 
 .bg-brown-main {
   background-color: var(--brown-main);
